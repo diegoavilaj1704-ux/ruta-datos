@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Avatar } from '../componentes/Avatar';
+import { Avatar, Cuerpo } from '../componentes/Avatar';
+import { clavePrenda, precioDe } from '../lib/armario';
 import { COLORES_PELO, PEINADOS, PERFIL_INICIAL, PIELES, ROPAS, type Peinado, type Perfil as PerfilT } from '../lib/personajes';
 import { acciones, useProgreso } from '../lib/progreso';
 
@@ -8,20 +9,24 @@ interface Props {
   listo: () => void;
 }
 
-// Creador de avatar: el protagonista de las historias es el propio alumno
+// Creador de avatar: el protagonista de las historias es el propio alumno.
+// La ropa, los gorros y los peinados especiales están en el clóset.
 export function Perfil({ bienvenida, listo }: Props) {
   const progreso = useProgreso();
   const [p, setP] = useState<PerfilT>(progreso.perfil ?? PERFIL_INICIAL);
   const [error, setError] = useState('');
   const cambiar = (c: Partial<PerfilT>) => setP((v) => ({ ...v, ...c }));
+  const peinados = (Object.keys(PEINADOS) as Peinado[]).filter(
+    (k) => precioDe('peinado', k) === 0 || progreso.comprados.includes(clavePrenda({ cat: 'peinado', id: k })),
+  );
 
-  function guardar() {
+  function guardar(despues: () => void) {
     if (!p.nombre.trim()) {
       setError('Escribe cómo quieres que te llamen.');
       return;
     }
     acciones.guardarPerfil(p);
-    listo();
+    despues();
   }
 
   return (
@@ -39,7 +44,7 @@ export function Perfil({ bienvenida, listo }: Props) {
       )}
 
       <div className="perfil-vista">
-        <Avatar quien="yo" perfil={p} tam={132} />
+        <Cuerpo perfil={p} ancho={120} alto={212} />
       </div>
 
       <label className="perfil-campo">
@@ -58,19 +63,24 @@ export function Perfil({ bienvenida, listo }: Props) {
         {PIELES.map((c, i) => <Muestra key={c} color={c} activa={p.piel === i} onClick={() => cambiar({ piel: i })} etiqueta={`Tono ${i + 1}`} />)}
       </Grupo>
 
-      <Grupo titulo="Cara">
+      <Grupo titulo="Complexión">
         <Chip activo={!p.llenito} onClick={() => cambiar({ llenito: false })}>Delgada</Chip>
         <Chip activo={p.llenito} onClick={() => cambiar({ llenito: true })}>Llenita</Chip>
       </Grupo>
 
       <Grupo titulo="Peinado">
-        {(Object.keys(PEINADOS) as Peinado[]).map((k) => (
+        {peinados.map((k) => (
           <button key={k} className={`peinado ${p.peinado === k ? 'activo' : ''}`} onClick={() => cambiar({ peinado: k })} aria-label={PEINADOS[k]}>
             <Avatar quien="yo" perfil={{ ...p, peinado: k }} tam={52} />
             <span>{PEINADOS[k]}</span>
           </button>
         ))}
       </Grupo>
+      {!bienvenida && (
+        <button className="enlace-juego" onClick={() => guardar(() => (location.hash = '#/closet'))}>
+          Más peinados y ropa en tu clóset ◆
+        </button>
+      )}
 
       <Grupo titulo="Color de pelo">
         {COLORES_PELO.map((c, i) => <Muestra key={c} color={c} activa={p.pelo === i} onClick={() => cambiar({ pelo: i })} etiqueta={`Pelo ${i + 1}`} />)}
@@ -79,16 +89,15 @@ export function Perfil({ bienvenida, listo }: Props) {
       <Grupo titulo="Detalles">
         <Chip activo={p.barba} onClick={() => cambiar({ barba: !p.barba })}>Barba</Chip>
         <Chip activo={p.bigote} onClick={() => cambiar({ bigote: !p.bigote })}>Bigote</Chip>
-        <Chip activo={p.lentes} onClick={() => cambiar({ lentes: !p.lentes })}>Lentes</Chip>
         <Chip activo={p.aretes} onClick={() => cambiar({ aretes: !p.aretes })}>Aretes</Chip>
       </Grupo>
 
-      <Grupo titulo="Ropa">
-        {ROPAS.map(([c], i) => <Muestra key={c} color={c} activa={p.ropa === i} onClick={() => cambiar({ ropa: i })} etiqueta={`Ropa ${i + 1}`} />)}
+      <Grupo titulo="Color favorito">
+        {ROPAS.map(([c], i) => <Muestra key={c} color={c} activa={p.ropa === i} onClick={() => cambiar({ ropa: i })} etiqueta={`Color ${i + 1}`} />)}
       </Grupo>
 
       <footer className="historia-pie">
-        <button className="boton-juego" onClick={guardar}>{bienvenida ? '¡LISTO, A EMPEZAR!' : 'GUARDAR'}</button>
+        <button className="boton-juego" onClick={() => guardar(listo)}>{bienvenida ? '¡LISTO, A EMPEZAR!' : 'GUARDAR'}</button>
       </footer>
     </main>
   );

@@ -40,6 +40,9 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 | 2026-10-27 | El protagonista es **el avatar de cada alumno** (nombre y apariencia elegidos al abrir la app) en lugar del personaje Diego | El piloto prefirió que cada quien ponga nombre a su avatar; hace la historia personal para cualquier usuario |
 | 2026-10-27 | **Hashy**, un schnauzer, sustituye a Fer: da tips y aparece triste cuando te equivocas | Pedido del piloto; un perrito suaviza el error y le da humor |
 | 2026-10-27 | **Sonidos** sintetizados al acertar, al equivocarse ("ayyy") y al terminar; se pueden silenciar | Más sensación de juego, sin archivos de audio y sin conexión |
+| 2026-10-27 | **Clóset**: los XP se gastan en peinados, ropa, pantalones, tenis, gorros, lentes y accesorios; al comprar se descuentan | Primer uso de los XP pedido por el piloto; da motivo para seguir estudiando |
+| 2026-10-27 | Avatar del alumno con **cuerpo completo** de proporciones naturales; en el chat se ve el recorte de la cara | El piloto rechazó un primer cuerpo "raro" y pidió brazos, piernas y cuerpo normales; el busto no mostraba tenis ni pantalones |
+| 2026-10-27 | En el clóset, lo que no tienes **se prueba antes de comprar** (botón "Comprar por ◆ N" aparte) | Evitar gastar XP por accidente con un toque |
 | 2026-10-27 | Cada ejecución SQL usa una base nueva con el dataset | El alumno no puede romper la tabla (ni con DROP TABLE) |
 
 ## Decisiones pendientes

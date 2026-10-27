@@ -39,10 +39,10 @@ export function Hoy({ abrir }: Props) {
             <span className="racha-num">▲ {racha}</span>
             <span className="racha-txt">racha</span>
           </div>
-          <div className="racha" aria-label={`${progreso.xp} puntos de experiencia`}>
+          <button className="racha boton-closet" onClick={() => (location.hash = '#/closet')} aria-label={`${progreso.xp} XP. Abrir tu clóset`}>
             <span className="racha-num xp">◆ {progreso.xp}</span>
-            <span className="racha-txt">XP</span>
-          </div>
+            <span className="racha-txt">clóset</span>
+          </button>
         </div>
       </header>
 

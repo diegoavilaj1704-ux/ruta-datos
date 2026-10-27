@@ -61,6 +61,7 @@ Frontmatter de cada lección: `id, modulo, semana, dia, objetivo, duracion_min, 
 - Definido (27 oct): estilo visual, personajes y regla de ejercicios (ver `docs/estilo-y-personajes.md`).
 - Hecho (27 oct): lección del lunes como historia en tarjetas (`lunes.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
 - Hecho (27 oct): avatar propio con nombre (protagonista), Hashy el schnauzer (tips y errores) y sonidos.
+- Hecho (27 oct): avatar de cuerpo completo y clóset donde se gastan los XP (catálogo en `app/src/lib/armario.ts`).
 - Siguiente: historia del martes, mini-proyecto y viernes con el mismo estilo; después Capacitor + recordatorio diario.
 
 ## Comandos de la app (desde `app/`)

@@ -1,3 +1,5 @@
+import type { Equipo } from './armario';
+
 // Elenco de la ruta (docs/estilo-y-personajes.md). Las caras se dibujan con SVG:
 // pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
 //   yo     → el avatar que cada alumno arma en su perfil (protagonista)
@@ -9,6 +11,9 @@ export const PIELES = ['#F9D7C0', '#EBB894', '#C98E62', '#A5693F', '#7A4A2B', '#
 export const PEINADOS = {
   ondulado: 'Ondulado', rizos: 'Rizos', afro: 'Afro', largo: 'Largo', cola: 'Cola de caballo',
   chongo: 'Chongo', trenzas: 'Trenzas', fleco: 'Fleco', corto: 'Corto', entradas: 'Entradas', calvo: 'Calvo',
+  // Se desbloquean con XP en el clóset (precios en armario.ts)
+  copete: 'Copete', cresta: 'Cresta', coletas: 'Coletas', bob: 'Bob', chongos: 'Dos chongos',
+  rastas: 'Rastas', picos: 'Picos', raya: 'Raya de lado',
 } as const;
 export type Peinado = keyof typeof PEINADOS;
 
@@ -45,14 +50,15 @@ export interface Perfil {
   pelo: number;
   barba: boolean;
   bigote: boolean;
-  lentes: boolean;
+  lentes?: boolean;     // versión anterior; ahora los lentes están en `equipo`
   aretes: boolean;
-  ropa: number;
+  ropa: number;         // color favorito: playera básica y fondo del avatar
+  equipo?: Equipo;      // lo que trae puesto (clóset)
 }
 
 export const PERFIL_INICIAL: Perfil = {
   nombre: '', piel: 2, llenito: false, peinado: 'ondulado', pelo: 0,
-  barba: false, bigote: false, lentes: false, aretes: false, ropa: 0,
+  barba: false, bigote: false, aretes: false, ropa: 0,
 };
 
 export function rasgosDePerfil(p: Perfil): Rasgos {
@@ -98,6 +104,17 @@ export function nombreDe(quien: Quien, perfil?: Perfil): string {
 
 // Devuelve el SVG de la cara como texto; `id` evita choques entre clipPath de varias caras.
 export function dibujarCara(o: Rasgos, id: string): string {
+  const { atras, frente } = partesCabeza(o);
+  const ropa = `<path d="M14,100 Q16,78 50,76 Q84,78 86,100 Z" fill="${o.ropa}"/>` +
+    (o.sudadera ? `<path d="M30,82 Q50,92 70,82" stroke="${o.sudadera}" stroke-width="4" fill="none" stroke-linecap="round"/>` : '');
+  const cuello = `<rect x="44" y="64" width="12" height="14" rx="4" fill="${o.piel}"/><rect x="44" y="64" width="12" height="6" fill="#000" opacity=".08"/>`;
+  return envolver(o.nombre, id, o.fondo, `${atras}${ropa}${cuello}${frente}`);
+}
+
+// Cabeza en coordenadas de 100×100 (centro 50,50): `atras` va detrás del cuerpo
+// (pelo largo, afro…) y `frente` es la cara con el pelo de enfrente. La usan el
+// busto del elenco y el cuerpo completo del avatar (cuerpo.ts).
+export function partesCabeza(o: Rasgos): { atras: string; frente: string } {
   const rx = o.llenito ? 27 : 22;
   const sk = o.piel;
   const h = o.pelo;
@@ -134,9 +151,15 @@ export function dibujarCara(o: Rasgos, id: string): string {
     atras += `<g fill="${h}">${[0, 1, 2, 3, 4].map((i) => `<circle cx="${L - 3}" cy="${52 + i * 8}" r="4.5"/><circle cx="${R + 3}" cy="${52 + i * 8}" r="4.5"/>`).join('')}</g>`;
   }
 
-  const ropa = `<path d="M14,100 Q16,78 50,76 Q84,78 86,100 Z" fill="${o.ropa}"/>` +
-    (o.sudadera ? `<path d="M30,82 Q50,92 70,82" stroke="${o.sudadera}" stroke-width="4" fill="none" stroke-linecap="round"/>` : '');
-  const cuello = `<rect x="44" y="64" width="12" height="14" rx="4" fill="${sk}"/><rect x="44" y="64" width="12" height="6" fill="#000" opacity=".08"/>`;
+  if (o.peinado === 'coletas') atras += `<ellipse cx="${L - 7}" cy="46" rx="7" ry="12" fill="${h}"/><ellipse cx="${R + 7}" cy="46" rx="7" ry="12" fill="${h}"/>`;
+  if (o.peinado === 'bob') atras += `<path d="M${L - 4},44 Q${L - 6},16 50,15 Q${R + 6},16 ${R + 4},44 Q${R + 7},64 ${R + 1},70 Q${R - 3},72 ${R - 4},66 L${L + 4},66 Q${L + 3},72 ${L - 1},70 Q${L - 7},64 ${L - 4},44 Z" fill="${h}"/>`;
+  // Rastas: caen por los lados y la espalda, no por detrás de la cara
+  if (o.peinado === 'rastas') {
+    for (const [x, largo, giro] of [[L - 9, 50, 6], [L - 3, 56, 3], [R + 3, 56, -3], [R + 9, 50, -6]] as const) {
+      atras += `<rect x="${x - 3}" y="30" width="6.5" height="${largo}" rx="3.2" fill="${h}" transform="rotate(${giro} ${x} 30)"/>`;
+    }
+  }
+
   const orejas = `<circle cx="${L}" cy="53" r="5" fill="${sk}"/><circle cx="${R}" cy="53" r="5" fill="${sk}"/>`;
   const cabeza = `<ellipse cx="50" cy="50" rx="${rx}" ry="${o.llenito ? 25 : 26}" fill="${sk}"/>`;
 
@@ -147,8 +170,24 @@ export function dibujarCara(o: Rasgos, id: string): string {
   else if (o.peinado === 'ondulado') {
     for (let i = 0; i < 6; i++) frente += `<circle cx="${L + 3 + (i * (rx * 2 - 6)) / 5}" cy="${29 + (i % 2) * 2.5}" r="6.5" fill="${h}"/>`;
     frente += `<path d="M${L + 6},30 Q50,38 ${R - 4},31" stroke="${h}" stroke-width="6" fill="none"/>`;
-  } else if (['corto', 'largo', 'trenzas', 'chongo', 'cola'].includes(o.peinado)) frente += casco;
+  } else if (['corto', 'largo', 'trenzas', 'chongo', 'cola', 'coletas', 'chongos', 'rastas'].includes(o.peinado)) frente += casco;
   if (o.peinado === 'chongo') frente += `<circle cx="50" cy="17" r="9" fill="${h}"/>`;
+  if (o.peinado === 'chongos') frente += `<circle cx="${L + 5}" cy="20" r="8" fill="${h}"/><circle cx="${R - 5}" cy="20" r="8" fill="${h}"/>`;
+  if (o.peinado === 'coletas') frente += `<circle cx="${L - 2}" cy="37" r="2.8" fill="#FF6B5B"/><circle cx="${R + 2}" cy="37" r="2.8" fill="#FF6B5B"/>`;
+  if (o.peinado === 'rastas') frente += [44, 50, 56].map((x) => `<rect x="${x - 2.5}" y="28" width="5" height="15" rx="2.5" fill="${h}"/>`).join('');
+  if (o.peinado === 'bob') frente += `<path d="M${L - 1},46 Q${L - 2},21 50,20 Q${R + 2},21 ${R + 1},46 L${R - 1},38 L${L + 1},38 Z" fill="${h}"/>`;
+  if (o.peinado === 'copete') {
+    // Lados cortos y un tupé que se levanta y cae hacia un lado
+    frente += `<path d="M${L - 1},50 Q${L - 2},38 ${L + 2},34 L${L + 3},48 Z M${R + 1},50 Q${R + 2},38 ${R - 2},34 L${R - 3},48 Z" fill="${h}"/>`;
+    frente += `<path d="M${L + 1},38 Q${L - 3},14 44,11 Q66,4 ${R + 3},20 Q${R + 4},30 ${R - 2},34 Q${R - 6},24 58,24 Q${L + 10},24 ${L + 1},38 Z" fill="${h}"/>`;
+    frente += `<path d="M${L + 8},22 Q50,14 ${R - 6},20" stroke="#fff" stroke-opacity=".18" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  }
+  if (o.peinado === 'cresta') {
+    frente += `<path d="${casco.match(/d="([^"]+)"/)![1]}" fill="${h}" opacity=".25"/>`;
+    frente += `<path d="M44,34 L41,8 L47,16 L50,4 L53,16 L59,8 L56,34 Z" fill="${h}"/>`;
+  }
+  if (o.peinado === 'picos') frente += `<path d="M${L - 1},46 L${L - 2},24 L${L + 6},28 L${L + 8},12 L${L + 16},24 L50,8 L${R - 16},24 L${R - 8},12 L${R - 6},28 L${R + 2},24 L${R + 1},46 Q50,32 ${L - 1},46 Z" fill="${h}"/>`;
+  if (o.peinado === 'raya') frente += `<path d="M${L - 1},48 Q${L - 2},21 50,21 Q${R + 2},21 ${R + 1},48 Q${R - 2},34 ${R - 10},30 Q${L + 14},26 ${L + 4},40 Q${L},44 ${L - 1},48 Z" fill="${h}"/>`;
   if (o.peinado === 'calvo') frente += `<path d="M${L},50 Q${L},40 ${L + 5},38 L${L + 5},50 Z M${R},50 Q${R},40 ${R - 5},38 L${R - 5},50 Z" fill="${h}"/>`;
   if (o.peinado === 'entradas') {
     frente += `<path d="M${L - 1},50 Q${L - 2},28 ${L + 8},26 L${L + 6},44 Z M${R + 1},50 Q${R + 2},28 ${R - 8},26 L${R - 6},44 Z" fill="${h}"/>`;
@@ -166,7 +205,7 @@ export function dibujarCara(o: Rasgos, id: string): string {
   if (o.lentes) extra += `<g fill="none" stroke="#2A2838" stroke-width="1.8"><circle cx="41" cy="52" r="6.5"/><circle cx="59" cy="52" r="6.5"/><path d="M47.5,52 L52.5,52"/></g>`;
   if (o.aretes) extra += `<circle cx="${L}" cy="58" r="1.8" fill="#FFB020"/><circle cx="${R}" cy="58" r="1.8" fill="#FFB020"/>`;
 
-  return envolver(o.nombre, id, o.fondo, `${atras}${ropa}${cuello}${orejas}${cabeza}${frente}${cara}${extra}`);
+  return { atras, frente: `${orejas}${cabeza}${frente}${cara}${extra}` };
 }
 
 // Hashy: schnauzer sal y pimienta, con cejas y barba pobladas y collar coral

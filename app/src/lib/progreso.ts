@@ -11,13 +11,14 @@ export interface Progreso {
   ejercicios: Record<string, { codigo: string; resuelto: boolean }>;
   quiz: Record<string, number>;                    // "clave#n" → opción elegida
   notas: Record<string, string>;                   // borrador de la nota del viernes
-  xp: number;                                      // XP acumulado de lecciones terminadas
+  xp: number;                                      // XP disponibles: se ganan en lecciones y se gastan en el clóset
   historias: Record<string, { paso: number; xp: number }>; // tarjeta actual y XP de la lección en curso
   perfil?: Perfil;                                 // avatar y nombre del alumno (protagonista de las historias)
   sonido: boolean;
+  comprados: string[];                             // prendas desbloqueadas ("ropa:jersey")
 }
 
-const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true };
+const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true, comprados: [] };
 
 function leer(): Progreso {
   try {
@@ -102,6 +103,13 @@ export const acciones = {
   },
   guardarPerfil(perfil: Perfil) {
     guardar({ ...estado, perfil: { ...perfil, nombre: perfil.nombre.trim() } });
+  },
+  // Descuenta los XP y deja la prenda puesta; devuelve false si no alcanzan
+  comprar(clave: string, precio: number): boolean {
+    if (estado.comprados.includes(clave)) return true;
+    if (estado.xp < precio) return false;
+    guardar({ ...estado, xp: estado.xp - precio, comprados: [...estado.comprados, clave] });
+    return true;
   },
   alternarSonido() {
     guardar({ ...estado, sonido: !estado.sonido });

@@ -50,9 +50,27 @@ Lo que el piloto rechazó, para no repetirlo:
 
 **Avatares:** caras animadas dibujadas con código (SVG), no imágenes (`app/src/lib/personajes.ts`). Pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
 
-**Creador de avatar:** nombre, piel (6 tonos), cara (delgada o llenita), peinado (11, con vista previa de tu propia cara), color de pelo (6), barba, bigote, lentes, aretes y color de ropa (6). Se edita tocando tu avatar en Hoy.
+**Creador de avatar:** nombre, piel (6 tonos), complexión (delgada o llenita), peinado (con vista previa de tu propia cara), color de pelo (6), barba, bigote, aretes y color favorito (6). Se edita tocando tu avatar en Hoy.
+
+**Cuerpo completo:** el avatar del alumno tiene cuerpo completo con proporciones naturales (brazos con codo y manos, cintura, piernas y tenis). En el chat se ve el recorte de su cara, con gorro y lentes incluidos. El elenco sigue en busto. Dibujo en `app/src/lib/armario.ts`.
 
 **Hashy:** dos expresiones. Feliz: orejas paradas, ojos con brillo y lengua. Triste: orejas caídas, cejas preocupadas, lagrimita y boca hacia abajo. Habla como perrito ("¡Guau!", "olfatea otra vez") y nunca regaña.
+
+## Clóset y XP
+
+Los XP se ganan en las lecciones y **se gastan** en el clóset (al comprar se descuentan). Lo que no tienes se **prueba primero** en el avatar y se compra con un botón aparte, para no gastar por accidente. Cada casilla muestra tu avatar con la prenda puesta, con zoom a la zona que importa.
+
+| Categoría | Gratis | Con XP |
+| --- | --- | --- |
+| Peinados | 11 básicos | Bob, Raya de lado (40) · Coletas (50) · Copete, Picos (60) · Dos chongos (70) · Rastas (80) · Cresta (90) |
+| Ropa | Playera (color favorito), Sudadera | Cuadros (40) · Hawaiana (70) · Mezclilla (80) · Chaleco acolchado (90) · Hoodie `</>` (110) · Jersey SQL (120) · Varsity (130) · Cuero (140) · Saco y corbata (160) |
+| Pantalón | Jeans, Pants | Shorts (30) · Falda (50) · Cargo (60) |
+| Tenis | Blancos | Rojos (50) · Altos (80) · Botas (90) · Neón (150) |
+| Gorros | — | Gorra (40) · Bandana (50) · Lana (60) · Boina (70) · Sombrero (100) · Corona de datos (300) |
+| Lentes | Redondos | Sol (50) · Pasta (70) |
+| Accesorios | — | Reloj (40) · Bufanda (45) · Gafete DATA (60) · Audífonos (80) · Collar (90) |
+
+Referencia: una lección completa da ~65 XP.
 
 ## Sonidos
 
