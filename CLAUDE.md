@@ -55,7 +55,7 @@ Frontmatter de cada lección: `id, modulo, semana, dia, objetivo, duracion_min, 
 - Ajuste ya aplicado en esta versión: se quitó la dependencia de sqliteonline.com; la práctica será en el editor integrado.
 - Hecho (27 oct): **prototipo PWA** en `app/`: Hoy (siguiente sesión, racha, avance de la semana), Lección (bloques, editor SQL con ejercicios auto-evaluados, quiz interactivo, nota del viernes), funciona sin conexión.
 - Meta: **App Store en diciembre 2026** con Capacitor (ver `docs/camino-app-store.md`).
-- Publicación: GitHub Pages vía `.github/workflows/publicar-pwa.yml` en cada push a `main` (repo público por ahora; migrar a GitHub Pro para volverlo privado).
+- Publicación: https://diegoavilaj1704-ux.github.io/ruta-datos/ (GitHub Pages) vía `.github/workflows/publicar-pwa.yml` en cada push a `main` (repo público por ahora; migrar a GitHub Pro para volverlo privado).
 - Siguiente: Capacitor + recordatorio diario.
 
 ## Comandos de la app (desde `app/`)

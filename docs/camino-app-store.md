@@ -40,7 +40,7 @@ El plan original ponía App Store en el mes 6 con Expo o SwiftUI. Para llegar a 
 
 ## Dónde vive la PWA mientras tanto
 
-- **Hoy (27 oct):** repositorio **público** en GitHub con **GitHub Pages**. Cada push a `main` corre `.github/workflows/publicar-pwa.yml`: verifica los ejercicios contra el dataset, compila y publica. La URL es `https://<usuario>.github.io/ruta-datos/`.
+- **Hoy (27 oct):** repositorio **público** en GitHub con **GitHub Pages**. Cada push a `main` corre `.github/workflows/publicar-pwa.yml`: verifica los ejercicios contra el dataset, compila y publica. La URL es https://diegoavilaj1704-ux.github.io/ruta-datos/ (repo: https://github.com/diegoavilaj1704-ux/ruta-datos).
 - **Después: GitHub Pro (4 USD/mes)** para hacer el repositorio privado sin perder Pages. Conviene antes de abrir la app a otras personas o de que el contenido crezca.
 
 **Cómo migrar a Pro (sin tocar código):**
