@@ -77,6 +77,22 @@ Plantilla: qué aprendí (2–3 frases), un ejemplo propio, un error que cometí
 - [ ] ¿La retroalimentación explica el error, no solo la respuesta?
 - [ ] ¿La lección cabe en ~30 minutos?
 
+## Personajes (ver `docs/estilo-y-personajes.md`)
+
+- **Don Rafa** pone el problema de negocio: el "por qué importa" y el encargo de cada ejercicio.
+- **Diego** es el protagonista: resuelve los encargos *junto con* quien estudia ("Vamos juntos…").
+- **Fer** aparece de vez en cuando con un "Tip de Fer": un atajo o un error que ella cometió. Úsala sobre todo en "Errores comunes".
+- El elenco secundario es diverso (tonos de piel, complexiones, edades, peinados); úsalo cuando el tema lo pida.
+
+## Cómo se escribe un ejercicio
+
+Cada ejercicio tiene solo dos piezas de texto, para no saturar la pantalla del celular:
+
+1. **Encargo de Don Rafa:** contexto en lenguaje de negocio, una frase. Debe ser inequívoco: "qué producto se vendió **en cada venta** y cuántas piezas" (no "cuántas piezas vendimos", que suena a sumar).
+2. **Título con la instrucción exacta:** verbo + columnas/tabla/condición con su nombre tal como se escribe. Ej.: "Muestra las columnas `producto` y `cantidad`".
+
+Regla: **Don Rafa da el contexto; el título da la instrucción.** Nunca hay que adivinar qué se pide. Las pistas van aparte, escondidas detrás de un botón.
+
 ## Al revisar una lección existente
 
 Entrega: (1) diagnóstico breve contra el checklist, (2) lista de cambios priorizados, (3) la lección corregida completa con la versión incrementada (1.0 → 1.1). Si el usuario reportó una duda como piloto, resuélvela primero y explica qué cambió.
