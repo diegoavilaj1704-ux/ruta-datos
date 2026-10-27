@@ -37,19 +37,23 @@ Lo que el piloto rechazó, para no repetirlo:
 
 ## Personajes
 
+*Actualizado el 27 oct 2026: el protagonista es el avatar de cada alumno y Hashy sustituye a Fer.*
+
 | Personaje | Papel | Aparece |
 | --- | --- | --- |
-| **Diego** | Protagonista. Analista de datos que ayuda a Don Rafa; resuelve los encargos *junto con* quien estudia | En cada lección |
-| **Don Rafa** | Dueño de Abarrotes La Esquina. Pone el problema de negocio | En cada encargo y ejercicio |
-| **Fer** | Amiga de Diego, ya trabaja en datos. Da tips, atajos y cuenta errores que ella cometió ("Tip de Fer") | De vez en cuando, sobre todo en errores comunes |
+| **Tú** (`yo`) | Protagonista. Cada alumno arma su avatar y elige su nombre la primera vez que abre la app; Don Rafa le habla por ese nombre (`{nombre}` en las historias) | En cada lección |
+| **Don Rafa** (`rafa`) | Dueño de Abarrotes La Esquina. Pone el problema de negocio | En cada encargo y ejercicio |
+| **Hashy** (`hashy`) | Schnauzer sal y pimienta con collar coral. Da tips ("Tip de Hashy") y, cuando te equivocas, aparece **triste** con un "¡Auuu!" | Tips y cada error |
 | Lupita, Kemi, Sofía, Beto, Mariana, Jun, Doña Chela, Toño | Elenco secundario (cajera, analista, proveedora, repartidor, gerentes de sucursal, clientes) | Cuando el tema lo pida |
 
 **Diversidad obligatoria:** el elenco mezcla tonos de piel, complexiones (delgadas y llenitas), edades y peinados (rizos, afro, trenzas, largo, chongo, calvo).
 
-**Avatares:** caras animadas dibujadas con código (SVG), no imágenes. Se arman combinando tono de piel (6), complexión, peinado, barba, bigote, lentes y aretes. Pesan casi nada, funcionan sin conexión, no tienen problemas de derechos y sirven después para que cada alumno arme su propio avatar.
+**Avatares:** caras animadas dibujadas con código (SVG), no imágenes (`app/src/lib/personajes.ts`). Pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
 
-| Personaje | Rasgos |
-| --- | --- |
-| Diego | Piel morena clara, pelo ondulado, barba corta, sudadera violeta |
-| Fer | Piel apiñonada, cola de caballo con moño coral, aretes |
-| Don Rafa | Piel morena, cara llenita, canas con entradas, bigote canoso, camisa coral |
+**Creador de avatar:** nombre, piel (6 tonos), cara (delgada o llenita), peinado (11, con vista previa de tu propia cara), color de pelo (6), barba, bigote, lentes, aretes y color de ropa (6). Se edita tocando tu avatar en Hoy.
+
+**Hashy:** dos expresiones. Feliz: orejas paradas, ojos con brillo y lengua. Triste: orejas caídas, cejas preocupadas, lagrimita y boca hacia abajo. Habla como perrito ("¡Guau!", "olfatea otra vez") y nunca regaña.
+
+## Sonidos
+
+Sintetizados con Web Audio, sin archivos (`app/src/lib/sonidos.ts`): un arpegio corto al acertar, un "ayyy" que cae con vibrato al equivocarse y una fanfarria al terminar la lección. En el iPhone respetan el interruptor de silencio, y se pueden apagar con el botón 🔊 de la lección.

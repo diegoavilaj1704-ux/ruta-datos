@@ -60,6 +60,7 @@ Frontmatter de cada lección: `id, modulo, semana, dia, objetivo, duracion_min, 
 - Publicación: https://diegoavilaj1704-ux.github.io/ruta-datos/ (GitHub Pages) vía `.github/workflows/publicar-pwa.yml` en cada push a `main` (repo público por ahora; migrar a GitHub Pro para volverlo privado).
 - Definido (27 oct): estilo visual, personajes y regla de ejercicios (ver `docs/estilo-y-personajes.md`).
 - Hecho (27 oct): lección del lunes como historia en tarjetas (`lunes.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
+- Hecho (27 oct): avatar propio con nombre (protagonista), Hashy el schnauzer (tips y errores) y sonidos.
 - Siguiente: historia del martes, mini-proyecto y viernes con el mismo estilo; después Capacitor + recordatorio diario.
 
 ## Comandos de la app (desde `app/`)

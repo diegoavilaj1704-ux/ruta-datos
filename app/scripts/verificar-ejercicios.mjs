@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import initSqlJs from 'sql.js';
 import { parse as parseYaml } from 'yaml';
 
+const PERSONAJES = ['yo', 'hashy', 'rafa', 'lupita', 'kemi', 'sofia', 'beto', 'mariana', 'jun', 'chela', 'tono'];
 const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '../../contenido');
 const SQL = await initSqlJs();
 
@@ -73,6 +74,10 @@ for (const archivo of buscar(raiz, /\.historia\.yaml$/)) {
       try { db.exec(p.codigo ?? p.consulta); } catch (e) { error = `la consulta falla: ${e.message}`; }
       db.close();
     }
+    // Cada personaje mencionado debe existir en app/src/lib/personajes.ts
+    const quienes = [p.quien, p.encargo?.quien, p.cierre?.quien, ...(p.mensajes ?? []).map((m) => m.quien)].filter(Boolean);
+    const desconocido = quienes.find((q) => !PERSONAJES.includes(q));
+    if (desconocido) error = `personaje desconocido: ${desconocido}`;
     if (error) { fallas++; console.log(`✘ ${nombre} paso ${i + 1} (${p.tipo}): ${error}`); }
   });
   console.log(`✔ ${nombre}: ${pasos.length} pasos revisados`);

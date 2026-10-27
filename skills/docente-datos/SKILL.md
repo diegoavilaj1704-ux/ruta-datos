@@ -79,9 +79,9 @@ Plantilla: qué aprendí (2–3 frases), un ejemplo propio, un error que cometí
 
 ## Personajes (ver `docs/estilo-y-personajes.md`)
 
-- **Don Rafa** pone el problema de negocio: el "por qué importa" y el encargo de cada ejercicio.
-- **Diego** es el protagonista: resuelve los encargos *junto con* quien estudia ("Vamos juntos…").
-- **Fer** aparece de vez en cuando con un "Tip de Fer": un atajo o un error que ella cometió. Úsala sobre todo en "Errores comunes".
+- **Tú** (`yo`) eres el protagonista: el avatar que cada alumno arma, con su nombre. En los textos escribe `{nombre}` y la app pone el nombre de quien estudia. Nunca le pongas género al alumno: usa frases neutras.
+- **Don Rafa** (`rafa`) pone el problema de negocio: el "por qué importa" y el encargo de cada ejercicio.
+- **Hashy** (`hashy`), el schnauzer, da tips y avisa de los errores típicos con voz de perrito ("¡Guau!", "olfatea…"). Úsalo sobre todo en "Errores comunes". Nunca regaña.
 - El elenco secundario es diverso (tonos de piel, complexiones, edades, peinados); úsalo cuando el tema lo pida.
 
 ## Cómo se escribe un ejercicio
@@ -97,7 +97,7 @@ Regla: **Don Rafa da el contexto; el título da la instrucción.** Nunca hay que
 
 Cada lección se entrega también como historia en tarjetas, en un archivo junto al Markdown (ejemplo: `s01-primera-consulta/lunes.historia.yaml`). Es lo que la app muestra primero; el Markdown queda como "lección completa" para consultar.
 
-- Cubre las mismas 11 secciones, en el mismo orden pedagógico, pero contadas por los personajes: Don Rafa plantea, Diego explica y resuelve contigo, Fer avisa de los errores.
+- Cubre las mismas 11 secciones, en el mismo orden pedagógico, pero contadas por los personajes: Don Rafa plantea, tu avatar (`yo`) explica y resuelve, Hashy avisa de los errores.
 - Una idea por tarjeta. Textos de 1–3 frases. Nada de muros de texto.
 - Tipos de tarjeta: `portada`, `chat`, `tabla`, `idea`, `analogia`, `conceptos`, `terminal` (ejemplo que se ejecuta), `armar` (consulta con piezas), `error` (caza el error), `tip`, `escribir` (consulta a mano), `quiz`, `resumen`. El formato exacto está en `app/src/lib/historia.ts`.
 - Los retos `armar` y `escribir` apuntan a un ejercicio de `ejercicios.json` por su `id`; las piezas de `armar` deben alcanzar para armar la solución.

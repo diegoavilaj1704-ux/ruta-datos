@@ -1,6 +1,7 @@
 // Avance del alumno, guardado en el dispositivo (localStorage).
 // En la Fase 2 esto se sincroniza con Supabase; por ahora vive solo en el teléfono.
 import { useCallback, useSyncExternalStore } from 'react';
+import type { Perfil } from './personajes';
 
 const LLAVE = 'ruta-datos:progreso:v1';
 
@@ -12,9 +13,11 @@ export interface Progreso {
   notas: Record<string, string>;                   // borrador de la nota del viernes
   xp: number;                                      // XP acumulado de lecciones terminadas
   historias: Record<string, { paso: number; xp: number }>; // tarjeta actual y XP de la lección en curso
+  perfil?: Perfil;                                 // avatar y nombre del alumno (protagonista de las historias)
+  sonido: boolean;
 }
 
-const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {} };
+const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true };
 
 function leer(): Progreso {
   try {
@@ -97,10 +100,21 @@ export const acciones = {
       diasActivos: marcarActivo(estado),
     });
   },
+  guardarPerfil(perfil: Perfil) {
+    guardar({ ...estado, perfil: { ...perfil, nombre: perfil.nombre.trim() } });
+  },
+  alternarSonido() {
+    guardar({ ...estado, sonido: !estado.sonido });
+  },
   reiniciar() {
     guardar(vacio);
   },
 };
+
+// Lectura fuera de React (por ejemplo, para saber si suena o no)
+export function progresoActual(): Progreso {
+  return estado;
+}
 
 export function useProgreso(): Progreso {
   const suscribir = useCallback((f: () => void) => {

@@ -1,9 +1,10 @@
 # Lección del lunes contada como historia, tarjeta por tarjeta.
 # Cubre las 11 secciones de lunes.md (skill docente-datos) en formato de juego.
-# Personajes: diego (protagonista), rafa (Don Rafa), fer (tips). Ver docs/estilo-y-personajes.md
+# Personajes: yo (el avatar del alumno; {nombre} se reemplaza por su nombre),
+# rafa (Don Rafa), hashy (schnauzer de los tips). Ver docs/estilo-y-personajes.md
 # Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
 id: m02-s01-lunes-historia
-version: "1.0"
+version: "1.1"
 pasos:
   # 1. Objetivo
   - tipo: portada
@@ -11,23 +12,23 @@ pasos:
   # 2. Por qué importa
   - tipo: chat
     mensajes:
-      - { quien: rafa, texto: "¡Diego! Qué bueno que llegas." }
+      - { quien: rafa, texto: "¡{nombre}! Qué bueno que llegas." }
       - { quien: rafa, texto: "Anoté todas las ventas de octubre en mi libreta, pero ya no le entiendo nada." }
-      - { quien: diego, texto: "Tranquilo, Don Rafa. Ya pasamos todo a una tabla en la computadora." }
+      - { quien: yo, texto: "Tranquilo, Don Rafa. Ya pasamos todo a una tabla en la computadora." }
       - { quien: rafa, texto: "Pásame qué producto se vendió en cada venta y cuántas piezas. Nada más eso." }
-      - { quien: diego, texto: "Va. Te enseño cómo se lo pedimos a la computadora." }
+      - { quien: yo, texto: "Va. Te enseño cómo se lo pedimos a la computadora." }
 
   # 3. Lo que ya sabes
   - tipo: tabla
-    quien: diego
+    quien: yo
     texto: "Esta es la tabla **ventas**. Se lee como una hoja de Excel: cada **fila** es una venta y cada **columna** es un dato de esa venta."
     consulta: "SELECT * FROM ventas LIMIT 4;"
     nota: "Tiene 8 filas y 7 columnas. Aquí ves las primeras 4."
 
   - tipo: chat
     mensajes:
-      - { quien: diego, texto: "Don Rafa solo quiere 2 de esas 7 columnas." }
-      - { quien: diego, texto: "Para pedírselas a la computadora usamos SQL. Una **consulta** es una pregunta escrita en SQL." }
+      - { quien: yo, texto: "Don Rafa solo quiere 2 de esas 7 columnas." }
+      - { quien: yo, texto: "Para pedírselas a la computadora usamos SQL. Una **consulta** es una pregunta escrita en SQL." }
 
   # 4. La idea en una frase
   - tipo: idea
@@ -35,7 +36,7 @@ pasos:
 
   # 5. Analogía
   - tipo: analogia
-    quien: diego
+    quien: yo
     titulo: "Como pedir en una fonda"
     texto: "No dices «tráeme toda la cocina». Dices «quiero sopa y agua de jamaica». Una consulta es tu pedido: nombras lo que quieres y la tabla te lo sirve."
     limite: "Ojo: en la fonda el plato se acaba. En SQL la tabla nunca cambia; solo ves una copia con lo que pediste."
@@ -50,7 +51,7 @@ pasos:
 
   # 7. Ejemplo resuelto
   - tipo: terminal
-    quien: diego
+    quien: yo
     texto: "Así le respondo a Don Rafa. Toca **EJECUTAR**."
     codigo: |
       -- Lo que pidió Don Rafa
@@ -61,7 +62,7 @@ pasos:
   - tipo: chat
     mensajes:
       - { quien: rafa, texto: "¡Eso es justo lo que quería!" }
-      - { quien: diego, texto: "Ahora te toca a ti. Yo te acompaño." }
+      - { quien: yo, texto: "Ahora te toca a ti. Yo te acompaño." }
 
   # 9. Práctica guiada (ejercicio 1, con piezas)
   - tipo: armar
@@ -79,14 +80,14 @@ pasos:
     error: 4
     explicacion: "Después de la última columna no va coma. Con esa coma, SQL marca error."
     pista: "Revisa lo que va justo antes de FROM."
-    tip: "La primera vez que escribí una consulta me pasó justo esto. Ahora siempre reviso lo que va antes de FROM."
+    tip: "¡Guau! Es el error más común al empezar. Antes de ejecutar, olfatea lo que va justo antes de FROM."
 
   - tipo: tip
-    quien: fer
+    quien: hashy
     texto: "Si se te **olvida** la coma (`SELECT producto cantidad`), SQL no marca error: te muestra una sola columna llamada «cantidad» con los productos. Si ves algo raro, revisa tus comas."
 
   - tipo: tip
-    quien: fer
+    quien: hashy
     texto: "Escribe los nombres tal como están en la tabla. `produto` o `categoría` con acento dan un error de «no such column»."
 
   # 9. Práctica guiada (ejercicio 2, con piezas)
@@ -100,7 +101,7 @@ pasos:
 
   # 6. Explicación por capas (capa 4: todas las columnas)
   - tipo: idea
-    quien: diego
+    quien: yo
     texto: "El asterisco `*` significa **todas las columnas**."
     nota: "Úsalo para explorar. En reportes nombra las columnas: es más claro y más rápido."
 
@@ -146,4 +147,4 @@ pasos:
       - "**SELECT** dice qué columnas quieres; **FROM**, de qué tabla."
       - "Las columnas van separadas por comas, sin coma después de la última."
       - "`SELECT *` trae todas las columnas; úsalo para explorar."
-    cierre: { quien: rafa, texto: "Gracias, Diego. Mañana te pido algo más difícil: solo las ventas de una sucursal." }
+    cierre: { quien: rafa, texto: "Gracias, {nombre}. Mañana te pido algo más difícil: solo las ventas de una sucursal." }

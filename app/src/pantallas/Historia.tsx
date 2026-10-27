@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Sesion } from '../lib/contenido';
 import { INTERACTIVOS, type Paso } from '../lib/historia';
+import { escucharReacciones, FRASES_HASHY } from '../lib/reacciones';
+import { Avatar } from '../componentes/Avatar';
 import { acciones, useProgreso } from '../lib/progreso';
 import * as T from '../componentes/Tarjetas';
 
@@ -12,8 +14,29 @@ interface Props {
 
 // Lección contada como historia: una tarjeta a la vez, con XP y barra de avance.
 export function Historia({ sesion, volver, verTexto }: Props) {
-  const pasos = sesion.historia!.pasos;
   const progreso = useProgreso();
+  const nombre = progreso.perfil?.nombre || 'colega';
+  // Los textos usan {nombre}: Don Rafa le habla al avatar de cada alumno
+  const pasos = useMemo<Paso[]>(
+    () => JSON.parse(JSON.stringify(sesion.historia!.pasos).replaceAll('{nombre}', JSON.stringify(nombre).slice(1, -1))),
+    [sesion.historia, nombre],
+  );
+  const [hashy, setHashy] = useState<string | null>(null);
+
+  // Cuando te equivocas, Hashy aparece triste un momento
+  useEffect(() => {
+    let t: ReturnType<typeof setTimeout>;
+    const quitar = escucharReacciones((tipo) => {
+      if (tipo !== 'error') return;
+      clearTimeout(t);
+      setHashy(FRASES_HASHY[Math.floor(Math.random() * FRASES_HASHY.length)]);
+      t = setTimeout(() => setHashy(null), 2400);
+    });
+    return () => {
+      quitar();
+      clearTimeout(t);
+    };
+  }, []);
   const guardado = progreso.historias[sesion.clave];
   const [i, setI] = useState(() => Math.min(guardado?.paso ?? 0, pasos.length - 1));
   const [listo, setListo] = useState(false);
@@ -52,6 +75,9 @@ export function Historia({ sesion, volver, verTexto }: Props) {
         <div className="avance" aria-label={`Tarjeta ${i + 1} de ${pasos.length}`}>
           <div style={{ width: `${((i + 1) / pasos.length) * 100}%` }} />
         </div>
+        <button className="sonido" onClick={acciones.alternarSonido} aria-label={progreso.sonido ? 'Silenciar sonidos' : 'Activar sonidos'}>
+          {progreso.sonido ? '🔊' : '🔇'}
+        </button>
         <span className="xp-contador">◆ {xpVisible}</span>
       </header>
 
@@ -61,6 +87,13 @@ export function Historia({ sesion, volver, verTexto }: Props) {
           <button className="enlace-juego" onClick={verTexto}>Prefiero leer la lección completa</button>
         )}
       </section>
+
+      {hashy && (
+        <div className="hashy-triste" role="status" onClick={() => setHashy(null)}>
+          <Avatar quien="hashy" animo="triste" tam={64} />
+          <p><strong>Hashy</strong>{hashy}</p>
+        </div>
+      )}
 
       <footer className="historia-pie">
         <button className="boton-juego" onClick={continuar} disabled={!listo}>

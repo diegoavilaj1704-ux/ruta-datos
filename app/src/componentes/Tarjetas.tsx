@@ -3,9 +3,11 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Ejercicio, Sesion } from '../lib/contenido';
 import { unirPiezas, type Mensaje, type Paso } from '../lib/historia';
-import { PERSONAJES, type Quien } from '../lib/personajes';
+import { nombreDe, type Quien } from '../lib/personajes';
+import { reaccionar } from '../lib/reacciones';
+import { sonidos } from '../lib/sonidos';
 import { comparar, ejecutar, type Resultado } from '../lib/sql';
-import { calcularRacha, useProgreso } from '../lib/progreso';
+import { calcularRacha, progresoActual, useProgreso } from '../lib/progreso';
 import { Avatar } from './Avatar';
 import { TextoEnLinea } from './Markdown';
 
@@ -18,24 +20,24 @@ type Props<T extends Paso['tipo']> = {
 // ---------- Piezas comunes ----------
 
 export function Burbuja({ quien, texto, nueva }: Mensaje & { nueva?: boolean }) {
-  const yo = quien === 'diego';
+  const yo = quien === 'yo';
   return (
     <div className={`msj ${yo ? 'yo' : ''} ${nueva ? 'entra' : ''}`}>
       <Avatar quien={quien} tam={38} />
       <div className="burbuja">
-        <span className="quien">{PERSONAJES[quien].nombre}</span>
+        <span className="quien">{nombreDe(quien, progresoActual().perfil)}</span>
         <TextoEnLinea texto={texto} />
       </div>
     </div>
   );
 }
 
-function TipFer({ texto, quien = 'fer' }: { texto: string; quien?: Quien }) {
+function TipHashy({ texto, quien = 'hashy' }: { texto: string; quien?: Quien }) {
   return (
     <div className="tip-fer entra">
       <Avatar quien={quien} tam={40} />
       <p>
-        <strong>Tip de {PERSONAJES[quien].nombre}:</strong> <TextoEnLinea texto={texto} />
+        <strong>{quien === 'yo' ? 'Pista' : `Tip de ${nombreDe(quien)}`}:</strong> <TextoEnLinea texto={texto} />
       </p>
     </div>
   );
@@ -137,7 +139,7 @@ export function Portada({ sesion }: { sesion: Sesion }) {
     <div className="t-portada">
       <div className="portada-caras">
         <Avatar quien="rafa" tam={84} />
-        <Avatar quien="diego" tam={84} />
+        <Avatar quien="yo" tam={84} />
       </div>
       <p className="etiqueta-mod">{sesion.modulo.nombre} · Semana {sesion.semana.numero}</p>
       <h1>{sesion.meta.titulo}</h1>
@@ -177,7 +179,7 @@ export function TablaDatos({ paso, sesion }: Props<'tabla'>) {
   }, [paso.consulta, sesion.dataset]);
   return (
     <div className="t-col">
-      <Burbuja quien={paso.quien ?? 'diego'} texto={paso.texto} />
+      <Burbuja quien={paso.quien ?? 'yo'} texto={paso.texto} />
       {res && (
         <div className="tabla-datos entra">
           <div className="tabla-nombre">ventas</div>
@@ -243,12 +245,13 @@ export function TerminalDemo({ paso, sesion, onResuelto }: Props<'terminal'>) {
     const e = await ejecutar(sesion.dataset, paso.codigo);
     if (e.ok && e.resultado) {
       setSalida({ r: e.resultado, m: `${plural(e.resultado.filas.length, 'fila')} · ${plural(e.resultado.columnas.length, 'columna')}` });
+      reaccionar('acierto');
       onResuelto(5);
     }
   }
   return (
     <div className="t-col">
-      <Burbuja quien={paso.quien ?? 'diego'} texto={paso.texto} />
+      <Burbuja quien={paso.quien ?? 'yo'} texto={paso.texto} />
       <Terminal>
         <Codigo codigo={paso.codigo} cursor={!salida} />
         {salida && <Salida resultado={salida.r} mensaje={salida.m} />}
@@ -283,6 +286,7 @@ export function Armar({ paso, sesion, onResuelto }: Props<'armar'>) {
     }
     const r = await calificar(sesion, ej, `${paso.antes} ${armado} ${paso.despues}`);
     setSalida(r);
+    reaccionar(r.bien ? 'acierto' : 'error');
     if (r.bien) onResuelto(intentos === 0 ? 10 : 5);
     else setIntentos((n) => n + 1);
   }
@@ -321,9 +325,11 @@ export function CazaError({ paso, onResuelto }: Props<'error'>) {
     if (hallado) return;
     if (i === paso.error) {
       setHallado(true);
+      reaccionar('acierto');
       onResuelto(intentos === 0 ? 10 : 5);
     } else {
       setMal(i);
+      reaccionar('error');
       setIntentos((n) => n + 1);
       setTimeout(() => setMal(null), 500);
     }
@@ -343,13 +349,13 @@ export function CazaError({ paso, onResuelto }: Props<'error'>) {
         {intentos > 0 && !hallado && <Salida tipo="mal" mensaje={`Esa pieza está bien. ${paso.pista ?? 'Busca otra.'}`} />}
       </Terminal>
       {hallado && <Ganaste xp={intentos === 0 ? 10 : 5} />}
-      {hallado && paso.tip && <TipFer texto={paso.tip} />}
+      {hallado && paso.tip && <TipHashy texto={paso.tip} />}
     </div>
   );
 }
 
 export function Tip({ paso }: Props<'tip'>) {
-  return <TipFer texto={paso.texto} quien={paso.quien} />;
+  return <TipHashy texto={paso.texto} quien={paso.quien} />;
 }
 
 const TECLAS = ['SELECT', 'FROM', 'WHERE', '*', ',', "'", ';', '='];
@@ -380,6 +386,7 @@ export function Escribir({ paso, sesion, onResuelto }: Props<'escribir'>) {
     }
     const r = await calificar(sesion, ej, codigo);
     setSalida(r);
+    reaccionar(r.bien ? 'acierto' : 'error');
     if (r.bien) onResuelto(intentos === 0 ? 10 : 5);
     else setIntentos((n) => n + 1);
   }
@@ -421,7 +428,7 @@ export function Escribir({ paso, sesion, onResuelto }: Props<'escribir'>) {
       ) : (
         <>
           <button className="boton-juego" onClick={comprobar}>EJECUTAR ▶</button>
-          {ej.pistas.slice(0, pistas).map((p, i) => <TipFer key={i} quien="diego" texto={p} />)}
+          {ej.pistas.slice(0, pistas).map((p, i) => <TipHashy key={i} quien="yo" texto={p} />)}
           {pistas < ej.pistas.length && <button className="enlace-juego" onClick={() => setPistas((n) => n + 1)}>Necesito una pista</button>}
           {intentos >= 2 && pistas >= ej.pistas.length && (
             <details className="ver-solucion"><summary>Ver una solución</summary><code>{ej.solucion}</code></details>
@@ -438,6 +445,7 @@ export function Quiz({ paso, onResuelto }: Props<'quiz'>) {
   function elegir(i: number) {
     if (elegida !== null) return;
     setElegida(i);
+    reaccionar(i === correcta ? 'acierto' : 'error');
     onResuelto(i === correcta ? 10 : 0);
   }
   return (
@@ -469,6 +477,9 @@ export function Resumen({ paso, sesion }: Props<'resumen'>) {
   const progreso = useProgreso();
   const xp = progreso.historias[sesion.clave]?.xp ?? 0;
   const racha = Math.max(1, calcularRacha(progreso.diasActivos));
+  useEffect(() => {
+    sonidos.fin();
+  }, []);
   return (
     <div className="t-col">
       <div className="trofeo entra">🏆</div>

@@ -34,9 +34,12 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 | 2026-10-27 | Las lecciones se viven como **juego en tarjetas**, no como documento largo | En el iPhone, el piloto sintió la lección "como un texto aburrido"; busca que estudiar sea divertido |
 | 2026-10-27 | Estilo **juguetón + terminal de código**, paleta **violeta y coral** (ver `docs/estilo-y-personajes.md`) | Le gustó la personalidad tipo juego, pero sin copiar los colores de Duolingo; la terminal hace que se sienta que se estudia código |
 | 2026-10-27 | Pantallas **sin saturar**: encargo de Don Rafa + título con la instrucción exacta; nada más a la vista | Rechazó una versión con misión, traducción, columnas, resultado esperado y pistas: "muy saturado" |
-| 2026-10-27 | Personajes: **Diego** (protagonista), **Don Rafa** (problema de negocio), **Fer** (tips, de vez en cuando) y elenco diverso; avatares dibujados con código | Dan historia y voz a la lección; SVG ligero, sin conexión y sin problemas de derechos |
+| 2026-10-27 | Personajes: **Diego** (protagonista), **Don Rafa** (problema de negocio), **Fer** (tips, de vez en cuando) y elenco diverso; avatares dibujados con código *(Diego y Fer reemplazados el mismo día; ver abajo)* | Dan historia y voz a la lección; SVG ligero, sin conexión y sin problemas de derechos |
 | 2026-10-27 | Cada lección tiene una **historia en tarjetas** (`<dia>.historia.yaml`) que la app muestra primero; el Markdown queda como "lección completa" | Storytelling con Don Rafa, Diego y Fer; el contenido sigue separado de la app y se verifica con `npm run verificar` |
 | 2026-10-27 | XP por reto (10 al primer intento, 5 después; 5 por ejecutar un ejemplo) y avance guardado por tarjeta | Sensación de juego y poder retomar la lección donde se dejó |
+| 2026-10-27 | El protagonista es **el avatar de cada alumno** (nombre y apariencia elegidos al abrir la app) en lugar del personaje Diego | El piloto prefirió que cada quien ponga nombre a su avatar; hace la historia personal para cualquier usuario |
+| 2026-10-27 | **Hashy**, un schnauzer, sustituye a Fer: da tips y aparece triste cuando te equivocas | Pedido del piloto; un perrito suaviza el error y le da humor |
+| 2026-10-27 | **Sonidos** sintetizados al acertar, al equivocarse ("ayyy") y al terminar; se pueden silenciar | Más sensación de juego, sin archivos de audio y sin conexión |
 | 2026-10-27 | Cada ejecución SQL usa una base nueva con el dataset | El alumno no puede romper la tabla (ni con DROP TABLE) |
 
 ## Decisiones pendientes
@@ -47,7 +50,6 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 - Nombre y marca de la plataforma.
 - Modelo para otros usuarios: gratis, freemium o pago.
 - Mockups de las pantallas Hoy y Ruta con el estilo nuevo (la pantalla de reto ya está definida).
-- Si Diego (personaje) se parece al piloto o es un personaje propio.
 
 ## Enlaces de referencia (claude.ai)
 

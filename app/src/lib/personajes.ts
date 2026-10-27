@@ -1,16 +1,28 @@
 // Elenco de la ruta (docs/estilo-y-personajes.md). Las caras se dibujan con SVG:
 // pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
+//   yo     → el avatar que cada alumno arma en su perfil (protagonista)
+//   hashy  → schnauzer que da tips y se pone triste cuando te equivocas
+//   rafa   → Don Rafa, dueño de la tienda; y el elenco secundario
 
-const PIEL = {
-  a: '#F9D7C0', b: '#EBB894', c: '#C98E62', d: '#A5693F', e: '#7A4A2B', f: '#5A3520',
+export const PIELES = ['#F9D7C0', '#EBB894', '#C98E62', '#A5693F', '#7A4A2B', '#5A3520'] as const;
+
+export const PEINADOS = {
+  ondulado: 'Ondulado', rizos: 'Rizos', afro: 'Afro', largo: 'Largo', cola: 'Cola de caballo',
+  chongo: 'Chongo', trenzas: 'Trenzas', fleco: 'Fleco', corto: 'Corto', entradas: 'Entradas', calvo: 'Calvo',
 } as const;
+export type Peinado = keyof typeof PEINADOS;
 
-type Peinado = 'ondulado' | 'cola' | 'entradas' | 'rizos' | 'afro' | 'largo' | 'calvo' | 'trenzas' | 'chongo' | 'fleco' | 'corto';
+export const COLORES_PELO = ['#1E1714', '#4A2E1E', '#7A5A3A', '#A0462A', '#D9B26A', '#B8B2A8'] as const;
+
+// Color de ropa y su fondo pastel
+export const ROPAS = [
+  ['#6C4CF1', '#E7E0FF'], ['#FF6B5B', '#FFE0DC'], ['#0E9F9A', '#D7F7EA'],
+  ['#FFB020', '#FFF1C9'], ['#2B4BEE', '#DDEBFF'], ['#3A3658', '#ECEAF3'],
+] as const;
 
 export interface Rasgos {
   nombre: string;
-  papel: string;
-  piel: keyof typeof PIEL;
+  piel: string;
   llenito?: boolean;
   peinado: Peinado;
   pelo: string;
@@ -24,30 +36,70 @@ export interface Rasgos {
   ropa: string;
 }
 
-export const PERSONAJES = {
-  diego: { nombre: 'Diego', papel: 'Analista de datos', piel: 'c', peinado: 'ondulado', pelo: '#2A2420', barba: '#2A2420', sudadera: '#4B2FC9', fondo: '#E7E0FF', ropa: '#6C4CF1' },
-  rafa: { nombre: 'Don Rafa', papel: 'Dueño de Abarrotes La Esquina', piel: 'c', llenito: true, peinado: 'entradas', pelo: '#B8B2A8', cejas: '#8E877C', bigote: '#B8B2A8', fondo: '#FFE3A8', ropa: '#FF6B5B' },
-  fer: { nombre: 'Fer', papel: 'Amiga de Diego, ya trabaja en datos', piel: 'b', peinado: 'cola', pelo: '#5A3A22', aretes: true, fondo: '#FFE0DC', ropa: '#FF6B5B' },
-  lupita: { nombre: 'Lupita', papel: 'Cajera', piel: 'a', peinado: 'rizos', pelo: '#A0462A', aretes: true, fondo: '#E7E0FF', ropa: '#6C4CF1' },
-  kemi: { nombre: 'Kemi', papel: 'Analista', piel: 'f', llenito: true, peinado: 'afro', pelo: '#1E1714', fondo: '#D7F7EA', ropa: '#FFB020' },
-  sofia: { nombre: 'Sofía', papel: 'Proveedora', piel: 'b', peinado: 'largo', pelo: '#1E1714', lentes: true, fondo: '#FFE0DC', ropa: '#0E9F9A' },
-  beto: { nombre: 'Beto', papel: 'Repartidor', piel: 'a', llenito: true, peinado: 'calvo', pelo: '#7A5A3A', barba: '#7A5A3A', fondo: '#DDEBFF', ropa: '#2B4BEE' },
-  mariana: { nombre: 'Mariana', papel: 'Gerente Norte', piel: 'e', peinado: 'trenzas', pelo: '#1E1714', aretes: true, fondo: '#FFF1C9', ropa: '#F0567A' },
-  jun: { nombre: 'Jun', papel: 'Cliente', piel: 'b', peinado: 'fleco', pelo: '#1E1714', fondo: '#E2F4FF', ropa: '#4B2FC9' },
-  chela: { nombre: 'Doña Chela', papel: 'Clienta frecuente', piel: 'd', llenito: true, peinado: 'chongo', pelo: '#D9D4CC', cejas: '#A9A398', lentes: true, fondo: '#F3E6FF', ropa: '#0A7773' },
-  tono: { nombre: 'Toño', papel: 'Gerente Sur', piel: 'd', peinado: 'corto', pelo: '#2A2420', barba: '#2A2420', fondo: '#FFE3D1', ropa: '#3A3658' },
+// Lo que guarda el perfil del alumno (progreso.perfil)
+export interface Perfil {
+  nombre: string;
+  piel: number;
+  llenito: boolean;
+  peinado: Peinado;
+  pelo: number;
+  barba: boolean;
+  bigote: boolean;
+  lentes: boolean;
+  aretes: boolean;
+  ropa: number;
+}
+
+export const PERFIL_INICIAL: Perfil = {
+  nombre: '', piel: 2, llenito: false, peinado: 'ondulado', pelo: 0,
+  barba: false, bigote: false, lentes: false, aretes: false, ropa: 0,
+};
+
+export function rasgosDePerfil(p: Perfil): Rasgos {
+  const pelo = COLORES_PELO[p.pelo] ?? COLORES_PELO[0];
+  const [ropa, fondo] = ROPAS[p.ropa] ?? ROPAS[0];
+  return {
+    nombre: p.nombre || 'Tú',
+    piel: PIELES[p.piel] ?? PIELES[2],
+    llenito: p.llenito,
+    peinado: p.peinado,
+    pelo,
+    barba: p.barba ? pelo : undefined,
+    bigote: p.bigote ? pelo : undefined,
+    lentes: p.lentes,
+    aretes: p.aretes,
+    fondo,
+    ropa,
+  };
+}
+
+const p = (i: number) => PIELES[i];
+
+export const ELENCO = {
+  rafa: { nombre: 'Don Rafa', piel: p(2), llenito: true, peinado: 'entradas', pelo: '#B8B2A8', cejas: '#8E877C', bigote: '#B8B2A8', fondo: '#FFE3A8', ropa: '#FF6B5B' },
+  lupita: { nombre: 'Lupita', piel: p(0), peinado: 'rizos', pelo: '#A0462A', aretes: true, fondo: '#E7E0FF', ropa: '#6C4CF1' },
+  kemi: { nombre: 'Kemi', piel: p(5), llenito: true, peinado: 'afro', pelo: '#1E1714', fondo: '#D7F7EA', ropa: '#FFB020' },
+  sofia: { nombre: 'Sofía', piel: p(1), peinado: 'largo', pelo: '#1E1714', lentes: true, fondo: '#FFE0DC', ropa: '#0E9F9A' },
+  beto: { nombre: 'Beto', piel: p(0), llenito: true, peinado: 'calvo', pelo: '#7A5A3A', barba: '#7A5A3A', fondo: '#DDEBFF', ropa: '#2B4BEE' },
+  mariana: { nombre: 'Mariana', piel: p(4), peinado: 'trenzas', pelo: '#1E1714', aretes: true, fondo: '#FFF1C9', ropa: '#F0567A' },
+  jun: { nombre: 'Jun', piel: p(1), peinado: 'fleco', pelo: '#1E1714', fondo: '#E2F4FF', ropa: '#4B2FC9' },
+  chela: { nombre: 'Doña Chela', piel: p(3), llenito: true, peinado: 'chongo', pelo: '#D9D4CC', cejas: '#A9A398', lentes: true, fondo: '#F3E6FF', ropa: '#0A7773' },
+  tono: { nombre: 'Toño', piel: p(3), peinado: 'corto', pelo: '#2A2420', barba: '#2A2420', fondo: '#FFE3D1', ropa: '#3A3658' },
 } satisfies Record<string, Rasgos>;
 
-export type Quien = keyof typeof PERSONAJES;
+export type Quien = keyof typeof ELENCO | 'yo' | 'hashy';
+export type Animo = 'feliz' | 'triste';
 
-export function esPersonaje(q: string): q is Quien {
-  return q in PERSONAJES;
+export function nombreDe(quien: Quien, perfil?: Perfil): string {
+  if (quien === 'yo') return perfil?.nombre || 'Tú';
+  if (quien === 'hashy') return 'Hashy';
+  return ELENCO[quien].nombre;
 }
 
 // Devuelve el SVG de la cara como texto; `id` evita choques entre clipPath de varias caras.
 export function dibujarCara(o: Rasgos, id: string): string {
   const rx = o.llenito ? 27 : 22;
-  const sk = PIEL[o.piel];
+  const sk = o.piel;
   const h = o.pelo;
   const L = 50 - rx;
   const R = 50 + rx;
@@ -83,7 +135,7 @@ export function dibujarCara(o: Rasgos, id: string): string {
   }
 
   const ropa = `<path d="M14,100 Q16,78 50,76 Q84,78 86,100 Z" fill="${o.ropa}"/>` +
-    (o.sudadera ? `<path d="M30,82 Q50,92 70,82" stroke="${o.sudadera}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M44,86 L44,96 M56,86 L56,96" stroke="#fff" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"/>` : '');
+    (o.sudadera ? `<path d="M30,82 Q50,92 70,82" stroke="${o.sudadera}" stroke-width="4" fill="none" stroke-linecap="round"/>` : '');
   const cuello = `<rect x="44" y="64" width="12" height="14" rx="4" fill="${sk}"/><rect x="44" y="64" width="12" height="6" fill="#000" opacity=".08"/>`;
   const orejas = `<circle cx="${L}" cy="53" r="5" fill="${sk}"/><circle cx="${R}" cy="53" r="5" fill="${sk}"/>`;
   const cabeza = `<ellipse cx="50" cy="50" rx="${rx}" ry="${o.llenito ? 25 : 26}" fill="${sk}"/>`;
@@ -114,5 +166,41 @@ export function dibujarCara(o: Rasgos, id: string): string {
   if (o.lentes) extra += `<g fill="none" stroke="#2A2838" stroke-width="1.8"><circle cx="41" cy="52" r="6.5"/><circle cx="59" cy="52" r="6.5"/><path d="M47.5,52 L52.5,52"/></g>`;
   if (o.aretes) extra += `<circle cx="${L}" cy="58" r="1.8" fill="#FFB020"/><circle cx="${R}" cy="58" r="1.8" fill="#FFB020"/>`;
 
-  return `<svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label="${o.nombre}"><defs><clipPath id="c${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#c${id})"><rect width="100" height="100" fill="${o.fondo}"/>${atras}${ropa}${cuello}${orejas}${cabeza}${frente}${cara}${extra}</g></svg>`;
+  return envolver(o.nombre, id, o.fondo, `${atras}${ropa}${cuello}${orejas}${cabeza}${frente}${cara}${extra}`);
+}
+
+// Hashy: schnauzer sal y pimienta, con cejas y barba pobladas y collar coral
+export function dibujarHashy(animo: Animo, id: string): string {
+  const triste = animo === 'triste';
+  const pelaje = '#8E959C';
+  const oscuro = '#5F666D';
+  const claro = '#E9EBEE';
+  const cuerpo = `<path d="M16,100 Q18,80 50,78 Q82,80 84,100 Z" fill="${pelaje}"/>` +
+    `<rect x="30" y="83" width="40" height="6" rx="3" fill="#FF6B5B"/><circle cx="50" cy="92" r="4" fill="#FFB020"/>`;
+  // Orejas dobladas hacia el frente; tristes, caen más
+  const orejas = triste
+    ? `<path d="M27,34 Q18,40 20,54 Q28,48 34,42 Z" fill="${oscuro}"/><path d="M73,34 Q82,40 80,54 Q72,48 66,42 Z" fill="${oscuro}"/>`
+    : `<path d="M28,36 Q20,20 34,18 Q40,24 38,34 Z" fill="${oscuro}"/><path d="M72,36 Q80,20 66,18 Q60,24 62,34 Z" fill="${oscuro}"/>`;
+  const cabeza = `<path d="M27,40 Q27,22 50,22 Q73,22 73,40 L73,62 Q73,74 50,74 Q27,74 27,62 Z" fill="${pelaje}"/>`;
+  // Cejas pobladas: preocupadas (inclinadas hacia arriba al centro) cuando está triste
+  const cejas = triste
+    ? `<path d="M31,42 Q38,34 46,38 L45,42 Q38,40 32,46 Z" fill="${claro}"/><path d="M69,42 Q62,34 54,38 L55,42 Q62,40 68,46 Z" fill="${claro}"/>`
+    : `<path d="M31,40 Q38,32 46,40 L44,43 Q38,38 32,44 Z" fill="${claro}"/><path d="M69,40 Q62,32 54,40 L56,43 Q62,38 68,44 Z" fill="${claro}"/>`;
+  const ojos = triste
+    ? `<ellipse cx="40" cy="48" rx="2.6" ry="2.2" fill="#1C1B22"/><ellipse cx="60" cy="48" rx="2.6" ry="2.2" fill="#1C1B22"/>` +
+      `<path d="M62,52 Q60,57 62,59 Q64,57 62,52 Z" fill="#7CC4FF"/>`
+    : `<circle cx="40" cy="47" r="3.2" fill="#1C1B22"/><circle cx="60" cy="47" r="3.2" fill="#1C1B22"/>` +
+      `<circle cx="41" cy="46" r="1" fill="#fff"/><circle cx="61" cy="46" r="1" fill="#fff"/>`;
+  // Hocico con barba de schnauzer
+  const barba = `<path d="M33,54 Q30,80 50,84 Q70,80 67,54 Q60,60 50,58 Q40,60 33,54 Z" fill="${claro}"/>` +
+    `<path d="M38,70 L36,78 M44,73 L43,82 M56,73 L57,82 M62,70 L64,78" stroke="#C9CDD2" stroke-width="1.4" stroke-linecap="round"/>`;
+  const nariz = `<ellipse cx="50" cy="57" rx="6" ry="4.5" fill="#1C1B22"/><ellipse cx="48" cy="55.5" rx="1.6" ry="1" fill="#fff" opacity=".5"/>`;
+  const boca = triste
+    ? `<path d="M44,68 Q50,63 56,68" stroke="#3A3D44" stroke-width="2" fill="none" stroke-linecap="round"/>`
+    : `<path d="M44,64 Q50,70 56,64" stroke="#3A3D44" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M48,67 Q50,73 52,67 Z" fill="#FF8FA3"/>`;
+  return envolver('Hashy', id, triste ? '#DCE6F2' : '#E2F4FF', `${cuerpo}${orejas}${cabeza}${cejas}${ojos}${barba}${nariz}${boca}`);
+}
+
+function envolver(nombre: string, id: string, fondo: string, contenido: string): string {
+  return `<svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label="${nombre}"><defs><clipPath id="c${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#c${id})"><rect width="100" height="100" fill="${fondo}"/>${contenido}</g></svg>`;
 }

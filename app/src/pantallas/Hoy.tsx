@@ -1,5 +1,6 @@
 import { catalogo, NOMBRE_DIA, type Sesion } from '../lib/contenido';
 import { calcularRacha, useProgreso } from '../lib/progreso';
+import { Avatar } from '../componentes/Avatar';
 
 interface Props {
   abrir: (s: Sesion) => void;
@@ -26,10 +27,13 @@ export function Hoy({ abrir }: Props) {
   return (
     <main className="pantalla hoy">
       <header className="encabezado-hoy">
-        <div>
-          <p className="fecha">{fecha}</p>
-          <h1>Hoy</h1>
-        </div>
+        <button className="saludo" onClick={() => (location.hash = '#/perfil')} aria-label="Editar tu personaje">
+          <Avatar quien="yo" tam={52} />
+          <span>
+            <small>{fecha}</small>
+            <h1>Hola, {progreso.perfil?.nombre}</h1>
+          </span>
+        </button>
         <div className="marcadores">
           <div className="racha" aria-label={`Racha de ${racha} días`}>
             <span className="racha-num">▲ {racha}</span>

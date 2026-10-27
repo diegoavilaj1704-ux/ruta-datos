@@ -266,7 +266,8 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .nota-pie { display: flex; justify-content: space-between; align-items: center; color: var(--suave); font-size: 14px; }
 .excedido { color: var(--mal); font-weight: 600; }
 
-.marcadores { display: flex; gap: 8px; }
+.marcadores { display: flex; gap: 8px; flex: none; }
+.racha-num { white-space: nowrap; font-size: 20px !important; }
 .racha-num.xp { color: var(--ambar); }
 .tarjeta-hoy { border-bottom: 5px solid var(--marca-relieve); }
 .tarjeta-hoy .titulo { font-weight: 900; }
