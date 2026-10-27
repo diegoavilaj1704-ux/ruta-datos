@@ -125,7 +125,7 @@ code { font-family: var(--mono); font-size: 0.88em; background: var(--marca-suav
 .portada h1 { margin: 4px 0; font-size: 28px; line-height: 1.2; }
 .meta { margin: 0; color: var(--suave); }
 
-.bloque { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 4px 16px 16px; margin-top: 14px; }
+.bloque { min-width: 0; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 4px 16px 16px; margin-top: 14px; }
 .bloque h2 { font-size: 19px; margin: 14px 0 4px; }
 
 .md p, .md li { overflow-wrap: anywhere; }
@@ -172,7 +172,8 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 
 /* ---------- Editor SQL ---------- */
-.editor { margin-top: 12px; display: grid; gap: 10px; }
+/* minmax(0, 1fr): sin esto, una tabla ancha estira la columna del grid y toda la página se desborda */
+.editor { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
 .chip {
   flex: none; border: 1px solid var(--borde); background: var(--fondo); border-radius: 999px;
@@ -220,7 +221,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .hoja-cabecera { display: flex; justify-content: space-between; align-items: center; }
 
 /* ---------- Quiz ---------- */
-.quiz { display: grid; gap: 14px; margin-top: 10px; }
+.quiz { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 10px; }
 .pregunta { border: 0; padding: 0; margin: 0; }
 .pregunta legend { font-size: 13px; color: var(--suave); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 .etiqueta { margin-left: 8px; text-transform: none; letter-spacing: 0; background: var(--marca-suave); color: var(--marca); border-radius: 6px; padding: 1px 6px; }
