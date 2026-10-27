@@ -27,8 +27,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // sql-wasm.wasm (~650 KB) debe quedar en caché para funcionar sin conexión
-        globPatterns: ['**/*.{js,css,html,wasm,png,svg}'],
+        // sql-wasm.wasm (~650 KB) y las fuentes deben quedar en caché para funcionar sin conexión
+        globPatterns: ['**/*.{js,css,html,wasm,png,svg,woff2}'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
     }),

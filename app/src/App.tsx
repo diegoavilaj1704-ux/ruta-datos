@@ -2,24 +2,34 @@ import { useEffect, useState } from 'react';
 import { buscarSesion, type Sesion } from './lib/contenido';
 import { Hoy } from './pantallas/Hoy';
 import { Leccion } from './pantallas/Leccion';
+import { Historia } from './pantallas/Historia';
 
-// Navegación por hash (#/s/<clave>) para que funcione igual como PWA y dentro de Capacitor
-function leerRuta(): Sesion | undefined {
-  const m = location.hash.match(/^#\/s\/(.+)$/);
-  return m ? buscarSesion(decodeURIComponent(m[1])) : undefined;
+// Navegación por hash para que funcione igual como PWA y dentro de Capacitor:
+//   #/s/<clave>  sesión (en historia si existe)   #/t/<clave>  lección en texto
+function leerRuta(): { sesion?: Sesion; texto: boolean } {
+  const m = location.hash.match(/^#\/([st])\/(.+)$/);
+  return { sesion: m ? buscarSesion(decodeURIComponent(m[2])) : undefined, texto: m?.[1] === 't' };
 }
 
+const ir = (modo: 's' | 't', s: Sesion) => (location.hash = `#/${modo}/${encodeURIComponent(s.clave)}`);
+
 export default function App() {
-  const [sesion, setSesion] = useState(leerRuta);
+  const [ruta, setRuta] = useState(leerRuta);
 
   useEffect(() => {
-    const alCambiar = () => setSesion(leerRuta());
+    const alCambiar = () => setRuta(leerRuta());
     window.addEventListener('hashchange', alCambiar);
     return () => window.removeEventListener('hashchange', alCambiar);
   }, []);
 
-  if (sesion) {
-    return <Leccion sesion={sesion} volver={() => (location.hash = '#/')} />;
+  const volver = () => (location.hash = '#/');
+  const { sesion, texto } = ruta;
+
+  if (sesion?.historia && !texto) {
+    return <Historia sesion={sesion} volver={volver} verTexto={() => ir('t', sesion)} />;
   }
-  return <Hoy abrir={(s) => (location.hash = `#/s/${encodeURIComponent(s.clave)}`)} />;
+  if (sesion) {
+    return <Leccion sesion={sesion} volver={volver} />;
+  }
+  return <Hoy abrir={(s) => ir('s', s)} />;
 }

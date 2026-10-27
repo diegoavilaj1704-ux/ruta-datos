@@ -10,9 +10,11 @@ export interface Progreso {
   ejercicios: Record<string, { codigo: string; resuelto: boolean }>;
   quiz: Record<string, number>;                    // "clave#n" → opción elegida
   notas: Record<string, string>;                   // borrador de la nota del viernes
+  xp: number;                                      // XP acumulado de lecciones terminadas
+  historias: Record<string, { paso: number; xp: number }>; // tarjeta actual y XP de la lección en curso
 }
 
-const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {} };
+const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {} };
 
 function leer(): Progreso {
   try {
@@ -73,6 +75,27 @@ export const acciones = {
   },
   guardarNota(clave: string, texto: string) {
     guardar({ ...estado, notas: { ...estado.notas, [clave]: texto } });
+  },
+  avanzarHistoria(clave: string, paso: number, xpGanado = 0) {
+    const previo = estado.historias[clave] ?? { paso: 0, xp: 0 };
+    guardar({
+      ...estado,
+      historias: { ...estado.historias, [clave]: { paso, xp: previo.xp + xpGanado } },
+      diasActivos: xpGanado ? marcarActivo(estado) : estado.diasActivos,
+    });
+  },
+  // Suma el XP al total solo la primera vez que se termina la lección
+  terminarHistoria(clave: string) {
+    const xpLeccion = estado.historias[clave]?.xp ?? 0;
+    const primeraVez = !estado.completadas[clave];
+    const { [clave]: _, ...resto } = estado.historias;
+    guardar({
+      ...estado,
+      xp: estado.xp + (primeraVez ? xpLeccion : 0),
+      historias: resto,
+      completadas: { ...estado.completadas, [clave]: estado.completadas[clave] ?? new Date().toISOString() },
+      diasActivos: marcarActivo(estado),
+    });
   },
   reiniciar() {
     guardar(vacio);

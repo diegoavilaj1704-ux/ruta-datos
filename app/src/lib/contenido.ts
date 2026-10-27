@@ -1,6 +1,7 @@
 // Lee la carpeta ../contenido en tiempo de build y arma el catálogo de la ruta.
 // La app nunca escribe contenido: solo lo lee (regla 1 de CLAUDE.md).
 import { parse as parseYaml } from 'yaml';
+import type { Historia } from './historia';
 
 const markdown = import.meta.glob('../../../contenido/**/*.md', {
   query: '?raw', import: 'default', eager: true,
@@ -8,6 +9,9 @@ const markdown = import.meta.glob('../../../contenido/**/*.md', {
 const jsons = import.meta.glob('../../../contenido/**/*.json', {
   import: 'default', eager: true,
 }) as Record<string, unknown>;
+const historias = import.meta.glob('../../../contenido/**/*.historia.yaml', {
+  query: '?raw', import: 'default', eager: true,
+}) as Record<string, string>;
 const datasets = import.meta.glob('../../../contenido/**/datasets/*.sql', {
   query: '?raw', import: 'default', eager: true,
 }) as Record<string, string>;
@@ -50,6 +54,7 @@ export interface Sesion {
   cuerpo: string;         // Markdown sin frontmatter
   dataset: string;        // script SQL que se carga en el editor
   ejercicios: Ejercicio[];
+  historia?: Historia;    // versión en tarjetas (<dia>.historia.yaml), si existe
 }
 
 function separarFrontmatter(texto: string): { meta: Record<string, unknown>; cuerpo: string } {
@@ -70,6 +75,13 @@ function resolverRuta(base: string, relativa: string): string {
     else if (p !== '.') partes.push(p);
   }
   return partes.join('/');
+}
+
+function leerHistoria(ruta: string): Historia | undefined {
+  const texto = historias[ruta];
+  if (!texto) return undefined;
+  const h = parseYaml(texto) as Historia;
+  return { ...h, version: String(h.version ?? '1.0') };
 }
 
 function construirCatalogo(): Sesion[] {
@@ -114,6 +126,7 @@ function construirCatalogo(): Sesion[] {
           cuerpo,
           dataset,
           ejercicios: ejercicios.filter((e) => e.archivo === archivo),
+          historia: leerHistoria(`${carpeta}/${archivo.replace(/\.md$/, '')}.historia.yaml`),
         });
       }
     }

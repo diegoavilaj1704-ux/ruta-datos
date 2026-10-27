@@ -1,44 +1,59 @@
 :root {
-  --fondo: #f6f4ef;
+  /* Paleta violeta y coral (docs/estilo-y-personajes.md) */
+  --fondo: #f7f6fb;
   --superficie: #ffffff;
-  --texto: #1d2321;
-  --suave: #5d6763;
-  --borde: #e2ded4;
-  --marca: #0f5257;
+  --texto: #2a2838;
+  --suave: #6e6a88;
+  --borde: #ecebf3;
+  --marca: #6c4cf1;
+  --marca-relieve: #4b2fc9;
   --marca-texto: #ffffff;
-  --marca-suave: #e2efee;
-  --acento: #e0892b;
-  --bien: #1f7a4a;
-  --bien-fondo: #e4f3ea;
-  --mal: #b4382e;
-  --mal-fondo: #fbe9e6;
+  --marca-suave: #f3f0ff;
+  --acento: #ff6b5b;
+  --ambar: #ffb020;
+  --bien: #1f8a5b;
+  --bien-fondo: #e3f7ee;
+  --mal: #d4473a;
+  --mal-fondo: #ffe9e6;
   --casi: #8a5a00;
-  --casi-fondo: #fdf1d8;
-  --codigo-fondo: #1f2a2a;
-  --codigo-texto: #e8efe9;
-  --radio: 14px;
-  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --casi-fondo: #fff1d6;
+  --codigo-fondo: #13121c;
+  --codigo-texto: #e9e7f5;
+  /* Terminal: igual en modo claro y oscuro */
+  --term-fondo: #13121c;
+  --term-barra: #1d1b2a;
+  --term-borde: #2e2b42;
+  --term-tecla: #2a2740;
+  --term-ln: #4e4a66;
+  --term-kw: #b9a8ff;
+  --term-id: #7cf2c3;
+  --term-texto: #e9e7f5;
+  --radio: 16px;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --fondo: #111615;
-    --superficie: #1a2120;
-    --texto: #e9eeec;
-    --suave: #9aa6a2;
-    --borde: #2c3633;
-    --marca: #5fb3b3;
-    --marca-texto: #0b1212;
-    --marca-suave: #1d3332;
-    --acento: #f0a457;
-    --bien: #6fcf97;
-    --bien-fondo: #16301f;
-    --mal: #f08a80;
-    --mal-fondo: #3a1d1a;
+    --fondo: #15131f;
+    --superficie: #1f1c2c;
+    --texto: #eceaf6;
+    --suave: #a29ebb;
+    --borde: #312d45;
+    --marca: #8b70ff;
+    --marca-relieve: #5b3fd6;
+    --marca-texto: #ffffff;
+    --marca-suave: #2a2442;
+    --acento: #ff7d6e;
+    --bien: #6fe0a6;
+    --bien-fondo: #173326;
+    --mal: #ff8a7d;
+    --mal-fondo: #3b1f1d;
     --casi: #f2c56b;
     --casi-fondo: #3a2e12;
-    --codigo-fondo: #0b100f;
+    --codigo-fondo: #0d0c14;
+    --term-fondo: #0d0c14;
+    --term-barra: #17151f;
     color-scheme: dark;
   }
 }
@@ -51,7 +66,7 @@ body {
   margin: 0;
   background: var(--fondo);
   color: var(--texto);
-  font: 17px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font: 600 17px/1.55 Nunito, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -71,7 +86,7 @@ code { font-family: var(--mono); font-size: 0.88em; background: var(--marca-suav
 .encabezado-hoy h1 { margin: 0; font-size: 34px; line-height: 1.1; }
 .fecha { margin: 0; color: var(--suave); font-size: 15px; }
 .racha { text-align: center; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 6px 12px; }
-.racha-num { display: block; font-size: 24px; font-weight: 700; color: var(--acento); line-height: 1.1; }
+.racha-num { display: block; font-size: 24px; font-weight: 900; color: var(--acento); line-height: 1.1; }
 .racha-txt { font-size: 12px; color: var(--suave); }
 
 .tarjeta-hoy {
@@ -250,3 +265,8 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .nota-pie { display: flex; justify-content: space-between; align-items: center; color: var(--suave); font-size: 14px; }
 .excedido { color: var(--mal); font-weight: 600; }
+
+.marcadores { display: flex; gap: 8px; }
+.racha-num.xp { color: var(--ambar); }
+.tarjeta-hoy { border-bottom: 5px solid var(--marca-relieve); }
+.tarjeta-hoy .titulo { font-weight: 900; }

@@ -93,6 +93,16 @@ Cada ejercicio tiene solo dos piezas de texto, para no saturar la pantalla del c
 
 Regla: **Don Rafa da el contexto; el título da la instrucción.** Nunca hay que adivinar qué se pide. Las pistas van aparte, escondidas detrás de un botón.
 
+## Lección contada como historia (`<dia>.historia.yaml`)
+
+Cada lección se entrega también como historia en tarjetas, en un archivo junto al Markdown (ejemplo: `s01-primera-consulta/lunes.historia.yaml`). Es lo que la app muestra primero; el Markdown queda como "lección completa" para consultar.
+
+- Cubre las mismas 11 secciones, en el mismo orden pedagógico, pero contadas por los personajes: Don Rafa plantea, Diego explica y resuelve contigo, Fer avisa de los errores.
+- Una idea por tarjeta. Textos de 1–3 frases. Nada de muros de texto.
+- Tipos de tarjeta: `portada`, `chat`, `tabla`, `idea`, `analogia`, `conceptos`, `terminal` (ejemplo que se ejecuta), `armar` (consulta con piezas), `error` (caza el error), `tip`, `escribir` (consulta a mano), `quiz`, `resumen`. El formato exacto está en `app/src/lib/historia.ts`.
+- Los retos `armar` y `escribir` apuntan a un ejercicio de `ejercicios.json` por su `id`; las piezas de `armar` deben alcanzar para armar la solución.
+- Después de escribirla, corre `npm run verificar` en `app/`: revisa que los retos existan, que las piezas alcancen, que los ejemplos corran y que cada quiz tenga una sola respuesta correcta.
+
 ## Al revisar una lección existente
 
 Entrega: (1) diagnóstico breve contra el checklist, (2) lista de cambios priorizados, (3) la lección corregida completa con la versión incrementada (1.0 → 1.1). Si el usuario reportó una duda como piloto, resuélvela primero y explica qué cambió.

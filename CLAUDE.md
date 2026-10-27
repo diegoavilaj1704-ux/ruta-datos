@@ -43,6 +43,7 @@ contenido/
       s01-primera-consulta/
         semana.json            # metadatos de la semana
         ejercicios.json        # ejercicios auto-evaluables (solución + filas esperadas)
+        lunes.historia.yaml    # la lección contada en tarjetas (lo que la app muestra primero)
         lunes.md  martes.md    # lecciones
         proyecto.md            # mini-proyecto (mié–jue)
         nota-viernes.md        # repaso y nota pública
@@ -58,13 +59,14 @@ Frontmatter de cada lección: `id, modulo, semana, dia, objetivo, duracion_min, 
 - Meta: **App Store en diciembre 2026** con Capacitor (ver `docs/camino-app-store.md`).
 - Publicación: https://diegoavilaj1704-ux.github.io/ruta-datos/ (GitHub Pages) vía `.github/workflows/publicar-pwa.yml` en cada push a `main` (repo público por ahora; migrar a GitHub Pro para volverlo privado).
 - Definido (27 oct): estilo visual, personajes y regla de ejercicios (ver `docs/estilo-y-personajes.md`).
-- Siguiente: lección en tarjetas con el estilo nuevo (empezando por el lunes); después Capacitor + recordatorio diario.
+- Hecho (27 oct): lección del lunes como historia en tarjetas (`lunes.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
+- Siguiente: historia del martes, mini-proyecto y viernes con el mismo estilo; después Capacitor + recordatorio diario.
 
 ## Comandos de la app (desde `app/`)
 
 - `npm run dev`: servidor local (también accesible desde el iPhone en la misma red Wi-Fi).
 - `npm run build`: genera `app/dist/`, la PWA lista para publicar.
-- `npm run verificar`: corre cada solución de `ejercicios.json` contra su dataset y compara las filas esperadas (regla 3). Córrelo después de tocar ejercicios o datasets.
+- `npm run verificar`: corre cada solución de `ejercicios.json` contra su dataset y compara las filas esperadas (regla 3); también revisa las historias (`*.historia.yaml`). Córrelo después de tocar ejercicios, historias o datasets.
 - `npm run iconos`: regenera los íconos de `app/public/`.
 
 ## Pendientes conocidos

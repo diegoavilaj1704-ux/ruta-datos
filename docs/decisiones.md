@@ -35,6 +35,8 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 | 2026-10-27 | Estilo **juguetón + terminal de código**, paleta **violeta y coral** (ver `docs/estilo-y-personajes.md`) | Le gustó la personalidad tipo juego, pero sin copiar los colores de Duolingo; la terminal hace que se sienta que se estudia código |
 | 2026-10-27 | Pantallas **sin saturar**: encargo de Don Rafa + título con la instrucción exacta; nada más a la vista | Rechazó una versión con misión, traducción, columnas, resultado esperado y pistas: "muy saturado" |
 | 2026-10-27 | Personajes: **Diego** (protagonista), **Don Rafa** (problema de negocio), **Fer** (tips, de vez en cuando) y elenco diverso; avatares dibujados con código | Dan historia y voz a la lección; SVG ligero, sin conexión y sin problemas de derechos |
+| 2026-10-27 | Cada lección tiene una **historia en tarjetas** (`<dia>.historia.yaml`) que la app muestra primero; el Markdown queda como "lección completa" | Storytelling con Don Rafa, Diego y Fer; el contenido sigue separado de la app y se verifica con `npm run verificar` |
+| 2026-10-27 | XP por reto (10 al primer intento, 5 después; 5 por ejecutar un ejemplo) y avance guardado por tarjeta | Sensación de juego y poder retomar la lección donde se dejó |
 | 2026-10-27 | Cada ejecución SQL usa una base nueva con el dataset | El alumno no puede romper la tabla (ni con DROP TABLE) |
 
 ## Decisiones pendientes

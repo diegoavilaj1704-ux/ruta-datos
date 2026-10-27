@@ -30,9 +30,15 @@ export function Hoy({ abrir }: Props) {
           <p className="fecha">{fecha}</p>
           <h1>Hoy</h1>
         </div>
-        <div className="racha" aria-label={`Racha de ${racha} días`}>
-          <span className="racha-num">{racha}</span>
-          <span className="racha-txt">día{racha === 1 ? '' : 's'} de racha</span>
+        <div className="marcadores">
+          <div className="racha" aria-label={`Racha de ${racha} días`}>
+            <span className="racha-num">▲ {racha}</span>
+            <span className="racha-txt">racha</span>
+          </div>
+          <div className="racha" aria-label={`${progreso.xp} puntos de experiencia`}>
+            <span className="racha-num xp">◆ {progreso.xp}</span>
+            <span className="racha-txt">XP</span>
+          </div>
         </div>
       </header>
 
