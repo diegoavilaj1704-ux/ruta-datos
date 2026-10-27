@@ -1,0 +1,14 @@
+{
+  "id": "m02-s01",
+  "titulo": "Tu primera consulta",
+  "resumen": "Elegir columnas (SELECT/FROM) y filtrar filas (WHERE), aplicado en un reporte para una tienda.",
+  "dataset": "../datasets/abarrotes_ventas.sql",
+  "dias": {
+    "lunes": "lunes.md",
+    "martes": "martes.md",
+    "miercoles": "proyecto.md",
+    "jueves": "proyecto.md",
+    "viernes": "nota-viernes.md"
+  },
+  "version": "1.0"
+}

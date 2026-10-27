@@ -1,0 +1,12 @@
+{
+  "id": "m02-sql",
+  "etapa": 0,
+  "nombre": "SQL desde cero",
+  "semanas_estimadas": 5,
+  "objetivo": "Consultar, filtrar, ordenar, agrupar y unir tablas con SQL para responder preguntas de negocio.",
+  "proyecto_integrador": "Reporte de clientes con consultas propias",
+  "datasets": ["datasets/abarrotes_ventas.sql"],
+  "semanas": [
+    { "id": "s01-primera-consulta", "titulo": "Tu primera consulta", "estado": "piloto-aprobado", "version": "1.0" }
+  ]
+}

@@ -1,0 +1,107 @@
+// Avance del alumno, guardado en el dispositivo (localStorage).
+// En la Fase 2 esto se sincroniza con Supabase; por ahora vive solo en el teléfono.
+import { useCallback, useSyncExternalStore } from 'react';
+
+const LLAVE = 'ruta-datos:progreso:v1';
+
+export interface Progreso {
+  completadas: Record<string, string>;            // clave de sesión → fecha ISO
+  diasActivos: string[];                           // "2026-10-27" (fecha local)
+  ejercicios: Record<string, { codigo: string; resuelto: boolean }>;
+  quiz: Record<string, number>;                    // "clave#n" → opción elegida
+  notas: Record<string, string>;                   // borrador de la nota del viernes
+}
+
+const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {} };
+
+function leer(): Progreso {
+  try {
+    const guardado = localStorage.getItem(LLAVE);
+    return guardado ? { ...vacio, ...JSON.parse(guardado) } : vacio;
+  } catch {
+    return vacio;
+  }
+}
+
+let estado = leer();
+const oyentes = new Set<() => void>();
+
+function guardar(nuevo: Progreso) {
+  estado = nuevo;
+  try {
+    localStorage.setItem(LLAVE, JSON.stringify(nuevo));
+  } catch {
+    // modo privado o almacenamiento lleno: el avance sigue en memoria
+  }
+  oyentes.forEach((f) => f());
+}
+
+export function hoyLocal(fecha = new Date()): string {
+  const y = fecha.getFullYear();
+  const m = String(fecha.getMonth() + 1).padStart(2, '0');
+  const d = String(fecha.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function marcarActivo(p: Progreso): string[] {
+  const hoy = hoyLocal();
+  return p.diasActivos.includes(hoy) ? p.diasActivos : [...p.diasActivos, hoy];
+}
+
+export const acciones = {
+  completar(clave: string) {
+    guardar({ ...estado, completadas: { ...estado.completadas, [clave]: new Date().toISOString() }, diasActivos: marcarActivo(estado) });
+  },
+  desmarcar(clave: string) {
+    const { [clave]: _, ...resto } = estado.completadas;
+    guardar({ ...estado, completadas: resto });
+  },
+  guardarEjercicio(id: string, codigo: string, resuelto?: boolean) {
+    const previo = estado.ejercicios[id];
+    guardar({
+      ...estado,
+      ejercicios: { ...estado.ejercicios, [id]: { codigo, resuelto: resuelto ?? previo?.resuelto ?? false } },
+      diasActivos: resuelto ? marcarActivo(estado) : estado.diasActivos,
+    });
+  },
+  responderQuiz(llave: string, opcion: number) {
+    guardar({ ...estado, quiz: { ...estado.quiz, [llave]: opcion } });
+  },
+  reiniciarQuiz(claveSesion: string) {
+    const quiz = Object.fromEntries(Object.entries(estado.quiz).filter(([k]) => !k.startsWith(`${claveSesion}#`)));
+    guardar({ ...estado, quiz });
+  },
+  guardarNota(clave: string, texto: string) {
+    guardar({ ...estado, notas: { ...estado.notas, [clave]: texto } });
+  },
+  reiniciar() {
+    guardar(vacio);
+  },
+};
+
+export function useProgreso(): Progreso {
+  const suscribir = useCallback((f: () => void) => {
+    oyentes.add(f);
+    return () => oyentes.delete(f);
+  }, []);
+  return useSyncExternalStore(suscribir, () => estado);
+}
+
+// Racha: días hábiles seguidos con actividad. Sábado y domingo no la rompen,
+// y hoy cuenta solo si ya estudiaste (si no, la racha de ayer sigue viva).
+export function calcularRacha(diasActivos: string[], ahora = new Date()): number {
+  const activos = new Set(diasActivos);
+  const dia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+  const esHabil = (d: Date) => d.getDay() !== 0 && d.getDay() !== 6;
+  const retroceder = () => dia.setDate(dia.getDate() - 1);
+
+  if (!activos.has(hoyLocal(dia))) retroceder();
+  let racha = 0;
+  for (let i = 0; i < 400; i++) {
+    if (!esHabil(dia)) { retroceder(); continue; }
+    if (!activos.has(hoyLocal(dia))) break;
+    racha++;
+    retroceder();
+  }
+  return racha;
+}
