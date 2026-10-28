@@ -15,6 +15,9 @@ const historias = import.meta.glob('../../../contenido/**/*.historia.yaml', {
 const yamls = import.meta.glob('../../../contenido/**/conceptos.yaml', {
   query: '?raw', import: 'default', eager: true,
 }) as Record<string, string>;
+const tipsGeneralesYaml = import.meta.glob('../../../contenido/hashy-tips.yaml', {
+  query: '?raw', import: 'default', eager: true,
+}) as Record<string, string>;
 const datasets = import.meta.glob('../../../contenido/**/datasets/*.sql', {
   query: '?raw', import: 'default', eager: true,
 }) as Record<string, string>;
@@ -112,8 +115,20 @@ export interface Unidad {
   modulo: { id: string; nombre: string };
   sesiones: Sesion[];      // vacío si aún no está escrita
   conceptos: Concepto[];
-  tipsHashy: string[];
+  tipsHashy: TipHashy[];
 }
+
+// Tip de Hashy: `desde` es la parada que hay que terminar para que salga (no adelanta temas)
+export interface TipHashy {
+  texto: string;
+  desde?: string;
+}
+const aTip = (t: string | TipHashy): TipHashy => (typeof t === 'string' ? { texto: t } : t);
+
+// Tips que salen en cualquier unidad (contenido/hashy-tips.yaml)
+export const tipsGenerales: string[] = Object.values(tipsGeneralesYaml).flatMap(
+  (texto) => (parseYaml(texto) as { tips?: string[] }).tips ?? [],
+);
 
 interface ModuloJson {
   id: string;
@@ -142,10 +157,10 @@ function construirUnidades(): Unidad[] {
       const carpeta = `${carpetaModulo}/${u.id}`;
       const unidad = jsons[`${carpeta}/unidad.json`] as UnidadJson | undefined;
       const extra = yamls[`${carpeta}/conceptos.yaml`];
-      const fichas = extra ? (parseYaml(extra) as { conceptos?: Concepto[]; tips_hashy?: string[] }) : {};
+      const fichas = extra ? (parseYaml(extra) as { conceptos?: Concepto[]; tips_hashy?: (string | TipHashy)[] }) : {};
       const base: Unidad = {
         id: u.id, numero: unidad?.numero ?? n + 1, titulo: u.titulo, temas: u.temas ?? [],
-        modulo: infoModulo, sesiones: [], conceptos: fichas.conceptos ?? [], tipsHashy: fichas.tips_hashy ?? [],
+        modulo: infoModulo, sesiones: [], conceptos: fichas.conceptos ?? [], tipsHashy: (fichas.tips_hashy ?? []).map(aTip),
       };
       unidades.push(base);
       if (!unidad) return;

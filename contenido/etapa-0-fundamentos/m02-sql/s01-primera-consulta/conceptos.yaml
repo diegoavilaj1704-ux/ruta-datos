@@ -57,9 +57,35 @@ conceptos:
     titulo: "Aprender en público"
     significado: "Tu nota: qué aprendiste, un ejemplo propio, un error que cometiste y una pregunta para quien lea."
 
-# Hashy aparece en el mapa; al tocarlo dice uno de estos tips.
+# Tips de Hashy en el mapa. `desde` es la parada que hay que terminar para que salga
+# (así no adelanta temas); sin `desde`, sale desde el principio. Se mezclan con los
+# tips generales de contenido/hashy-tips.yaml y no se repiten hasta que salen todos.
+# Los datos de la tabla están comprobados contra abarrotes_ventas.sql (regla 3).
 tips_hashy:
   - "¡Guau! Antes de ejecutar, olfatea lo que va justo antes de FROM: ahí no va coma."
-  - "Si te salen 0 filas, revisa mayúsculas y acentos del valor que filtras."
   - "Una parada al día es buen ritmo. ¡Pero si traes energía, haz dos!"
-  - "Toca las fichas de código del mapa para repasar lo que ya viste."
+  - "Toca las gráficas junto al camino para repasar lo que ya viste."
+  - texto: "SQL no distingue SELECT de select, pero escribirlo en mayúsculas hace que tu consulta se lea más fácil."
+    desde: leccion-1
+  - texto: "¿Sabías? La tabla ventas tiene 8 filas y 7 columnas. Pequeña para aprender, igual que las de verdad pero en miniatura."
+    desde: leccion-1
+  - texto: "El punto y coma al final dice «aquí termina mi consulta». Acostúmbrate a ponerlo."
+    desde: leccion-1
+  - texto: "Truco de analista: primero SELECT * para ver la tabla, luego nombra solo las columnas que necesitas."
+    desde: leccion-1
+  - texto: "Si te salen 0 filas, revisa mayúsculas y acentos del valor que filtras: 'Lácteos' no es 'lacteos'."
+    desde: leccion-2
+  - texto: "WHERE trabaja fila por fila: a cada una le pregunta «¿cumples?» y solo deja pasar las que dicen que sí."
+    desde: leccion-2
+  - texto: "Los números van sin comillas: WHERE cantidad > 2. El texto, con comillas simples: WHERE sucursal = 'Sur'."
+    desde: leccion-2
+  - texto: "¿Quieres todo menos algo? Usa <>: WHERE sucursal <> 'Norte' trae Centro y Sur."
+    desde: leccion-2
+  - texto: "En la tabla hay 3 sucursales (Norte, Centro y Sur) y 4 categorías. Pruébalo tú en el editor."
+    desde: proyecto-1
+  - texto: "Un buen reporte responde la pregunta del dueño en una frase, sin hablar de SQL."
+    desde: proyecto-1
+  - texto: "Explorar primero te ahorra errores: siempre mira cómo vienen escritos los valores antes de filtrar."
+    desde: proyecto-2
+  - texto: "¡Ya puedes responder preguntas reales con datos! Eso es lo que hace un Data Analyst todos los días."
+    desde: repaso

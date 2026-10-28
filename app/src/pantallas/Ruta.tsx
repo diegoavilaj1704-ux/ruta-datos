@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { unidades, type Concepto, type Sesion, type TipoParada, type Unidad } from '../lib/contenido';
+import { tipsGenerales, unidades, type Concepto, type Sesion, type TipoParada, type Unidad } from '../lib/contenido';
 import { acciones, calcularRacha, useProgreso, type Progreso } from '../lib/progreso';
 import { ejecutar, type Resultado } from '../lib/sql';
 import { sonidos } from '../lib/sonidos';
@@ -51,6 +51,9 @@ export function Ruta() {
         <span className="ruta-modulo">{unidades[0]?.modulo.nombre}</span>
         <span className="ruta-chip racha" aria-label={`Racha de ${racha} días`}>▲ {racha}</span>
         <button className="ruta-chip xp" onClick={() => (location.hash = '#/closet')} aria-label={`${progreso.xp} XP. Abrir tu clóset`}>◆ {progreso.xp}</button>
+        <button className="ruta-chip sonido" onClick={acciones.alternarSonido} aria-label={progreso.sonido ? 'Silenciar sonidos' : 'Activar sonidos'}>
+          {progreso.sonido ? '🔊' : '🔇'}
+        </button>
       </header>
 
       {conContenido.map((u) => <Camino key={u.id} unidad={u} progreso={progreso} abrirFicha={setFicha} />)}
@@ -120,6 +123,14 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
   const lugares = [...puntos, premio].map((p, i) => libre(i, p));
   const inicio = iActual >= 0 ? iActual : paradas.length;
   const lugaresHashy = [lugares[inicio], ...lugares.filter((_, i) => i !== inicio)];
+
+  // Tips: los de la unidad ya desbloqueados, los generales y un repaso de cada ficha que ya viste
+  const terminada = (parada: string) => paradas.some((s) => s.parada.id === parada && progreso.completadas[s.clave]);
+  const tips = [
+    ...unidad.tipsHashy.filter((t) => !t.desde || terminada(t.desde)).map((t) => t.texto),
+    ...tipsGenerales,
+    ...unidad.conceptos.filter((c) => terminada(c.parada)).map((c) => `Repaso rápido de ${c.codigo}: ${c.significado}`),
+  ];
 
   return (
     <section className="tramo">
@@ -200,7 +211,7 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
         </button>
 
         {unidad.tipsHashy.length > 0 && (
-          <HashyPaseo lugares={lugaresHashy} tips={unidad.tipsHashy} />
+          <HashyPaseo lugares={lugaresHashy} tips={tips} />
         )}
       </div>
     </section>

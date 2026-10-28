@@ -1,0 +1,26 @@
+# Tips generales de Hashy: salen en cualquier unidad, mezclados con los de la unidad
+# (tips_hashy en conceptos.yaml). Hábitos de estudio, curiosidades del mundo de datos
+# y ánimo. Cortos: caben en una burbuja del celular. Corregirlos no requiere publicar la app.
+version: "1.0"
+tips:
+  # Estudio
+  - "Una hora al día rinde más que siete horas el domingo. Tu cerebro aprende mejor en pedacitos."
+  - "¿Te equivocaste? ¡Perfecto! Los errores son la forma más rápida de aprender SQL."
+  - "Escribe la consulta tú mismo aunque puedas copiarla: los dedos también aprenden."
+  - "Si algo no te queda claro, vuelve a la ficha del tema. Repasar no es retroceder."
+  - "Explica en voz alta lo que hace tu consulta. Si puedes explicarlo, lo entendiste."
+  - "Antes de ejecutar, adivina el resultado. Luego compáralo: así entrenas tu intuición."
+  - "La nota del viernes es tu portafolio creciendo: cada una cuenta."
+  - "¿Cansado? Una parada corta hoy mantiene tu racha y tu ritmo."
+  # Mundo de datos
+  - "SQL nació en los años 70 en IBM y hoy lo usan casi todas las empresas del mundo."
+  - "SQL significa Structured Query Language: lenguaje de consultas estructuradas."
+  - "Un Data Analyst responde «¿qué pasó?». Un Data Scientist, «¿qué va a pasar?». Un Data Engineer hace que los datos lleguen."
+  - "Una tabla es como una hoja de cálculo con reglas: cada columna guarda un solo tipo de dato."
+  - "Las preguntas de negocio llegan en palabras, no en SQL. Traducirlas es la mitad del trabajo."
+  - "Power BI, Excel y Python también hablan con bases de datos. SQL es la puerta de entrada a todos."
+  - "Los datos «sucios» (con errores de escritura o vacíos) son normales en la vida real. Aprenderás a limpiarlos."
+  # Ánimo
+  - "¡Guau! Cada parada que terminas es una habilidad nueva en tu currículum."
+  - "Nadie nace sabiendo SQL. Todos los expertos empezaron con su primer SELECT."
+  - "¡Vas muy bien! Yo sigo aquí olfateando datos contigo."

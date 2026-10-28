@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { HASHY, LINEA_HASHY } from '../lib/personajes';
+import { sonidos } from '../lib/sonidos';
 
 // Hashy vive en el mapa: a ratos se sienta, se duerme o juega con su pelota.
 // Cuando tiene un tip, camina a otro lugar del mapa, ladra y prende un foco: al tocarlo, lo enseña.
@@ -69,6 +70,25 @@ const DORMIDO = `
 
 type Pose = 'pie' | 'sentado' | 'dormido';
 type Estado = 'sentado' | 'dormido' | 'juega' | 'camina' | 'ladra' | 'espera';
+// Elige un tip que no hayas visto; cuando ya salieron todos, vuelve a empezar.
+// Los vistos se recuerdan en este dispositivo para que no se repitan al abrir la app.
+const VISTOS = 'ruta-datos:tips-vistos';
+function elegirTip(tips: string[], anterior: string | null): string {
+  let vistos: string[] = [];
+  try { vistos = JSON.parse(localStorage.getItem(VISTOS) ?? '[]'); } catch { /* sin memoria: igual funciona */ }
+  let quedan = tips.filter((t) => !vistos.includes(t));
+  if (!quedan.length) {
+    vistos = [];
+    quedan = tips.length > 1 ? tips.filter((t) => t !== anterior) : tips;
+  }
+  const tip = quedan[Math.floor(Math.random() * quedan.length)];
+  try { localStorage.setItem(VISTOS, JSON.stringify([...vistos, tip].filter((t) => tips.includes(t)))); } catch { /* idem */ }
+  return tip;
+}
+
+// Los sonidos de Hashy solo suenan si estás viendo la app
+const sonar = (fn: () => void) => { if (document.visibilityState === 'visible') fn(); };
+
 const DURA: Record<'sentado' | 'dormido' | 'juega', number> = { sentado: 7000, dormido: 12000, juega: 8000 };
 
 export function HashyPaseo({ lugares, tips }: Props) {
@@ -77,7 +97,7 @@ export function HashyPaseo({ lugares, tips }: Props) {
   const [guau, setGuau] = useState(false);
   const [zzz, setZzz] = useState(false);
   const [tip, setTip] = useState<string | null>(null);
-  const n = useRef(0);
+  const anterior = useRef<string | null>(null);
   const ordenes = useRef({ despertar: () => undefined as void, trasTip: () => undefined as void });
   const claveLugares = lugares.map((l) => `${Math.round(l.x)},${Math.round(l.y)}`).join(' ');
 
@@ -116,7 +136,9 @@ export function HashyPaseo({ lugares, tips }: Props) {
       desde = t;
       setZzz(e === 'dormido');
       pelota.style.display = e === 'juega' ? '' : 'none';
-      if (e === 'ladra') setGuau(true);
+      if (e === 'ladra') { setGuau(true); sonar(sonidos.guau); }
+      if (e === 'dormido') sonar(sonidos.bostezo);
+      if (e === 'juega') sonar(sonidos.boing);
     }
     // Después de cada rato quieto, camina a otro lugar del mapa a darte un tip
     function irAOtroLugar() {
@@ -163,7 +185,7 @@ export function HashyPaseo({ lugares, tips }: Props) {
         partes.cuerpo?.setAttribute('transform', `translate(0 ${d < 700 ? -Math.abs(Math.sin(d / 70)) * 2 : 0})`);
         partes.cabeza?.setAttribute('transform', `rotate(${d < 700 ? -8 - Math.abs(Math.sin(d / 70)) * 6 : 0} 12 -10)`);
         partes.cola?.setAttribute('transform', `${colaBase()} rotate(${Math.sin(t / 90) * 24})`);
-        if (d > 1200) { setGuau(false); setFoco(true); cambiar('espera', t); }
+        if (d > 1200) { setGuau(false); setFoco(true); sonar(sonidos.foco); cambiar('espera', t); }
       } else if (estado === 'espera') {
         // Se sienta junto a su foco; si nadie lo toca en un rato, lo apaga y sigue con lo suyo
         ponerPose('sentado');
@@ -209,8 +231,9 @@ export function HashyPaseo({ lugares, tips }: Props) {
 
   function tocarFoco() {
     if (!tips.length) return;
-    setTip(tips[n.current % tips.length]);
-    n.current++;
+    anterior.current = elegirTip(tips, anterior.current);
+    setTip(anterior.current);
+    sonidos.pop();
     setFoco(false);
   }
   function cerrarTip() {
@@ -241,7 +264,7 @@ export function HashyPaseo({ lugares, tips }: Props) {
             </g>
           )}
           {foco && (
-            <g className="hashy-foco" onClick={tocarFoco} role="button" aria-label="Ver el tip de Hashy">
+            <g className="hashy-foco" data-sin-toque onClick={tocarFoco} role="button" aria-label="Ver el tip de Hashy">
               <circle cx="4" cy="-62" r="22" fill="transparent" />
               <circle className="brillo" cx="4" cy="-62" r="17" fill="#FFD25A" opacity=".35" />
               <g className="brillo" stroke="#FFB020" strokeWidth="2.2" strokeLinecap="round">

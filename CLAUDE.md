@@ -36,6 +36,7 @@ Idioma del proyecto: **español** (contenido, comentarios de código, commits y 
 
 ```
 contenido/
+  hashy-tips.yaml              # tips generales de Hashy (estudio, mundo de datos, ánimo)
   etapa-0-fundamentos/
     m02-sql/
       modulo.json              # metadatos del módulo y lista de sus unidades (las que no tienen carpeta salen "próximamente")
@@ -43,7 +44,7 @@ contenido/
       s01-primera-consulta/    # una unidad
         unidad.json            # las paradas del camino, en orden
         ejercicios.json        # ejercicios auto-evaluables (solución + filas esperadas)
-        conceptos.yaml         # fichas de temas que se tocan en el mapa + tips de Hashy
+        conceptos.yaml         # fichas de temas que se tocan en el mapa + tips de Hashy (con `desde: <parada>`)
         <parada>.historia.yaml # cada parada contada en tarjetas (lo que la app muestra primero)
         leccion-1.md  leccion-2.md  proyecto.md  repaso.md   # versión completa en texto
 ```

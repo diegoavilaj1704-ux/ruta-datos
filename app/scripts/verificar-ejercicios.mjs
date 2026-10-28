@@ -93,7 +93,7 @@ for (const archivo of buscar(raiz, 'conceptos.yaml')) {
   const carpeta = dirname(archivo);
   const unidad = JSON.parse(readFileSync(join(carpeta, 'unidad.json'), 'utf8'));
   const dataset = readFileSync(resolve(carpeta, unidad.dataset), 'utf8');
-  const { conceptos = [] } = parseYaml(readFileSync(archivo, 'utf8'));
+  const { conceptos = [], tips_hashy: tips = [] } = parseYaml(readFileSync(archivo, 'utf8'));
   for (const c of conceptos) {
     let error = null;
     if (!unidad.paradas.some((p) => p.id === c.parada)) error = `la parada ${c.parada} no existe`;
@@ -105,7 +105,11 @@ for (const archivo of buscar(raiz, 'conceptos.yaml')) {
     }
     if (error) { fallas++; console.log(`✘ conceptos.yaml ${c.id}: ${error}`); }
   }
-  console.log(`✔ conceptos.yaml: ${conceptos.length} fichas revisadas`);
+  for (const t of tips) {
+    const desde = typeof t === 'object' ? t.desde : undefined;
+    if (desde && !unidad.paradas.some((p) => p.id === desde)) { fallas++; console.log(`✘ tip de Hashy: la parada ${desde} no existe`); }
+  }
+  console.log(`✔ conceptos.yaml: ${conceptos.length} fichas y ${tips.length} tips revisados`);
 }
 
 if (fallas) {

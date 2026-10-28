@@ -3,7 +3,7 @@ import { Avatar, Cuerpo, equipoDe } from '../componentes/Avatar';
 import { CATALOGO, CATEGORIAS, clavePrenda, ENCUADRE, type Categoria, type Prenda } from '../lib/armario';
 import { PERFIL_INICIAL, type Peinado, type Perfil } from '../lib/personajes';
 import { acciones, useProgreso } from '../lib/progreso';
-import { reaccionar } from '../lib/reacciones';
+import { sonidos } from '../lib/sonidos';
 
 // Clóset: los XP se gastan en peinados, ropa y accesorios.
 // Lo que no tienes se prueba primero en el avatar y se compra con un botón aparte.
@@ -36,7 +36,7 @@ export function Closet({ volver }: { volver: () => void }) {
     if (!probando) return;
     if (!acciones.comprar(clavePrenda(probando), probando.precio)) return;
     acciones.guardarPerfil(conPrenda(perfil, probando));
-    reaccionar('acierto');
+    sonidos.moneda();
     setAviso(`¡Desbloqueaste ${probando.nombre}! −${probando.precio} XP`);
     setProbando(null);
   }

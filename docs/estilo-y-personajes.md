@@ -80,4 +80,6 @@ Referencia: una lección completa da ~65 XP.
 
 ## Sonidos
 
-Sintetizados con Web Audio, sin archivos (`app/src/lib/sonidos.ts`): un arpegio corto al acertar, un "ayyy" que cae con vibrato al equivocarse y una fanfarria al terminar la lección. En el iPhone respetan el interruptor de silencio, y se pueden apagar con el botón 🔊 de la lección.
+Sintetizados con Web Audio, sin archivos (`app/src/lib/sonidos.ts`): un "tic" suave en cada botón, un arpegio corto al acertar, un "ayyy" que cae con vibrato al equivocarse, una fanfarria al terminar la lección o abrir el premio y una moneda al comprar en el clóset. Hashy tiene los suyos: "¡guau, guau!" cuando llega a dar un tip, un destello cuando prende el foco, un "pop" al abrir el tip, un bostezo al dormirse y un "boing" al jugar con la pelota (solo suenan si estás viendo la app). En el iPhone respetan el interruptor de silencio, y se pueden apagar con el botón 🔊 del mapa o de la lección.
+
+**Tips de Hashy:** se mezclan los de la unidad (`tips_hashy` en `conceptos.yaml`; con `desde: <parada>` solo salen después de terminarla), los generales de `contenido/hashy-tips.yaml` (estudio, mundo de datos, ánimo) y un repaso rápido de cada ficha ya vista. No se repiten hasta que salen todos.
