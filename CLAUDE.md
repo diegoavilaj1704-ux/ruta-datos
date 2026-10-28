@@ -64,7 +64,7 @@ Frontmatter de cada lección: `id, modulo, unidad, parada, objetivo, duracion_mi
 - Hecho (27 oct): avatar propio con nombre (protagonista), Hashy el schnauzer (tips y errores) y sonidos.
 - Hecho (27 oct): avatar de cuerpo completo y clóset donde se gastan los XP (catálogo en `app/src/lib/armario.ts`).
 - Definido (27 oct): ruta por unidades con paradas en un mapa (maqueta `docs/maquetas/ruta-mapa.html`) y temario ampliado: SQL en dos módulos, etapa Data Analyst, Git al inicio, IA aplicada a datos.
-- Hecho (27 oct): **mapa de la Ruta** como pantalla principal (`app/src/pantallas/Ruta.tsx`): paradas que se abren en orden, fichas de temas que se tocan (con ejemplo ejecutable), Hashy con tips y unidades próximas. **Unidad 1 completa en historia**: lecciones 1 y 2, proyecto en dos partes y repaso con nota pública.
+- Hecho (27 oct): **mapa de la Ruta** como pantalla principal (`app/src/pantallas/Ruta.tsx`): camino de botones con íconos de datos, gráficas que se tocan para repasar (fichas con ejemplo ejecutable), chuleta { } FICHAS, base de datos de premio (+50 XP) y Hashy (schnauzer redibujado) que camina y da tips con un foco (`app/src/componentes/HashyPaseo.tsx`). **Unidad 1 completa en historia**: lecciones 1 y 2, proyecto en dos partes y repaso con nota pública.
 - Siguiente: Unidad 2 (Ordenar y filtrar mejor) con dataset ampliado; barra inferior por definir; después Capacitor + recordatorio diario.
 
 ## Comandos de la app (desde `app/`)

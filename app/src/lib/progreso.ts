@@ -16,9 +16,10 @@ export interface Progreso {
   perfil?: Perfil;                                 // avatar y nombre del alumno (protagonista de las historias)
   sonido: boolean;
   comprados: string[];                             // prendas desbloqueadas ("ropa:jersey")
+  premios: string[];                               // unidades cuyo premio (base de datos con XP) ya se abrió
 }
 
-const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true, comprados: [] };
+const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true, comprados: [], premios: [] };
 
 // Antes la ruta iba por días; las claves viejas se renombran a su parada
 const DIA_A_PARADA: Record<string, string> = {
@@ -128,6 +129,12 @@ export const acciones = {
     if (estado.comprados.includes(clave)) return true;
     if (estado.xp < precio) return false;
     guardar({ ...estado, xp: estado.xp - precio, comprados: [...estado.comprados, clave] });
+    return true;
+  },
+  // Premio al terminar una unidad: se cobra una sola vez
+  reclamarPremio(unidad: string, xp: number): boolean {
+    if (estado.premios.includes(unidad)) return false;
+    guardar({ ...estado, xp: estado.xp + xp, premios: [...estado.premios, unidad] });
     return true;
   },
   alternarSonido() {

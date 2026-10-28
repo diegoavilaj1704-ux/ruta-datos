@@ -43,7 +43,7 @@ Lo que el piloto rechazó, para no repetirlo:
 | --- | --- | --- |
 | **Tú** (`yo`) | Protagonista. Cada alumno arma su avatar y elige su nombre la primera vez que abre la app; Don Rafa le habla por ese nombre (`{nombre}` en las historias) | En cada lección |
 | **Don Rafa** (`rafa`) | Dueño de Abarrotes La Esquina. Pone el problema de negocio | En cada encargo y ejercicio |
-| **Hashy** (`hashy`) | Schnauzer sal y pimienta con collar coral. Da tips ("Tip de Hashy") y, cuando te equivocas, aparece **triste** con un "¡Auuu!" | Tips y cada error |
+| **Hashy** (`hashy`) | Schnauzer sal y pimienta con collar rojo. Da tips ("Tip de Hashy"), se pasea por el mapa y, cuando te equivocas, aparece **triste** | Mapa, tips y cada error |
 | Lupita, Kemi, Sofía, Beto, Mariana, Jun, Doña Chela, Toño | Elenco secundario (cajera, analista, proveedora, repartidor, gerentes de sucursal, clientes) | Cuando el tema lo pida |
 
 **Diversidad obligatoria:** el elenco mezcla tonos de piel, complexiones (delgadas y llenitas), edades y peinados (rizos, afro, trenzas, largo, chongo, calvo).
@@ -54,11 +54,13 @@ Lo que el piloto rechazó, para no repetirlo:
 
 **Cuerpo completo:** el avatar del alumno tiene cuerpo completo con proporciones naturales (brazos con codo y manos, cintura, piernas y tenis). En el chat se ve el recorte de su cara, con gorro y lentes incluidos. El elenco sigue en busto. Dibujo en `app/src/lib/armario.ts`.
 
-**Hashy:** dos expresiones. Feliz: orejas paradas, ojos con brillo y lengua. Triste: orejas caídas, cejas preocupadas, lagrimita y boca hacia abajo. Habla como perrito ("¡Guau!", "olfatea otra vez") y nunca regaña.
+**Hashy:** dibujado con contorno oscuro, como caricatura, a partir de dos imágenes de referencia del piloto: cara rectangular gris, cejas blancas pobladas, barba ancha que termina en punta, orejas dobladas con interior rosa, nariz negra y collar rojo. Tres caras: normal, **triste** (orejas caídas, lagrimita, boca hacia abajo) y **con lentes oscuros** (al abrir el premio de la unidad). De perfil camina por el mapa con paso diagonal, cabeza que se mece y cola que se mueve. Habla como perrito ("¡Guau!", "olfatea otra vez") y nunca regaña.
 
 ## Mapa de la Ruta
 
-Pantalla principal. Fondo violeta oscuro (igual en modo claro y oscuro, como la terminal). Camino punteado de abajo hacia arriba con paradas en forma de piedra: **menta ✓** terminada, **ámbar grande** la que toca (con globo EMPEZAR/CONTINUAR) y **morado con candado** bloqueada. Junto a cada parada, las **fichas de código** de sus temas (estilo terminal); bloqueadas muestran candado. Hashy se asoma por la orilla junto a la parada actual. Arriba, las unidades próximas como islas punteadas. Todo abre una hoja desde abajo con información; maqueta en `docs/maquetas/ruta-mapa.html`.
+*Actualizado el 27 oct 2026. El piloto rechazó un mapa oscuro de piedras (poco estético), una gráfica y un pipeline (demasiado fríos); quiere la sensación de un camino de juego sin copiar a Duolingo y con cara de datos.*
+
+Pantalla principal. Camino de **arriba hacia abajo** sobre el fondo de la app con una cuadrícula de puntos. Paradas como **botones redondos con relieve** en violeta, con ícono de datos: `>_` lección, barras proyecto, ★ repaso; palomita menta al terminar; la que toca lleva **anillo ámbar** de avance y globo EMPEZAR/CONTINUAR; las bloqueadas, grises. Arriba, la tarjeta de la unidad (fija al bajar) con su avance y el botón **{ } FICHAS** (la chuleta de la unidad). Junto a cada parada alcanzada aparece una **gráfica** (barras, dispersión, pastel, línea) que se toca para repasar sus temas: tus datos crecen con el camino. Al final, una **base de datos** de premio con 50 XP que se abre una vez. **Hashy** se pasea junto a la parada que toca, se detiene, ladra y prende un **foco**; al tocarlo da su tip. Abajo, las unidades que vienen. Maqueta en `docs/maquetas/hashy-y-camino.html`.
 
 ## Clóset y XP
 

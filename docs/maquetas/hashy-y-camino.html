@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hashy y el camino</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --fondo:#F4F2FB; --texto:#2A2838; --tenue:#6B6880; --hoja:#fff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --fondo:#16141F; --texto:#F1EFFA; --tenue:#A9A6BC; --hoja:#211E2E; } }
+  :root[data-theme="dark"] { --fondo:#16141F; --texto:#F1EFFA; --tenue:#A9A6BC; --hoja:#211E2E; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:16px; background:var(--fondo); color:var(--texto); font-family:Nunito, system-ui, sans-serif; }
+  h1 { font-size:18px; font-weight:900; text-align:center; margin:4px 0 2px; }
+  h2 { font-size:15px; font-weight:900; text-align:center; margin:22px 0 4px; }
+  .st { text-align:center; color:var(--tenue); font-size:14px; margin:0 0 14px; }
+  .hashys { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
+  .hashys figure { margin:0; text-align:center; font-size:12px; font-weight:800; color:var(--tenue); }
+  .hashys .cara { width:96px; height:96px; }
+  .hashys .lado { width:120px; height:96px; background:var(--hoja); border-radius:18px; }
+  .cel { width:330px; height:760px; margin:0 auto; border-radius:34px; overflow:hidden; position:relative; background:#F7F6FB; box-shadow:0 10px 30px rgba(20,10,60,.2); }
+  .tip { position:absolute; left:14px; right:14px; bottom:16px; background:#FFF8E6; color:#3D2A00; border-radius:16px; padding:12px 14px; font-size:13px; font-weight:800; line-height:1.4; display:none; box-shadow:0 8px 20px rgba(0,0,0,.2); }
+  .tip b { color:#B07400; display:block; font-size:11px; letter-spacing:.06em; margin-bottom:2px; }
+  .notas { max-width:660px; margin:22px auto 0; background:var(--hoja); border-radius:18px; padding:14px 18px; font-size:14px; line-height:1.5; }
+  .notas li { margin:4px 0; }
+  svg text { font-family:Nunito, sans-serif; font-weight:900; }
+  .mono { font-family:'JetBrains Mono', monospace !important; font-weight:600 !important; }
+  .latido { animation: latido 1.8s ease-in-out infinite; transform-origin:center; transform-box:fill-box; }
+  @keyframes latido { 50% { transform: scale(1.06); } }
+  .flota { animation: flota 2s ease-in-out infinite; }
+  @keyframes flota { 50% { transform: translateY(-4px); } }
+  .brilla { animation: brilla 1s ease-in-out infinite; }
+  @keyframes brilla { 50% { opacity:.25; } }
+</style>
+</head>
+<body>
+<h1>Hashy nuevo y el camino de datos</h1>
+<p class="st">Maqueta · basada en tus dos imágenes de referencia</p>
+
+<h2>Hashy, schnauzer sal y pimienta</h2>
+<div class="hashys">
+  <figure><div class="cara" id="h-feliz"></div>Normal</figure>
+  <figure><div class="cara" id="h-triste"></div>Cuando te equivocas</figure>
+  <figure><div class="cara" id="h-lentes"></div>Al terminar la unidad</figure>
+  <figure><svg class="lado" viewBox="-34 -50 84 72" style="display:block;margin:0 auto 4px"><g id="h-lado"></g></svg>Caminando en el mapa</figure>
+</div>
+
+<h2>El camino</h2>
+<div class="cel" id="cel">
+  <svg viewBox="0 0 330 760" width="330" height="760" id="mapa">
+    <defs>
+      <pattern id="puntos" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="#6C4CF1" fill-opacity=".12"/></pattern>
+    </defs>
+    <rect width="330" height="760" fill="url(#puntos)"/>
+
+    <!-- barra superior -->
+    <g transform="translate(16 44)">
+      <circle cx="18" cy="18" r="18" fill="#FFD9C7" stroke="#6C4CF1" stroke-width="3"/>
+      <text x="18" y="23" font-size="13" fill="#4B2FC9" text-anchor="middle">D</text>
+      <rect x="128" y="6" width="60" height="26" rx="13" fill="#fff" stroke="#ECEAF3" stroke-width="2"/>
+      <text x="158" y="24" font-size="13" fill="#FF6B5B" text-anchor="middle">▲ 3</text>
+      <rect x="196" y="6" width="96" height="26" rx="13" fill="#fff" stroke="#ECEAF3" stroke-width="2"/>
+      <text x="244" y="24" font-size="13" fill="#E09400" text-anchor="middle">◆ 145 XP</text>
+    </g>
+
+    <!-- tarjeta de la unidad -->
+    <g transform="translate(16 92)">
+      <rect y="5" width="298" height="70" rx="18" fill="#4B2FC9"/>
+      <rect width="298" height="70" rx="18" fill="#6C4CF1"/>
+      <text x="16" y="24" font-size="11" fill="#D9D0FF" letter-spacing="1">SQL · UNIDAD 1</text>
+      <text x="16" y="48" font-size="18" fill="#fff">Tu primera consulta</text>
+      <rect x="16" y="56" width="180" height="5" rx="2.5" fill="#fff" fill-opacity=".25"/>
+      <rect x="16" y="56" width="72" height="5" rx="2.5" fill="#7CF2C3"/>
+      <line x1="232" y1="12" x2="232" y2="58" stroke="#fff" stroke-opacity=".25" stroke-width="2"/>
+      <rect x="246" y="17" width="38" height="36" rx="10" fill="#fff" fill-opacity=".16"/>
+      <text x="265" y="41" font-size="14" fill="#fff" text-anchor="middle" class="mono">{ }</text>
+      <text x="265" y="66" font-size="8" fill="#D9D0FF" text-anchor="middle">FICHAS</text>
+    </g>
+
+    <!-- conexión suave entre paradas -->
+    <path id="camino" d="M165 222 C 165 252, 110 262, 110 300 C 110 345, 98 390, 98 430 C 98 475, 176 490, 176 530 C 176 570, 222 585, 222 625"
+          fill="none" stroke="#E2DEF0" stroke-width="10" stroke-linecap="round"/>
+    <path d="M165 222 C 165 252, 110 262, 110 300 C 110 345, 98 390, 98 430" fill="none" stroke="#C9BCFF" stroke-width="10" stroke-linecap="round"/>
+
+    <!-- ilustraciones de datos (se tocan: muestran los temas de esa zona) -->
+    <g transform="translate(236 268)">
+      <rect width="66" height="56" rx="14" fill="#fff" stroke="#ECEAF3" stroke-width="2"/>
+      <rect x="12" y="30" width="9" height="16" rx="2" fill="#B9A8FF"/>
+      <rect x="25" y="20" width="9" height="26" rx="2" fill="#6C4CF1"/>
+      <rect x="38" y="12" width="9" height="34" rx="2" fill="#FF6B5B"/>
+      <line x1="9" y1="46" x2="56" y2="46" stroke="#2A2838" stroke-width="1.5"/>
+      <circle cx="60" cy="6" r="8" fill="#7CF2C3"/><text x="60" y="10" font-size="9" fill="#0D5A43" text-anchor="middle">3</text>
+    </g>
+    <g transform="translate(18 470)">
+      <rect width="66" height="56" rx="14" fill="#fff" stroke="#ECEAF3" stroke-width="2"/>
+      <line x1="10" y1="46" x2="56" y2="46" stroke="#2A2838" stroke-width="1.5"/><line x1="10" y1="46" x2="10" y2="10" stroke="#2A2838" stroke-width="1.5"/>
+      <circle cx="18" cy="38" r="3" fill="#B9A8FF"/><circle cx="26" cy="32" r="3" fill="#6C4CF1"/><circle cx="34" cy="34" r="3" fill="#B9A8FF"/>
+      <circle cx="42" cy="22" r="3" fill="#FF6B5B"/><circle cx="50" cy="16" r="3" fill="#6C4CF1"/>
+      <path d="M14 40 L52 14" stroke="#FFB020" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <circle cx="60" cy="6" r="8" fill="#DCD8EA"/><text x="60" y="10" font-size="8" fill="#8E8AA8" text-anchor="middle">🔒</text>
+    </g>
+    <g transform="translate(24 252)">
+      <text x="0" y="0" font-size="10" fill="#B9A8FF" class="mono">SELECT</text>
+      <text x="8" y="14" font-size="10" fill="#C7C2DA" class="mono">FROM *</text>
+    </g>
+    <text x="262" y="520" font-size="10" fill="#C7C2DA" class="mono">WHERE</text>
+    <text x="262" y="534" font-size="10" fill="#C7C2DA" class="mono">x &gt; 3</text>
+
+    <!-- paradas: botones redondos con relieve -->
+    <!-- 1 terminada -->
+    <g transform="translate(165 222)">
+      <ellipse cx="0" cy="6" rx="32" ry="30" fill="#4B2FC9"/>
+      <ellipse cx="0" cy="0" rx="32" ry="30" fill="#6C4CF1"/>
+      <text x="0" y="6" font-size="17" fill="#fff" text-anchor="middle" class="mono">&gt;_</text>
+      <circle cx="22" cy="-22" r="9" fill="#7CF2C3" stroke="#F7F6FB" stroke-width="3"/>
+      <text x="22" y="-18.5" font-size="10" fill="#0D5A43" text-anchor="middle">✓</text>
+    </g>
+    <!-- 2 terminada -->
+    <g transform="translate(110 300)">
+      <ellipse cx="0" cy="6" rx="32" ry="30" fill="#4B2FC9"/>
+      <ellipse cx="0" cy="0" rx="32" ry="30" fill="#6C4CF1"/>
+      <text x="0" y="6" font-size="17" fill="#fff" text-anchor="middle" class="mono">&gt;_</text>
+      <circle cx="22" cy="-22" r="9" fill="#7CF2C3" stroke="#F7F6FB" stroke-width="3"/>
+      <text x="22" y="-18.5" font-size="10" fill="#0D5A43" text-anchor="middle">✓</text>
+    </g>
+    <!-- 3 actual: anillo de avance + globo -->
+    <g transform="translate(98 430)">
+      <circle r="44" fill="none" stroke="#E2DEF0" stroke-width="7"/>
+      <circle r="44" fill="none" stroke="#FFB020" stroke-width="7" stroke-dasharray="83 276" stroke-linecap="round" transform="rotate(-90)"/>
+      <g class="latido">
+        <ellipse cx="0" cy="6" rx="32" ry="30" fill="#4B2FC9"/>
+        <ellipse cx="0" cy="0" rx="32" ry="30" fill="#6C4CF1"/>
+        <g fill="#fff"><rect x="-12" y="0" width="6" height="10" rx="1.5"/><rect x="-3" y="-7" width="6" height="17" rx="1.5"/><rect x="6" y="-12" width="6" height="22" rx="1.5"/></g>
+      </g>
+      <g class="flota">
+        <rect x="-44" y="-86" width="88" height="30" rx="10" fill="#fff" stroke="#ECEAF3" stroke-width="2"/>
+        <path d="M-7 -57 L0 -49 L7 -57 Z" fill="#fff"/>
+        <text x="0" y="-66" font-size="13" fill="#6C4CF1" text-anchor="middle" letter-spacing="1">EMPEZAR</text>
+      </g>
+    </g>
+    <!-- 4 bloqueada -->
+    <g transform="translate(176 530)">
+      <ellipse cx="0" cy="6" rx="32" ry="30" fill="#CFCBE0"/>
+      <ellipse cx="0" cy="0" rx="32" ry="30" fill="#E5E2F0"/>
+      <g fill="#AFA9C8"><rect x="-12" y="0" width="6" height="10" rx="1.5"/><rect x="-3" y="-7" width="6" height="17" rx="1.5"/><rect x="6" y="-12" width="6" height="22" rx="1.5"/></g>
+    </g>
+    <!-- 5 bloqueada: repaso -->
+    <g transform="translate(222 625)">
+      <ellipse cx="0" cy="6" rx="32" ry="30" fill="#CFCBE0"/>
+      <ellipse cx="0" cy="0" rx="32" ry="30" fill="#E5E2F0"/>
+      <text x="0" y="9" font-size="24" fill="#AFA9C8" text-anchor="middle">★</text>
+    </g>
+    <!-- premio de la unidad: una base de datos que guarda XP -->
+    <g transform="translate(110 700)">
+      <ellipse cx="0" cy="-14" rx="22" ry="7" fill="#E5E2F0" stroke="#CFCBE0" stroke-width="2"/>
+      <path d="M-22 -14 V 14 A22 7 0 0 0 22 14 V -14" fill="#E5E2F0" stroke="#CFCBE0" stroke-width="2"/>
+      <path d="M-22 0 A22 7 0 0 0 22 0" fill="none" stroke="#CFCBE0" stroke-width="2"/>
+      <text x="0" y="12" font-size="11" fill="#AFA9C8" text-anchor="middle">+50</text>
+    </g>
+
+    <path id="paseo" d="M350 452 L 208 452 C 160 452, 112 500, 108 600" fill="none"/>
+    <g id="hashy-mapa"></g>
+  </svg>
+  <div class="tip" id="tip"><b>TIP DE HASHY</b><span></span></div>
+</div>
+
+<div class="notas">
+  <b>Qué cambia:</b>
+  <ul>
+    <li><b>Hashy</b> ahora es un schnauzer de verdad: cara rectangular, cejas blancas pobladas, barba larga en punta, orejas dobladas y collar rojo.</li>
+    <li><b>El camino</b> se recorre de arriba abajo, con botones redondos y relieve, pero con nuestra identidad: violeta y coral, íconos de datos (<code>&gt;_</code> lección, barras = proyecto, ★ repaso) y una <b>base de datos</b> como premio al final de la unidad.</li>
+    <li><b>Ilustraciones de datos</b> (gráfica de barras, dispersión) junto al camino: al tocarlas ves los temas de esa zona. El número verde dice cuántas fichas tienes; con candado, las que faltan.</li>
+    <li>El botón <b>{ } FICHAS</b> de la unidad abre la chuleta con todo lo que has visto.</li>
+    <li>Hashy camina, se para, dice "¡Guau!" y prende el <b>foco</b>; tócalo para ver su tip.</li>
+  </ul>
+</div>
+
+<script>
+const GRIS = '#8F959D', GRIS_OSC = '#5E646C', CREMA = '#F3EBDC', CREMA_SOMBRA = '#D9CBB0', ROSA = '#E9A3A0', COLLAR = '#D93D48';
+
+// Cara de frente (círculo de 100×100). animo: feliz | triste | lentes
+const LINEA = 'stroke="#2A2838" stroke-width="1.6" stroke-linejoin="round"';
+function cara(animo) {
+  const triste = animo === 'triste';
+  const orejas = triste
+    ? `<path d="M33 27 Q16 28 12 46 Q18 50 24 45 Q27 35 34 33 Z" fill="${GRIS_OSC}" ${LINEA}/><path d="M67 27 Q84 28 88 46 Q82 50 76 45 Q73 35 66 33 Z" fill="${GRIS_OSC}" ${LINEA}/>`
+    : `<path d="M35 24 Q20 15 9 23 Q8 33 16 38 Q20 30 34 31 Z" fill="${GRIS_OSC}" ${LINEA}/><path d="M30 24 Q20 20 14 26 Q17 30 23 29 Z" fill="${ROSA}"/>` +
+      `<path d="M65 24 Q80 15 91 23 Q92 33 84 38 Q80 30 66 31 Z" fill="${GRIS_OSC}" ${LINEA}/><path d="M70 24 Q80 20 86 26 Q83 30 77 29 Z" fill="${ROSA}"/>`;
+  const cuerpo = `<path d="M8 100 Q10 76 30 70 L70 70 Q90 76 92 100 Z" fill="${GRIS}" ${LINEA}/>` +
+    `<path d="M32 100 L35 90 L38 94 L42 86 L46 92 L50 85 L54 92 L58 86 L62 94 L65 90 L68 100 Z" fill="${CREMA}" ${LINEA}/>` +
+    `<path d="M27 74 Q50 83 73 74 L73 80 Q50 89 27 80 Z" fill="${COLLAR}" ${LINEA}/>`;
+  const cabeza = `<path d="M31 36 Q30 19 50 18 Q70 19 69 36 L71 54 L29 54 Z" fill="${GRIS}" ${LINEA}/>` +
+    `<path d="M40 21 Q50 17 60 21 L57 29 Q50 27 43 29 Z" fill="${GRIS_OSC}" opacity=".35"/>`;
+  const ojos = animo === 'lentes'
+    ? ''
+    : triste
+      ? `<ellipse cx="38" cy="45" rx="3" ry="2.6" fill="#1C1C24"/><ellipse cx="62" cy="45" rx="3" ry="2.6" fill="#1C1C24"/>`
+      : `<circle cx="38" cy="43.5" r="4" fill="#1C1C24"/><circle cx="62" cy="43.5" r="4" fill="#1C1C24"/><circle cx="39.5" cy="42" r="1.4" fill="#fff"/><circle cx="63.5" cy="42" r="1.4" fill="#fff"/>`;
+  const cejas = triste
+    ? `<path d="M25 42 Q26 32 36 30 Q44 29 47 33 L46 37 L43 36 L41 39 L38 37 L35 40 L32 38 L28 42 Z" fill="${CREMA}" ${LINEA}/><path d="M75 42 Q74 32 64 30 Q56 29 53 33 L54 37 L57 36 L59 39 L62 37 L65 40 L68 38 L72 42 Z" fill="${CREMA}" ${LINEA}/>`
+    : `<path d="M24 37 Q25 27 36 27 Q44 28 47 33 L46 38 L43 36 L41 40 L38 37 L35 41 L32 38 L28 40 Z" fill="${CREMA}" ${LINEA}/><path d="M76 37 Q75 27 64 27 Q56 28 53 33 L54 38 L57 36 L59 40 L62 37 L65 41 L68 38 L72 40 Z" fill="${CREMA}" ${LINEA}/>`;
+  const lentes = animo === 'lentes'
+    ? `<path d="M27 38 H73" stroke="#1C1C24" stroke-width="2.5"/><path d="M29 37 H47 V42 Q47 50 38 50 Q29 50 29 42 Z M53 37 H71 V42 Q71 50 62 50 Q53 50 53 42 Z" fill="#1C1C24"/><path d="M33 41 L37 45 M57 41 L61 45" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>`
+    : '';
+  const barba = `<path d="M30 50 Q22 51 21 60 Q19 69 26 75 Q29 83 38 86 L43 93 L47 87 L50 96 L53 87 L57 93 L62 86 Q71 83 74 75 Q81 69 79 60 Q78 51 70 50 Q62 53 56 49 Q50 52 44 49 Q38 53 30 50 Z" fill="${CREMA}" ${LINEA}/>` +
+    `<path d="M50 57 Q42 59 34 68 M50 57 Q58 59 66 68 M41 70 L40 80 M59 70 L60 80 M50 64 V 82 M27 62 L31 66 M73 62 L69 66" stroke="${CREMA_SOMBRA}" stroke-width="1.4" stroke-linecap="round" fill="none"/>`;
+  const puente = `<path d="M45 32 L55 32 L54 50 L46 50 Z" fill="${GRIS}"/>`;
+  const nariz = `<path d="M43 50 Q50 45.5 57 50 Q56 56 50 57 Q44 56 43 50 Z" fill="#1C1C24"/><ellipse cx="47.5" cy="49.5" rx="2" ry="1.1" fill="#fff" opacity=".45"/>`;
+  const extra = triste
+    ? `<path d="M64 49 Q62 54 64 56 Q66 54 64 49 Z" fill="#7CC4FF" stroke="#3B82C4" stroke-width=".8"/><path d="M45 74 Q50 70 55 74" stroke="#9C8B6C" stroke-width="2" fill="none" stroke-linecap="round"/>`
+    : '';
+  const fondo = triste ? '#DCE6F2' : animo === 'lentes' ? '#FFE3EC' : '#E8E3FF';
+  return `<svg viewBox="0 0 100 100" width="100%" height="100%"><clipPath id="c${animo}"><circle cx="50" cy="50" r="50"/></clipPath><g clip-path="url(#c${animo})"><rect width="100" height="100" fill="${fondo}"/>${cuerpo}${orejas}${cabeza}${puente}${ojos}${barba}${nariz}${cejas}${lentes}${extra}</g></svg>`;
+}
+
+// De perfil, caminando hacia la derecha (centro de la panza en 0,0)
+function pata(clase, x, color) {
+  return `<g class="${clase}" data-x="${x}"><line x1="${x}" y1="2" x2="${x}" y2="15" stroke="#2A2838" stroke-width="6.5" stroke-linecap="round"/>` +
+    `<line x1="${x}" y1="2" x2="${x}" y2="15" stroke="${color}" stroke-width="3.8" stroke-linecap="round"/></g>`;
+}
+function lado() {
+  return `
+  <g class="giro"><g class="cuerpo">
+    <path d="M-17 -7 Q-25 -15 -21 -24 Q-17 -24 -16 -19 Q-16 -13 -12 -9 Z" fill="${GRIS}" ${LINEA}/>
+    ${pata('p2', -12, GRIS_OSC)}${pata('p1', 9, GRIS_OSC)}
+    <path d="M-18 -7 Q-18 -12 -12 -12 L10 -12 Q16 -12 16 -6 L16 1 Q16 5 10 5 L-12 5 Q-18 5 -18 0 Z" fill="${GRIS}" ${LINEA}/>
+    ${pata('p1', -7, '#E9DFCB')}${pata('p2', 13, '#E9DFCB')}
+    <path d="M-14 2 L-11 8 L-8 3 L-5 8 L-2 3 L1 8 L4 3 L7 8 L10 3 L13 6 L15 -1 L-14 -1 Z" fill="${CREMA}" ${LINEA}/>
+    <path d="M7 -10 L12 -26 L23 -23 L17 -5 Z" fill="${GRIS}" ${LINEA}/>
+    <path d="M12 -32 Q12 -37 17 -37 L25 -37 Q29 -37 29 -32 L29 -21 L12 -22 Z" fill="${GRIS}" ${LINEA}/>
+    <path d="M27 -31 L38 -30 Q41 -30 41 -27 L41 -21 L27 -21 Z" fill="${GRIS}" ${LINEA}/>
+    <path d="M14 -36 L21 -41 L22 -31 Z" fill="${GRIS_OSC}" ${LINEA}/>
+    <circle cx="25" cy="-28.5" r="1.9" fill="#1C1C24"/>
+    <path d="M18 -33 Q26 -40 33 -31 L31 -29 L29 -31.5 L27 -28.5 L24 -31.5 L21 -29 Z" fill="${CREMA}" ${LINEA}/>
+    <path d="M24 -24 L42 -24 L41 -14 L38 -17 L36 -10 L33 -15 L30 -9 L28 -15 L25 -11 Z" fill="${CREMA}" ${LINEA}/>
+    <rect x="38" y="-32.5" width="5" height="5" rx="2" fill="#1C1C24"/>
+    <path d="M9 -13 L19 -16 L20 -11.5 L10 -8.5 Z" fill="${COLLAR}" ${LINEA}/>
+  </g></g>`;
+}
+
+for (const a of ['feliz', 'triste', 'lentes']) document.getElementById('h-' + a).innerHTML = cara(a);
+document.getElementById('h-lado').innerHTML = lado();
+
+// --- Hashy caminando por el camino del mapa ---
+const TIPS = [
+  'Antes de ejecutar, olfatea lo que va justo antes de FROM: ahí no va coma.',
+  'Si te salen 0 filas, revisa mayúsculas y acentos del valor que filtras.',
+  'Toca las gráficas junto al camino para repasar lo que ya viste.',
+];
+const g = document.getElementById('hashy-mapa');
+g.innerHTML = lado() + `
+  <g class="burbuja" opacity="0"><rect x="-6" y="-62" width="48" height="20" rx="10" fill="#fff" stroke="#ECEAF3" stroke-width="2"/>
+    <text x="18" y="-48" font-size="11" text-anchor="middle" fill="#2A2838">¡Guau!</text></g>
+  <g class="foco" opacity="0" style="cursor:pointer">
+    <circle cx="20" cy="-62" r="17" fill="#FFD25A" opacity=".35" class="brilla"/>
+    <g stroke="#FFB020" stroke-width="2.2" stroke-linecap="round" class="brilla">
+      <line x1="20" y1="-88" x2="20" y2="-83"/><line x1="2" y1="-79" x2="6" y2="-75"/><line x1="38" y1="-79" x2="34" y2="-75"/>
+    </g>
+    <circle cx="20" cy="-64" r="10" fill="#FFD25A" stroke="#E0A400" stroke-width="1.5"/>
+    <rect x="15.5" y="-55" width="9" height="7" rx="2" fill="#B9BDC6"/>
+    <path d="M17 -65 q3 4 6 0" stroke="#B07400" stroke-width="1.6" fill="none"/>
+  </g>`;
+const camino = document.getElementById('paseo');
+const largo = camino.getTotalLength();
+const foco = g.querySelector('.foco'), burbuja = g.querySelector('.burbuja'), giro = g.querySelector('.giro'), cuerpo = g.querySelector('.cuerpo');
+const p1 = g.querySelectorAll('.p1'), p2 = g.querySelectorAll('.p2');
+const tip = document.getElementById('tip');
+const paradas = [0, 0.5, 1, 0.5];
+let pos = paradas[0] * largo, n = 0, estado = 'caminando', t0 = 0, antes = performance.now();
+let destino = paradas[1] * largo;
+foco.addEventListener('click', () => {
+  tip.querySelector('span').textContent = TIPS[n % TIPS.length];
+  tip.style.display = 'block';
+  foco.setAttribute('opacity', 0);
+  setTimeout(() => { tip.style.display = 'none'; n++; estado = 'caminando'; destino = paradas[(n + 1) % paradas.length] * largo; }, 3200);
+});
+setInterval(() => {
+  const t = performance.now(), dt = Math.min(50, t - antes); antes = t;
+  if (estado === 'caminando') {
+    const dir = Math.sign(destino - pos);
+    pos += dir * Math.min(Math.abs(destino - pos), 0.045 * dt);
+    const z = Math.sin(t / 80);
+    p1.forEach((l) => l.setAttribute('transform', `rotate(${z * 22} ${l.dataset.x} 2)`));
+    p2.forEach((l) => l.setAttribute('transform', `rotate(${-z * 22} ${l.dataset.x} 2)`));
+    cuerpo.setAttribute('transform', `translate(0 ${-Math.abs(z) * 1.2})`);
+    const a = camino.getPointAtLength(pos), b = camino.getPointAtLength(Math.max(0, Math.min(largo, pos + dir * 3)));
+    g.setAttribute('transform', `translate(${a.x} ${a.y - 18}) scale(.95)`);
+    if (Math.abs(b.x - a.x) > 0.05) giro.setAttribute('transform', `scale(${b.x > a.x ? 1 : -1} 1)`);
+    if (Math.abs(destino - pos) < 1) { estado = 'ladrando'; t0 = t; }
+  } else if (estado === 'ladrando') {
+    const d = t - t0;
+    burbuja.setAttribute('opacity', d < 1200 ? 1 : 0);
+    cuerpo.setAttribute('transform', `translate(0 ${d < 600 ? -Math.abs(Math.sin(d / 60)) * 3 : 0})`);
+    if (d > 1300) { foco.setAttribute('opacity', 1); estado = 'esperando'; }
+  }
+}, 30);
+</script>
+</body>
+</html>

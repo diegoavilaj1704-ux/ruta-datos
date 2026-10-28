@@ -1,27 +1,32 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { unidades, type Concepto, type Sesion, type TipoParada, type Unidad } from '../lib/contenido';
-import { calcularRacha, useProgreso, type Progreso } from '../lib/progreso';
+import { acciones, calcularRacha, useProgreso, type Progreso } from '../lib/progreso';
 import { ejecutar, type Resultado } from '../lib/sql';
+import { sonidos } from '../lib/sonidos';
 import { Avatar } from '../componentes/Avatar';
+import { HashyPaseo } from '../componentes/HashyPaseo';
 import { TextoEnLinea } from '../componentes/Markdown';
 import { Codigo, Salida, Terminal } from '../componentes/Tarjetas';
 
-// Pantalla principal: el mapa de la unidad. Cada parada se abre al terminar la anterior;
-// junto a cada una están las fichas de los temas que enseña, y todo se puede tocar.
+// Pantalla principal: el camino de la unidad, de arriba hacia abajo. Cada parada se abre al
+// terminar la anterior; junto a cada parada alcanzada aparece una gráfica que se toca para repasar,
+// Hashy se pasea dando tips y al final de la unidad espera una base de datos con XP.
 
-const ALTO_FILA = 128;
-const COLUMNAS = [64, 30, 70, 30, 66, 34];   // posición horizontal (%) de cada parada, de abajo hacia arriba
-
-const ICONO: Record<TipoParada, string> = { leccion: '▶', proyecto: '⚑', repaso: '★' };
-const NOMBRE_TIPO: Record<TipoParada, string> = { leccion: 'Lección', proyecto: 'Mini-proyecto', repaso: 'Repaso y nota pública' };
+const FILA = 136;            // distancia vertical entre paradas
+const ARRIBA = 78;           // espacio para el globo de la primera parada
+const VAIVEN = [0, -62, -78, -24, 56, 76, 22];   // desplazamiento horizontal de cada parada
+const PREMIO_XP = 50;
 
 type Estado = 'hecha' | 'actual' | 'bloqueada';
 type Ficha =
   | { tipo: 'parada'; sesion: Sesion; unidad: Unidad }
   | { tipo: 'concepto'; concepto: Concepto; unidad: Unidad }
-  | { tipo: 'unidad'; unidad: Unidad };
+  | { tipo: 'unidad'; unidad: Unidad }
+  | { tipo: 'fichas'; unidad: Unidad }
+  | { tipo: 'premio'; unidad: Unidad };
 
 const catalogo = unidades.flatMap((u) => u.sesiones);
+const NOMBRE_TIPO: Record<TipoParada, string> = { leccion: 'Lección', proyecto: 'Mini-proyecto', repaso: 'Repaso y nota pública' };
 
 function estadoDe(s: Sesion, p: Progreso): Estado {
   if (p.completadas[s.clave]) return 'hecha';
@@ -34,15 +39,8 @@ export function Ruta() {
   const progreso = useProgreso();
   const racha = calcularRacha(progreso.diasActivos);
   const [ficha, setFicha] = useState<Ficha | null>(null);
-  const actual = useRef<HTMLButtonElement>(null);
-  const siguiente = catalogo.find((s) => !progreso.completadas[s.clave]);
-  const unidadActual = unidades.find((u) => u.sesiones.includes(siguiente!)) ?? unidades.find((u) => u.sesiones.length) ?? unidades[0];
-  const hechas = unidadActual.sesiones.filter((s) => progreso.completadas[s.clave]).length;
-
-  // Al abrir, el mapa se centra en la parada que toca
-  useEffect(() => {
-    actual.current?.scrollIntoView({ block: 'center' });
-  }, []);
+  const conContenido = unidades.filter((u) => u.sesiones.length);
+  const proximas = unidades.filter((u) => !u.sesiones.length);
 
   return (
     <main className="ruta">
@@ -50,139 +48,199 @@ export function Ruta() {
         <button className="ruta-yo" onClick={() => (location.hash = '#/perfil')} aria-label="Editar tu personaje">
           <Avatar quien="yo" tam={40} />
         </button>
-        <button className="ruta-unidad" onClick={() => setFicha({ tipo: 'unidad', unidad: unidadActual })}>
-          <small>{unidadActual.modulo.nombre} · Unidad {unidadActual.numero}</small>
-          <b>{unidadActual.titulo}</b>
-          <span className="ruta-progreso" aria-label={`${hechas} de ${unidadActual.sesiones.length} paradas`}>
-            <i style={{ width: `${(hechas / Math.max(1, unidadActual.sesiones.length)) * 100}%` }} />
-          </span>
-        </button>
-        <div className="ruta-chips">
-          <span className="ruta-chip racha" aria-label={`Racha de ${racha} días`}>▲ {racha}</span>
-          <button className="ruta-chip xp" onClick={() => (location.hash = '#/closet')} aria-label={`${progreso.xp} XP. Abrir tu clóset`}>◆ {progreso.xp}</button>
-        </div>
+        <span className="ruta-modulo">{unidades[0]?.modulo.nombre}</span>
+        <span className="ruta-chip racha" aria-label={`Racha de ${racha} días`}>▲ {racha}</span>
+        <button className="ruta-chip xp" onClick={() => (location.hash = '#/closet')} aria-label={`${progreso.xp} XP. Abrir tu clóset`}>◆ {progreso.xp}</button>
       </header>
 
-      <div className="mapa">
-        {[...unidades].reverse().map((u) =>
-          u.sesiones.length ? (
-            <TramoUnidad key={u.id} unidad={u} progreso={progreso} abrirFicha={setFicha} refActual={actual} />
-          ) : (
+      {conContenido.map((u) => <Camino key={u.id} unidad={u} progreso={progreso} abrirFicha={setFicha} />)}
+
+      {proximas.length > 0 && (
+        <section className="proximas">
+          <p className="proximas-titulo">Lo que sigue en {proximas[0].modulo.nombre}</p>
+          {proximas.map((u) => (
             <button key={u.id} className="isla-bloqueada" onClick={() => setFicha({ tipo: 'unidad', unidad: u })}>
               <span className="candado" aria-hidden="true">🔒</span>
-              <span><small>Unidad {u.numero} · próximamente</small><b>{u.titulo}</b></span>
+              <span><small>Unidad {u.numero}</small><b>{u.titulo}</b></span>
             </button>
-          ),
-        )}
-        <p className="mapa-inicio">Aquí empieza tu ruta, {progreso.perfil?.nombre}</p>
-      </div>
+          ))}
+        </section>
+      )}
 
       {ficha && <HojaFicha ficha={ficha} progreso={progreso} cambiar={setFicha} cerrar={() => setFicha(null)} />}
     </main>
   );
 }
 
-function TramoUnidad({ unidad, progreso, abrirFicha, refActual }: {
-  unidad: Unidad;
-  progreso: Progreso;
-  abrirFicha: (f: Ficha) => void;
-  refActual: React.RefObject<HTMLButtonElement>;
-}) {
-  const [tip, setTip] = useState<string | null>(null);
-  const [nTip, setNTip] = useState(0);
+// ---------- El camino de una unidad ----------
+
+function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Progreso; abrirFicha: (f: Ficha) => void }) {
+  const caja = useRef<HTMLDivElement>(null);
+  const actual = useRef<HTMLButtonElement>(null);
+  const [ancho, setAncho] = useState(() => Math.min(innerWidth, 460));
   const paradas = unidad.sesiones;
-  const alto = paradas.length * ALTO_FILA + 40;
-  // Centro de cada parada: la primera queda abajo
-  const puntos = paradas.map((_, i) => ({ x: COLUMNAS[i % COLUMNAS.length], y: alto - 40 - i * ALTO_FILA - ALTO_FILA / 2 + 20 }));
-  const camino = (hasta: number) =>
-    puntos.slice(0, hasta + 1).reduce((d, p, i) => {
+  const hechas = paradas.filter((s) => progreso.completadas[s.clave]).length;
+  const completa = hechas === paradas.length;
+  const cobrado = progreso.premios.includes(unidad.id);
+
+  useLayoutEffect(() => {
+    const el = caja.current;
+    if (!el) return;
+    const medir = () => setAncho(el.clientWidth);
+    medir();
+    const obs = new ResizeObserver(medir);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  // Al abrir, el camino se centra en la parada que toca
+  useEffect(() => {
+    actual.current?.scrollIntoView({ block: 'center' });
+  }, []);
+
+  const centro = ancho / 2;
+  const punto = (i: number) => ({ x: centro + VAIVEN[i % VAIVEN.length], y: ARRIBA + i * FILA });
+  const puntos = paradas.map((_, i) => punto(i));
+  const premio = punto(paradas.length);
+  const alto = premio.y + 90;
+  const curva = (hasta: number) =>
+    [...puntos, premio].slice(0, hasta + 1).reduce((d, p, i, arr) => {
       if (i === 0) return `M ${p.x} ${p.y}`;
-      const a = puntos[i - 1];
+      const a = arr[i - 1];
       const m = (a.y + p.y) / 2;
       return `${d} C ${a.x} ${m}, ${p.x} ${m}, ${p.x} ${p.y}`;
     }, '');
-  const ultimaHecha = paradas.reduce((n, s, i) => (progreso.completadas[s.clave] ? i : n), -1);
   const iActual = paradas.findIndex((s) => estadoDe(s, progreso) === 'actual');
 
-  function hablarHashy() {
-    if (!unidad.tipsHashy.length) return;
-    setTip(unidad.tipsHashy[nTip % unidad.tipsHashy.length]);
-    setNTip((n) => n + 1);
-  }
+  // Hashy se para junto a la parada que toca (o junto al premio si ya terminaste)
+  const junto = iActual >= 0 ? puntos[iActual] : premio;
+  const hashyIzq = (iActual >= 0 ? VAIVEN[iActual % VAIVEN.length] : VAIVEN[paradas.length % VAIVEN.length]) <= 0;
+  const hashy = { x: junto.x + (hashyIzq ? -78 : 78), y: junto.y + 20 };
 
   return (
-    <section className="tramo" style={{ height: alto }}>
-      <svg className="tramo-camino" viewBox={`0 0 100 ${alto}`} preserveAspectRatio="none" aria-hidden="true">
-        <path d={camino(paradas.length - 1)} className="camino-falta" vectorEffect="non-scaling-stroke" />
-        {ultimaHecha >= 0 && <path d={camino(Math.min(ultimaHecha + 1, paradas.length - 1))} className="camino-hecho" vectorEffect="non-scaling-stroke" />}
-      </svg>
+    <section className="tramo">
+      <div className="tarjeta-unidad">
+        <button className="tu-info" onClick={() => abrirFicha({ tipo: 'unidad', unidad })}>
+          <small>{unidad.modulo.nombre.split(' ')[0]} · Unidad {unidad.numero}</small>
+          <b>{unidad.titulo}</b>
+          <span className="tu-barra" aria-label={`${hechas} de ${paradas.length} paradas`}>
+            <i style={{ width: `${(hechas / paradas.length) * 100}%` }} />
+          </span>
+        </button>
+        <button className="tu-fichas" onClick={() => abrirFicha({ tipo: 'fichas', unidad })} aria-label="Fichas de los temas de la unidad">
+          <span className="tu-llaves">{'{ }'}</span>
+          <small>FICHAS</small>
+        </button>
+      </div>
 
-      {paradas.map((s, i) => {
-        const estado = estadoDe(s, progreso);
-        const { x, y } = puntos[i];
-        const fichas = unidad.conceptos.filter((c) => c.parada === s.parada.id);
-        const enCurso = progreso.historias[s.clave];
-        const izquierda = x >= 50;
-        return (
-          <div key={s.clave}>
-            {estado === 'actual' && (
-              <span className="parada-globo" style={{ left: `${x}%`, top: y - 78 }}>
-                {enCurso ? 'CONTINUAR' : 'EMPEZAR'}
-              </span>
-            )}
-            <button
-              ref={estado === 'actual' ? refActual : undefined}
-              className={`parada ${estado}`}
-              style={{ left: `${x}%`, top: y }}
-              onClick={() => abrirFicha({ tipo: 'parada', sesion: s, unidad })}
-              aria-label={`${s.parada.corto}: ${estado === 'hecha' ? 'terminada' : estado === 'actual' ? 'te toca' : 'bloqueada'}`}
-            >
-              <span className="parada-icono" aria-hidden="true">{estado === 'hecha' ? '✓' : estado === 'bloqueada' ? '🔒' : ICONO[s.tipo]}</span>
-              <span className="parada-nombre">{s.parada.corto}</span>
-            </button>
-            {fichas.length > 0 && (
-              <div className={`fichas ${izquierda ? 'a-la-izquierda' : 'a-la-derecha'}`} style={{ top: y - 30 }}>
-                {fichas.map((c) => {
-                  const abierta = estado === 'hecha';
-                  return (
-                    <button
-                      key={c.id}
-                      className={`ficha-codigo ${abierta ? '' : 'cerrada'}`}
-                      onClick={() => abrirFicha({ tipo: 'concepto', concepto: c, unidad })}
-                      aria-label={`${c.titulo}${abierta ? '' : ' (bloqueada)'}`}
-                    >
-                      {abierta ? c.codigo : `🔒 ${c.codigo}`}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        );
-      })}
+      <div className="camino" ref={caja} style={{ height: alto }}>
+        <svg className="camino-linea" width={ancho} height={alto} aria-hidden="true">
+          <path d={curva(paradas.length)} className="linea-falta" />
+          {hechas > 0 && <path d={curva(completa ? paradas.length : hechas)} className="linea-hecha" />}
+        </svg>
 
-      {/* Hashy se asoma junto a la parada que toca (o la última, si ya terminaste) */}
-      {unidad.tipsHashy.length > 0 && (iActual >= 0 || ultimaHecha === paradas.length - 1) && (
-        <div
-          className={`hashy-mapa ${puntos[iActual >= 0 ? iActual : paradas.length - 1].x < 50 ? 'izq' : 'der'}`}
-          style={{ top: puntos[iActual >= 0 ? iActual : paradas.length - 1].y - 29 }}
+        {paradas.map((s, i) => {
+          const estado = estadoDe(s, progreso);
+          const { x, y } = puntos[i];
+          const enCurso = progreso.historias[s.clave];
+          const total = s.historia?.pasos.length ?? 1;
+          const avance = enCurso ? Math.max(0.08, enCurso.paso / total) : 0.04;
+          const fichas = unidad.conceptos.filter((c) => c.parada === s.parada.id);
+          const ladoIlus = VAIVEN[i % VAIVEN.length] <= 0 ? 1 : -1;
+          return (
+            <div key={s.clave}>
+              {estado === 'actual' && (
+                <>
+                  <svg className="anillo" style={{ left: x - 50, top: y - 50 }} width="100" height="100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="45" className="anillo-fondo" />
+                    <circle cx="50" cy="50" r="45" className="anillo-avance" strokeDasharray={`${avance * 283} 283`} transform="rotate(-90 50 50)" />
+                  </svg>
+                  <span className="globo-parada" style={{ left: x, top: y - 80 }}>{enCurso ? 'CONTINUAR' : 'EMPEZAR'}</span>
+                </>
+              )}
+              <button
+                ref={estado === 'actual' ? actual : undefined}
+                className={`boton-parada ${estado}`}
+                style={{ left: x, top: y }}
+                onClick={() => abrirFicha({ tipo: 'parada', sesion: s, unidad })}
+                aria-label={`${s.parada.corto}: ${estado === 'hecha' ? 'terminada' : estado === 'actual' ? 'te toca' : 'bloqueada'}`}
+              >
+                <IconoParada tipo={s.tipo} />
+                {estado === 'hecha' && <span className="palomita" aria-hidden="true">✓</span>}
+              </button>
+              <span className={`nombre-parada ${estado}`} style={{ left: x, top: y + 37 }}>{s.parada.corto}</span>
+              {/* Las gráficas aparecen conforme avanzas: tus datos crecen con el camino */}
+              {fichas.length > 0 && estado !== 'bloqueada' && (
+                <button
+                  className={`ilustracion ${estado === 'hecha' ? '' : 'cerrada'}`}
+                  style={{ left: x + ladoIlus * 104, top: y - 4 }}
+                  onClick={() => abrirFicha(estado === 'hecha' ? { tipo: 'fichas', unidad } : { tipo: 'parada', sesion: s, unidad })}
+                  aria-label={`Temas de ${s.parada.corto}`}
+                >
+                  <Grafica tipo={i} />
+                  <span className="insignia">{estado === 'hecha' ? fichas.length : '🔒'}</span>
+                </button>
+              )}
+            </div>
+          );
+        })}
+
+        <button
+          className={`premio ${cobrado ? 'cobrado' : completa ? 'listo' : 'cerrado'}`}
+          style={{ left: premio.x, top: premio.y }}
+          onClick={() => abrirFicha({ tipo: 'premio', unidad })}
+          aria-label={`Premio de la unidad: ${PREMIO_XP} XP`}
         >
-          {tip && <p className="hashy-globo" onClick={() => setTip(null)}>{tip}</p>}
-          <button onClick={hablarHashy} aria-label="Pedirle un tip a Hashy">
-            <Avatar quien="hashy" tam={58} />
-          </button>
-        </div>
-      )}
+          <BaseDeDatos />
+          <span>{cobrado ? '✓' : `+${PREMIO_XP}`}</span>
+        </button>
+
+        {unidad.tipsHashy.length > 0 && (
+          <HashyPaseo x={hashy.x} y={hashy.y} mira={hashyIzq ? 1 : -1} tips={unidad.tipsHashy} />
+        )}
+      </div>
     </section>
   );
 }
 
-function HojaFicha({ ficha, progreso, cambiar, cerrar }: {
-  ficha: Ficha;
-  progreso: Progreso;
-  cambiar: (f: Ficha) => void;
-  cerrar: () => void;
-}) {
+function IconoParada({ tipo }: { tipo: TipoParada }) {
+  if (tipo === 'leccion') return <span className="icono-terminal">&gt;_</span>;
+  if (tipo === 'proyecto') {
+    return (
+      <svg width="30" height="26" viewBox="0 0 30 26" aria-hidden="true">
+        <rect x="2" y="13" width="7" height="12" rx="2" /><rect x="11.5" y="6" width="7" height="19" rx="2" /><rect x="21" y="1" width="7" height="24" rx="2" />
+      </svg>
+    );
+  }
+  return <span className="icono-estrella">★</span>;
+}
+
+function BaseDeDatos() {
+  return (
+    <svg width="46" height="50" viewBox="0 0 46 50" aria-hidden="true">
+      <path d="M3 9 V41 A20 7 0 0 0 43 41 V9" className="bd-lado" />
+      <path d="M3 25 A20 7 0 0 0 43 25" className="bd-raya" />
+      <ellipse cx="23" cy="9" rx="20" ry="7" className="bd-tapa" />
+    </svg>
+  );
+}
+
+// Gráficas pequeñas junto al camino: le dan al mapa su cara de datos
+function Grafica({ tipo }: { tipo: number }) {
+  const t = tipo % 4;
+  return (
+    <svg width="54" height="40" viewBox="0 0 54 40" aria-hidden="true">
+      <line x1="4" y1="36" x2="50" y2="36" className="g-eje" />
+      {t === 0 && (<><rect x="9" y="22" width="8" height="14" rx="2" className="g1" /><rect x="21" y="13" width="8" height="23" rx="2" className="g2" /><rect x="33" y="5" width="8" height="31" rx="2" className="g3" /></>)}
+      {t === 1 && (<><line x1="4" y1="36" x2="4" y2="3" className="g-eje" /><circle cx="12" cy="29" r="3" className="g1" /><circle cx="20" cy="24" r="3" className="g2" /><circle cx="28" cy="26" r="3" className="g1" /><circle cx="36" cy="14" r="3" className="g3" /><circle cx="44" cy="8" r="3" className="g2" /><path d="M8 32 L48 6" className="g-tendencia" /></>)}
+      {t === 2 && (<><path d="M27 20 L27 4 A16 16 0 0 1 42 25 Z" className="g3" /><path d="M27 20 L42 25 A16 16 0 1 1 27 4 Z" className="g2" /></>)}
+      {t === 3 && (<><path d="M4 30 L14 24 L24 27 L34 14 L46 8" className="g-linea" /><circle cx="34" cy="14" r="3" className="g3" /></>)}
+    </svg>
+  );
+}
+
+// ---------- Hojas con información ----------
+
+function HojaFicha({ ficha, progreso, cambiar, cerrar }: { ficha: Ficha; progreso: Progreso; cambiar: (f: Ficha) => void; cerrar: () => void }) {
   return (
     <div className="hoja-fondo" onClick={cerrar}>
       <div className="hoja" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
@@ -191,6 +249,8 @@ function HojaFicha({ ficha, progreso, cambiar, cerrar }: {
         {ficha.tipo === 'parada' && <FichaParada {...ficha} progreso={progreso} cambiar={cambiar} />}
         {ficha.tipo === 'concepto' && <FichaConcepto {...ficha} progreso={progreso} cambiar={cambiar} />}
         {ficha.tipo === 'unidad' && <FichaUnidad unidad={ficha.unidad} progreso={progreso} cambiar={cambiar} />}
+        {ficha.tipo === 'fichas' && <FichaFichas unidad={ficha.unidad} progreso={progreso} cambiar={cambiar} />}
+        {ficha.tipo === 'premio' && <FichaPremio unidad={ficha.unidad} progreso={progreso} />}
       </div>
     </div>
   );
@@ -287,7 +347,29 @@ function FichaConcepto({ concepto, unidad, progreso, cambiar }: { concepto: Conc
           {!salida && <button className="boton-juego" onClick={probar}>PROBAR ▶</button>}
         </>
       )}
-      <button className="enlace-juego" onClick={() => cambiar({ tipo: 'parada', sesion, unidad })}>Lo viste en: {sesion.meta.titulo}</button>
+      <button className="enlace-juego" onClick={() => cambiar({ tipo: 'fichas', unidad })}>Ver todas las fichas</button>
+    </div>
+  );
+}
+
+// La chuleta de la unidad: todos los temas, abiertos los que ya viste
+function FichaFichas({ unidad, progreso, cambiar }: { unidad: Unidad; progreso: Progreso; cambiar: (f: Ficha) => void }) {
+  const abiertas = unidad.conceptos.filter((c) => unidad.sesiones.some((s) => s.parada.id === c.parada && progreso.completadas[s.clave]));
+  return (
+    <div className="ficha">
+      <span className="ficha-tipo actual">Fichas · {abiertas.length} de {unidad.conceptos.length}</span>
+      <h2>Lo que llevas de {unidad.titulo.toLowerCase()}</h2>
+      <div className="lista-fichas">
+        {unidad.conceptos.map((c) => {
+          const abierta = abiertas.includes(c);
+          return (
+            <button key={c.id} className={`fila-ficha ${abierta ? '' : 'cerrada'}`} onClick={() => cambiar({ tipo: 'concepto', concepto: c, unidad })}>
+              <code>{abierta ? c.codigo : '🔒'}</code>
+              <span><b>{c.titulo}</b>{abierta && <small><TextoEnLinea texto={c.significado} /></small>}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -310,14 +392,56 @@ function FichaUnidad({ unidad, progreso, cambiar }: { unidad: Unidad; progreso: 
             const e = estadoDe(s, progreso);
             return (
               <button key={s.clave} className={`ficha-fila ${e}`} onClick={() => cambiar({ tipo: 'parada', sesion: s, unidad })}>
-                <span aria-hidden="true">{e === 'hecha' ? '✓' : e === 'actual' ? ICONO[s.tipo] : '🔒'}</span>
+                <span aria-hidden="true">{e === 'hecha' ? '✓' : e === 'actual' ? '▶' : '🔒'}</span>
                 {s.meta.titulo}
               </button>
             );
           })}
         </div>
       ) : (
-        <p className="ficha-candado">🔒 Esta unidad se está escribiendo. Aparecerá en el mapa en cuanto esté lista.</p>
+        <p className="ficha-candado">🔒 Esta unidad se está escribiendo. Aparecerá en el camino en cuanto esté lista.</p>
+      )}
+    </div>
+  );
+}
+
+function FichaPremio({ unidad, progreso }: { unidad: Unidad; progreso: Progreso }) {
+  const faltan = unidad.sesiones.filter((s) => !progreso.completadas[s.clave]).length;
+  const cobrado = progreso.premios.includes(unidad.id);
+  const [recien, setRecien] = useState(false);
+
+  function abrirPremio() {
+    if (acciones.reclamarPremio(unidad.id, PREMIO_XP)) {
+      sonidos.fin();
+      setRecien(true);
+    }
+  }
+
+  return (
+    <div className="ficha ficha-premio">
+      <Avatar quien="hashy" animo={cobrado || recien ? 'lentes' : 'feliz'} tam={88} />
+      <span className={`ficha-tipo ${cobrado ? 'hecha' : faltan ? 'bloqueada' : 'actual'}`}>Premio de la unidad</span>
+      {recien ? (
+        <>
+          <h2>¡+{PREMIO_XP} XP a tu base de datos!</h2>
+          <p className="ficha-texto">Terminaste <b>{unidad.titulo}</b>. Gástalos en tu clóset.</p>
+        </>
+      ) : cobrado ? (
+        <>
+          <h2>Ya abriste esta base de datos</h2>
+          <p className="ficha-texto">Guardaste {PREMIO_XP} XP al terminar <b>{unidad.titulo}</b>.</p>
+        </>
+      ) : faltan ? (
+        <>
+          <h2>Una base de datos con {PREMIO_XP} XP</h2>
+          <p className="ficha-candado">🔒 Te {faltan === 1 ? 'falta 1 parada' : `faltan ${faltan} paradas`} para abrirla.</p>
+        </>
+      ) : (
+        <>
+          <h2>¡Terminaste la unidad!</h2>
+          <p className="ficha-texto">Tu base de datos guarda {PREMIO_XP} XP de premio.</p>
+          <button className="boton-juego" onClick={abrirPremio}>ABRIR · +{PREMIO_XP} XP</button>
+        </>
       )}
     </div>
   );
