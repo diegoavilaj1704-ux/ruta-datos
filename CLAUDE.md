@@ -38,32 +38,34 @@ Idioma del proyecto: **español** (contenido, comentarios de código, commits y 
 contenido/
   etapa-0-fundamentos/
     m02-sql/
-      modulo.json              # metadatos del módulo
+      modulo.json              # metadatos del módulo y lista de sus unidades (las que no tienen carpeta salen "próximamente")
       datasets/*.sql           # se cargan automáticamente en el editor de la app
-      s01-primera-consulta/
-        semana.json            # metadatos de la semana
+      s01-primera-consulta/    # una unidad
+        unidad.json            # las paradas del camino, en orden
         ejercicios.json        # ejercicios auto-evaluables (solución + filas esperadas)
-        lunes.historia.yaml    # la lección contada en tarjetas (lo que la app muestra primero)
-        lunes.md  martes.md    # lecciones
-        proyecto.md            # mini-proyecto (mié–jue)
-        nota-viernes.md        # repaso y nota pública
+        conceptos.yaml         # fichas de temas que se tocan en el mapa + tips de Hashy
+        <parada>.historia.yaml # cada parada contada en tarjetas (lo que la app muestra primero)
+        leccion-1.md  leccion-2.md  proyecto.md  repaso.md   # versión completa en texto
 ```
 
-Frontmatter de cada lección: `id, modulo, semana, dia, objetivo, duracion_min, prerequisitos, dataset, version`.
+Paradas de una unidad: `leccion-1`, `leccion-2`, `proyecto-1`, `proyecto-2` (ambas usan `proyecto.md`) y `repaso`.
+
+Frontmatter de cada lección: `id, modulo, unidad, parada, objetivo, duracion_min, prerequisitos, dataset, version`.
 
 ## Estado actual
 
 - Hecho: plan maestro, skill `docente-datos`, Semana 1 del M2 (SQL: SELECT/FROM y WHERE) v1.0, revisada por el piloto y aprobada en claridad.
 - Ajuste ya aplicado en esta versión: se quitó la dependencia de sqliteonline.com; la práctica será en el editor integrado.
-- Hecho (27 oct): **prototipo PWA** en `app/`: Hoy (siguiente sesión, racha, avance de la semana), Lección (bloques, editor SQL con ejercicios auto-evaluados, quiz interactivo, nota del viernes), funciona sin conexión.
+- Hecho (27 oct): **prototipo PWA** en `app/`: Lección (bloques, editor SQL con ejercicios auto-evaluados, quiz interactivo, nota del viernes), funciona sin conexión.
 - Meta: **App Store en diciembre 2026** con Capacitor (ver `docs/camino-app-store.md`).
 - Publicación: https://diegoavilaj1704-ux.github.io/ruta-datos/ (GitHub Pages) vía `.github/workflows/publicar-pwa.yml` en cada push a `main` (repo público por ahora; migrar a GitHub Pro para volverlo privado).
 - Definido (27 oct): estilo visual, personajes y regla de ejercicios (ver `docs/estilo-y-personajes.md`).
-- Hecho (27 oct): lección del lunes como historia en tarjetas (`lunes.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
+- Hecho (27 oct): lección 1 como historia en tarjetas (`leccion-1.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
 - Hecho (27 oct): avatar propio con nombre (protagonista), Hashy el schnauzer (tips y errores) y sonidos.
 - Hecho (27 oct): avatar de cuerpo completo y clóset donde se gastan los XP (catálogo en `app/src/lib/armario.ts`).
 - Definido (27 oct): ruta por unidades con paradas en un mapa (maqueta `docs/maquetas/ruta-mapa.html`) y temario ampliado: SQL en dos módulos, etapa Data Analyst, Git al inicio, IA aplicada a datos.
-- Siguiente: mapa de la Ruta en la app + historia del martes, proyecto y repaso de la Unidad 1; después Capacitor + recordatorio diario. Barra inferior por definir.
+- Hecho (27 oct): **mapa de la Ruta** como pantalla principal (`app/src/pantallas/Ruta.tsx`): paradas que se abren en orden, fichas de temas que se tocan (con ejemplo ejecutable), Hashy con tips y unidades próximas. **Unidad 1 completa en historia**: lecciones 1 y 2, proyecto en dos partes y repaso con nota pública.
+- Siguiente: Unidad 2 (Ordenar y filtrar mejor) con dataset ampliado; barra inferior por definir; después Capacitor + recordatorio diario.
 
 ## Comandos de la app (desde `app/`)
 

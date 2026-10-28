@@ -10,6 +10,7 @@ import '@fontsource/jetbrains-mono/latin-400.css';
 import '@fontsource/jetbrains-mono/latin-600.css';
 import './estilos.css';
 import './historia.css';
+import './ruta.css';
 
 registerSW({ immediate: true });
 prepararSonido();

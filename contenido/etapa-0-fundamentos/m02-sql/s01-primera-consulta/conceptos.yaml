@@ -1,0 +1,65 @@
+# Fichas de los temas de la unidad. La app las pone en el mapa de la Ruta junto a la
+# parada que los enseña; se desbloquean al terminar esa parada. Al tocarlas se ve
+# qué significan y un ejemplo que se puede ejecutar. `npm run verificar` corre los ejemplos.
+version: "1.0"
+conceptos:
+  - id: select
+    parada: leccion-1
+    codigo: SELECT
+    titulo: "Elegir columnas"
+    significado: "«Selecciona»: dice qué columnas quieres ver. Las columnas se separan con comas, sin coma después de la última."
+    ejemplo: "SELECT producto, cantidad\nFROM ventas;"
+  - id: from
+    parada: leccion-1
+    codigo: FROM
+    titulo: "De qué tabla"
+    significado: "«De»: dice de qué tabla salen los datos. Va después de SELECT."
+    ejemplo: "SELECT producto\nFROM ventas;"
+  - id: asterisco
+    parada: leccion-1
+    codigo: "*"
+    titulo: "Todas las columnas"
+    significado: "El asterisco trae todas las columnas. Úsalo para explorar; en reportes, nombra las columnas."
+    ejemplo: "SELECT *\nFROM ventas;"
+  - id: where
+    parada: leccion-2
+    codigo: WHERE
+    titulo: "Filtrar filas"
+    significado: "«Donde»: deja pasar solo las filas que cumplen la condición. Va siempre después de FROM."
+    ejemplo: "SELECT producto, cantidad\nFROM ventas\nWHERE sucursal = 'Norte';"
+  - id: comparadores
+    parada: leccion-2
+    codigo: "= <>"
+    titulo: "Comparadores"
+    significado: "`=` igual a, `<>` distinto de, `>` mayor, `<` menor. `>=` y `<=` incluyen el valor del límite."
+    ejemplo: "SELECT producto, cantidad\nFROM ventas\nWHERE cantidad >= 4;"
+  - id: comillas
+    parada: leccion-2
+    codigo: "'texto'"
+    titulo: "Comillas sí o no"
+    significado: "Texto y fechas van entre comillas simples y escritos tal como están en la tabla ('Norte', no 'norte'). Los números van sin comillas."
+    ejemplo: "SELECT id_venta, producto\nFROM ventas\nWHERE fecha = '2026-10-02';"
+  - id: explorar
+    parada: proyecto-1
+    codigo: "EXPLORA"
+    titulo: "Explorar antes de filtrar"
+    significado: "Antes de responder, mira la tabla completa y fíjate cómo están escritos los valores: mayúsculas y acentos."
+    ejemplo: "SELECT *\nFROM ventas;"
+  - id: reporte
+    parada: proyecto-2
+    codigo: "REPORTE"
+    titulo: "Un buen reporte"
+    significado: "Responde la pregunta en palabras de negocio y agrega un patrón que el dueño no había notado. Por ejemplo: las bebidas son 14 de las 24 piezas vendidas."
+    ejemplo: "SELECT producto, cantidad, sucursal\nFROM ventas\nWHERE categoria = 'Bebidas';"
+  - id: nota
+    parada: repaso
+    codigo: "NOTA"
+    titulo: "Aprender en público"
+    significado: "Tu nota: qué aprendiste, un ejemplo propio, un error que cometiste y una pregunta para quien lea."
+
+# Hashy aparece en el mapa; al tocarlo dice uno de estos tips.
+tips_hashy:
+  - "¡Guau! Antes de ejecutar, olfatea lo que va justo antes de FROM: ahí no va coma."
+  - "Si te salen 0 filas, revisa mayúsculas y acentos del valor que filtras."
+  - "Una parada al día es buen ritmo. ¡Pero si traes energía, haz dos!"
+  - "Toca las fichas de código del mapa para repasar lo que ya viste."

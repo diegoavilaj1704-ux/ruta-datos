@@ -1,17 +1,17 @@
 ---
-id: m02-s01-martes
+id: m02-s01-leccion-2
 modulo: M2 SQL desde cero
-semana: 1
-dia: martes
+unidad: 1
+parada: leccion-2
 titulo: Filtrar filas con WHERE
 objetivo: "Al terminar podrás escribir una consulta que muestre solo las filas que cumplen una condición."
 duracion_min: 30
-prerequisitos: [m02-s01-lunes]
+prerequisitos: [m02-s01-leccion-1]
 dataset: abarrotes_ventas
-version: 1.0
+version: 1.1
 ---
 
-# Martes · Filtrar filas con WHERE
+# Lección 2 · Filtrar filas con WHERE
 
 ## 1. Objetivo
 
@@ -23,7 +23,7 @@ Ahora el dueño pregunta: "¿Qué se vendió en la sucursal Norte?". No quiere l
 
 ## 3. Lo que ya sabes
 
-Ayer elegiste **columnas** con SELECT. Hoy eliges **filas**. Si has usado el filtro de Excel (la flechita en el encabezado), ya conoces la idea.
+En la lección 1 elegiste **columnas** con SELECT. Hoy eliges **filas**. Si has usado el filtro de Excel (la flechita en el encabezado), ya conoces la idea.
 
 ## 4. La idea en una frase
 
@@ -158,7 +158,7 @@ En el ejercicio 2 salen dos refrescos (18 pesos) y el agua (12 pesos). Las papas
 - b) Elige qué filas mostrar. ✅
 - c) Ordena las filas.
 
-> a) Eso es SELECT. SELECT recorta columnas; WHERE recorta filas. · c) Ordenar es otra instrucción que verás la próxima semana.
+> a) Eso es SELECT. SELECT recorta columnas; WHERE recorta filas. · c) Ordenar es otra instrucción que verás en la Unidad 2.
 
 **Pregunta 2.** ¿Cuál condición está bien escrita?
 
@@ -184,7 +184,7 @@ En el ejercicio 2 salen dos refrescos (18 pesos) y el agua (12 pesos). Las papas
 
 > a) Sí hay: las ventas 4 y 6. · c) WHERE sí funciona con texto, pero compara letra por letra. Revisa siempre cómo está escrito el valor en la tabla.
 
-**Pregunta 5 (repaso del lunes).** ¿Qué trae `SELECT *`?
+**Pregunta 5 (repaso de la lección 1).** ¿Qué trae `SELECT *`?
 
 - a) Todas las columnas. ✅
 - b) Todas las tablas.

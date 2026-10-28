@@ -1,7 +1,8 @@
 // Verifica que cada ejercicios.json coincide con su dataset:
 // corre la solución con sql.js y compara contra filas_esperadas.
 // También revisa las historias (*.historia.yaml): que los retos apunten a un
-// ejercicio existente y que los ejemplos de la terminal corran sin error.
+// ejercicio existente y que los ejemplos de la terminal corran sin error,
+// y las fichas del mapa (conceptos.yaml): que su parada exista y su ejemplo corra.
 // Uso: npm run verificar
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname, resolve, basename } from 'node:path';
@@ -25,8 +26,8 @@ function buscar(dir, nombre, hallados = []) {
 let fallas = 0;
 for (const archivo of buscar(raiz, 'ejercicios.json')) {
   const carpeta = dirname(archivo);
-  const semana = JSON.parse(readFileSync(join(carpeta, 'semana.json'), 'utf8'));
-  const dataset = readFileSync(resolve(carpeta, semana.dataset), 'utf8');
+  const unidad = JSON.parse(readFileSync(join(carpeta, 'unidad.json'), 'utf8'));
+  const dataset = readFileSync(resolve(carpeta, unidad.dataset), 'utf8');
   const { ejercicios } = JSON.parse(readFileSync(archivo, 'utf8'));
 
   for (const ej of ejercicios) {
@@ -43,11 +44,15 @@ for (const archivo of buscar(raiz, 'ejercicios.json')) {
 
 for (const archivo of buscar(raiz, /\.historia\.yaml$/)) {
   const carpeta = dirname(archivo);
-  const semana = JSON.parse(readFileSync(join(carpeta, 'semana.json'), 'utf8'));
-  const dataset = readFileSync(resolve(carpeta, semana.dataset), 'utf8');
+  const unidad = JSON.parse(readFileSync(join(carpeta, 'unidad.json'), 'utf8'));
+  const dataset = readFileSync(resolve(carpeta, unidad.dataset), 'utf8');
   const ejercicios = new Map(JSON.parse(readFileSync(join(carpeta, 'ejercicios.json'), 'utf8')).ejercicios.map((e) => [e.id, e]));
   const { pasos } = parseYaml(readFileSync(archivo, 'utf8'));
   const nombre = basename(archivo);
+  if (!unidad.paradas.some((p) => `${p.id}.historia.yaml` === nombre)) {
+    fallas++;
+    console.log(`✘ ${nombre}: no corresponde a ninguna parada de unidad.json`);
+  }
 
   pasos.forEach((p, i) => {
     let error = null;
@@ -55,9 +60,10 @@ for (const archivo of buscar(raiz, /\.historia\.yaml$/)) {
     // Las piezas de un reto deben alcanzar para armar la solución
     else if (p.tipo === 'armar') {
       const sol = ejercicios.get(p.ejercicio).solucion.replace(/\s+/g, ' ').trim();
-      if (!sol.startsWith(p.antes) || !sol.endsWith(p.despues)) error = 'la solución no empieza con `antes` o no termina con `despues`';
+      const antes = p.antes.replace(/\s+/g, ' ').trim();
+      if (!sol.startsWith(antes) || !sol.endsWith(p.despues)) error = 'la solución no empieza con `antes` o no termina con `despues`';
       else {
-        const faltan = [...sol.slice(p.antes.length, sol.length - p.despues.length).replace(/,/g, ' , ').trim().split(/\s+/)];
+        const faltan = [...sol.slice(antes.length, sol.length - p.despues.length).replace(/,/g, ' , ').trim().split(/\s+/)];
         const disponibles = [...p.piezas];
         for (const t of faltan) {
           const k = disponibles.indexOf(t);
@@ -81,6 +87,25 @@ for (const archivo of buscar(raiz, /\.historia\.yaml$/)) {
     if (error) { fallas++; console.log(`✘ ${nombre} paso ${i + 1} (${p.tipo}): ${error}`); }
   });
   console.log(`✔ ${nombre}: ${pasos.length} pasos revisados`);
+}
+
+for (const archivo of buscar(raiz, 'conceptos.yaml')) {
+  const carpeta = dirname(archivo);
+  const unidad = JSON.parse(readFileSync(join(carpeta, 'unidad.json'), 'utf8'));
+  const dataset = readFileSync(resolve(carpeta, unidad.dataset), 'utf8');
+  const { conceptos = [] } = parseYaml(readFileSync(archivo, 'utf8'));
+  for (const c of conceptos) {
+    let error = null;
+    if (!unidad.paradas.some((p) => p.id === c.parada)) error = `la parada ${c.parada} no existe`;
+    else if (c.ejemplo) {
+      const db = new SQL.Database();
+      db.run(dataset);
+      try { db.exec(c.ejemplo); } catch (e) { error = `el ejemplo falla: ${e.message}`; }
+      db.close();
+    }
+    if (error) { fallas++; console.log(`✘ conceptos.yaml ${c.id}: ${error}`); }
+  }
+  console.log(`✔ conceptos.yaml: ${conceptos.length} fichas revisadas`);
 }
 
 if (fallas) {

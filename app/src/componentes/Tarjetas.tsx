@@ -7,7 +7,7 @@ import { nombreDe, type Quien } from '../lib/personajes';
 import { reaccionar } from '../lib/reacciones';
 import { sonidos } from '../lib/sonidos';
 import { comparar, ejecutar, type Resultado } from '../lib/sql';
-import { calcularRacha, progresoActual, useProgreso } from '../lib/progreso';
+import { acciones, calcularRacha, progresoActual, useProgreso } from '../lib/progreso';
 import { Avatar } from './Avatar';
 import { TextoEnLinea } from './Markdown';
 
@@ -55,7 +55,7 @@ function resaltarSQL(linea: string): ReactNode[] {
   });
 }
 
-function Terminal({ children, archivo = 'ventas.db' }: { children: ReactNode; archivo?: string }) {
+export function Terminal({ children, archivo = 'ventas.db' }: { children: ReactNode; archivo?: string }) {
   return (
     <div className="terminal">
       <div className="terminal-barra">
@@ -67,7 +67,7 @@ function Terminal({ children, archivo = 'ventas.db' }: { children: ReactNode; ar
   );
 }
 
-function Codigo({ codigo, cursor }: { codigo: string; cursor?: boolean }) {
+export function Codigo({ codigo, cursor }: { codigo: string; cursor?: boolean }) {
   const lineas = codigo.replace(/\n$/, '').split('\n');
   return (
     <div className="terminal-codigo">
@@ -83,7 +83,7 @@ function Codigo({ codigo, cursor }: { codigo: string; cursor?: boolean }) {
 }
 
 // Resultado "impreso" en la terminal
-function Salida({ resultado, mensaje, tipo }: { resultado?: Resultado | null; mensaje?: string; tipo?: 'ok' | 'mal' }) {
+export function Salida({ resultado, mensaje, tipo }: { resultado?: Resultado | null; mensaje?: string; tipo?: 'ok' | 'mal' }) {
   const max = 4;
   return (
     <div className="terminal-salida entra">
@@ -141,7 +141,7 @@ export function Portada({ sesion }: { sesion: Sesion }) {
         <Avatar quien="rafa" tam={84} />
         <Avatar quien="yo" tam={84} />
       </div>
-      <p className="etiqueta-mod">{sesion.modulo.nombre} · Semana {sesion.semana.numero}</p>
+      <p className="etiqueta-mod">{sesion.modulo.nombre} · Unidad {sesion.semana.numero}</p>
       <h1>{sesion.meta.titulo}</h1>
       <p className="objetivo">{sesion.meta.objetivo}</p>
       <div className="chips-info">
@@ -269,6 +269,7 @@ export function Armar({ paso, sesion, onResuelto }: Props<'armar'>) {
   const [intentos, setIntentos] = useState(0);
   const resuelto = salida?.bien ?? false;
   const armado = unirPiezas(usadas.map((i) => paso.piezas[i]));
+  const lineas = paso.antes.split('\n');
 
   function tocar(i: number) {
     if (resuelto) return;
@@ -297,8 +298,9 @@ export function Armar({ paso, sesion, onResuelto }: Props<'armar'>) {
       <h2 className="titulo-reto"><TextoEnLinea texto={paso.titulo} /></h2>
       <Terminal>
         <div className="terminal-codigo">
-          <div><span className="ln">1</span>{resaltarSQL(`${paso.antes} ${armado}`)}{!resuelto && <span className="cursor" />}</div>
-          <div><span className="ln">2</span>{resaltarSQL(paso.despues)}</div>
+          {lineas.slice(0, -1).map((l, n) => <div key={n}><span className="ln">{n + 1}</span>{resaltarSQL(l)}</div>)}
+          <div><span className="ln">{lineas.length}</span>{resaltarSQL(`${lineas[lineas.length - 1]} ${armado}`)}{!resuelto && <span className="cursor" />}</div>
+          <div><span className="ln">{lineas.length + 1}</span>{resaltarSQL(paso.despues)}</div>
         </div>
         {salida && <Salida resultado={salida.resultado} mensaje={salida.mensaje} tipo={salida.bien ? 'ok' : 'mal'} />}
         {!resuelto && (
@@ -358,7 +360,7 @@ export function Tip({ paso }: Props<'tip'>) {
   return <TipHashy texto={paso.texto} quien={paso.quien} />;
 }
 
-const TECLAS = ['SELECT', 'FROM', 'WHERE', '*', ',', "'", ';', '='];
+const TECLAS = ['SELECT', 'FROM', 'WHERE', '*', ',', "'", ';', '=', '<>', '>', '<'];
 
 export function Escribir({ paso, sesion, onResuelto }: Props<'escribir'>) {
   const ej = buscarEjercicio(sesion, paso.ejercicio);
@@ -372,7 +374,7 @@ export function Escribir({ paso, sesion, onResuelto }: Props<'escribir'>) {
   function insertar(t: string) {
     const el = area.current;
     if (!el) return;
-    let texto = /^[A-Z]+$/.test(t) ? `${t} ` : t === '*' || t === '=' ? ` ${t} ` : t;
+    let texto = /^[A-Z]+$/.test(t) ? `${t} ` : /^[*=<>]+$/.test(t) ? ` ${t} ` : t;
     // Sin espacios dobles: si ya hay uno antes del cursor, no se agrega otro
     if (/\s$/.test(el.value.slice(0, el.selectionStart)) || el.selectionStart === 0) texto = texto.trimStart();
     el.setRangeText(texto, el.selectionStart, el.selectionEnd, 'end');
@@ -483,7 +485,7 @@ export function Resumen({ paso, sesion }: Props<'resumen'>) {
   return (
     <div className="t-col">
       <div className="trofeo entra">🏆</div>
-      <h1 className="titulo-fin">¡Lección completada!</h1>
+      <h1 className="titulo-fin">{paso.titulo ?? '¡Lección completada!'}</h1>
       <div className="metricas">
         <div><span>XP ganados</span><b>{xp}</b></div>
         <div><span>Racha</span><b>{plural(racha, 'día')}</b></div>
@@ -493,6 +495,64 @@ export function Resumen({ paso, sesion }: Props<'resumen'>) {
         <ul className="ideas">{paso.ideas.map((t, i) => <li key={i}><TextoEnLinea texto={t} /></li>)}</ul>
       </div>
       {paso.cierre && <Burbuja {...paso.cierre} />}
+    </div>
+  );
+}
+
+// Nota pública del repaso: plantilla fija, borrador guardado en el teléfono y botón para compartir
+export function Nota({ paso, sesion, onResuelto }: Props<'nota'>) {
+  const progreso = useProgreso();
+  const texto = progreso.notas[sesion.clave] ?? '';
+  const [aviso, setAviso] = useState('');
+  const palabras = texto.trim() ? texto.trim().split(/\s+/).length : 0;
+  const lista = palabras >= 20;
+
+  useEffect(() => {
+    if (lista) onResuelto(10);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lista]);
+
+  async function compartir() {
+    try {
+      if (navigator.share) {
+        await navigator.share({ text: texto });
+        return;
+      }
+      await navigator.clipboard.writeText(texto);
+      setAviso('Copiada. Pégala en LinkedIn, tu blog o GitHub.');
+    } catch {
+      setAviso('No se pudo compartir. Copia el texto a mano.');
+    }
+  }
+
+  return (
+    <div className="t-col">
+      <h2 className="titulo-reto">{paso.titulo}</h2>
+      <ol className="nota-plantilla">{paso.plantilla.map((t, i) => <li key={i}><TextoEnLinea texto={t} /></li>)}</ol>
+      {paso.temas && (
+        <details className="nota-desplegable">
+          <summary>¿Sin idea? Temas sugeridos</summary>
+          <ul>{paso.temas.map((t, i) => <li key={i}><TextoEnLinea texto={t} /></li>)}</ul>
+        </details>
+      )}
+      <textarea
+        className="nota-texto"
+        value={texto}
+        onChange={(e) => { acciones.guardarNota(sesion.clave, e.target.value); setAviso(''); }}
+        placeholder="Esta semana aprendí…"
+        rows={8}
+        aria-label="Tu nota pública"
+      />
+      <p className="nota-cuenta">{palabras} palabras{palabras > 200 ? ' · intenta quedarte en 200' : lista ? '' : ' · escribe al menos 20 para continuar'}</p>
+      {paso.ejemplo && (
+        <details className="nota-desplegable">
+          <summary>Ver una nota de ejemplo</summary>
+          <p className="nota-ejemplo">{paso.ejemplo}</p>
+          <small>Úsala como guía de tono: tu ejemplo y tu error deben ser tuyos.</small>
+        </details>
+      )}
+      {lista && <button className="boton-juego secundario" onClick={compartir}>COMPARTIR MI NOTA</button>}
+      {aviso && <p className="nota-cuenta">{aviso}</p>}
     </div>
   );
 }

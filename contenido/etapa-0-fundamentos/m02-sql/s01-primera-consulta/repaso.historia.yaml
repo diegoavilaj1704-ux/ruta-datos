@@ -1,0 +1,83 @@
+# Repaso de la Unidad 1 y nota pública, contados como historia (texto completo en repaso.md).
+# Primero preguntas de las lecciones 1 y 2 sin ver notas; después la nota con la plantilla fija.
+id: m02-s01-repaso-historia
+version: "1.0"
+pasos:
+  - tipo: portada
+
+  - tipo: chat
+    mensajes:
+      - { quien: hashy, texto: "¡Guau, {nombre}! Llegaste al repaso de la unidad." }
+      - { quien: hashy, texto: "Primero unas preguntas **sin ver tus notas**. Las que falles serán buen tema para tu nota pública." }
+
+  - tipo: quiz
+    etiqueta: "lección 1"
+    pregunta: "¿Qué muestra `SELECT producto, sucursal FROM ventas;`?"
+    opciones:
+      - { texto: "Las 8 ventas, solo con 2 columnas.", correcta: true }
+      - { texto: "Solo las ventas de una sucursal.", porque: "No hay WHERE, así que no se filtra ninguna fila." }
+      - { texto: "Cambia la tabla para dejar 2 columnas.", porque: "SELECT solo lee: la tabla queda igual." }
+
+  - tipo: quiz
+    etiqueta: "lecciones 1 y 2"
+    pregunta: "SELECT elige ___ y WHERE elige ___."
+    opciones:
+      - { texto: "columnas · filas", correcta: true }
+      - { texto: "filas · columnas", porque: "Al revés: SELECT recorta columnas y WHERE recorta filas." }
+      - { texto: "tablas · columnas", porque: "La tabla la elige FROM." }
+
+  - tipo: error
+    titulo: "Caza el error: toca la pieza que sobra"
+    piezas: [SELECT, producto, ",", FROM, ventas, WHERE, sucursal, "=", "'Sur'", ";"]
+    error: 2
+    explicacion: "Después de la última columna no va coma. Con esa coma antes de FROM, SQL marca error."
+    pista: "Mira lo que va justo antes de FROM."
+
+  - tipo: quiz
+    etiqueta: "lección 2"
+    pregunta: "`WHERE precio_unitario <= 20`, ¿cuántas filas devuelve?"
+    opciones:
+      - { texto: "3", porque: "Eso sería con `< 20`. `<=` incluye las papas, que cuestan exactamente 20." }
+      - { texto: "4", correcta: true }
+      - { texto: "5", porque: "Pasan los dos refrescos (18), las papas (20) y el agua (12): 4 ventas." }
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Una última, {nombre}: ¿qué se vendió en Sur y cuántas piezas?" }
+    titulo: "Muestra `producto` y `cantidad` de las ventas con `sucursal` igual a `'Sur'`"
+    ejercicio: repaso-1
+
+  - tipo: chat
+    mensajes:
+      - { quien: hashy, texto: "¡Bien olfateado! Ahora tu **nota pública**." }
+      - { quien: yo, texto: "Explicar lo que aprendí es la mejor prueba de que lo entendí. Y suma a mi portafolio." }
+
+  - tipo: nota
+    titulo: "Escribe tu nota (máximo 200 palabras)"
+    plantilla:
+      - "**Qué aprendí** (2 o 3 frases)."
+      - "**Un ejemplo propio**: una consulta tuya, distinta a las de las lecciones."
+      - "**Un error que cometí** y cómo lo resolví."
+      - "**Una pregunta** para quien lea."
+    temas:
+      - "La diferencia entre elegir columnas (SELECT) y elegir filas (WHERE)."
+      - "Por qué `'Norte'` y `'norte'` no son lo mismo."
+      - "`>` contra `>=`: una sola rayita cambia el resultado."
+    ejemplo: |-
+      Esta semana empecé a aprender SQL desde cero. Aprendí que una consulta básica responde dos preguntas: qué columnas quiero ver (SELECT) y qué filas me interesan (WHERE).
+
+      Mi ejemplo: con la tabla de ventas de una tiendita, encontré lo que se vendió en la sucursal Norte:
+      SELECT producto, cantidad FROM ventas WHERE sucursal = 'Norte';
+
+      Mi error: escribí 'norte' en minúsculas y me salieron cero filas. No había error, solo un resultado vacío. Aprendí a revisar cómo está escrito el valor antes de filtrar.
+
+      ¿Cuál fue la primera consulta SQL que escribiste?
+
+      #SQL #DataAnalytics #AprendiendoEnPúblico
+
+  - tipo: resumen
+    titulo: "¡Unidad 1 completa!"
+    ideas:
+      - "**SELECT** elige columnas, **FROM** la tabla y **WHERE** las filas, en ese orden."
+      - "Texto y fechas entre comillas; números sin comillas."
+      - "Antes de responder, explora; al responder, habla en lenguaje de negocio."
+    cierre: { quien: hashy, texto: "¡Guau! Terminaste tu primera unidad, {nombre}. Comparte tu nota y mueve la cola: te lo ganaste." }

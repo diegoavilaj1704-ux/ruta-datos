@@ -12,16 +12,35 @@ const jsons = import.meta.glob('../../../contenido/**/*.json', {
 const historias = import.meta.glob('../../../contenido/**/*.historia.yaml', {
   query: '?raw', import: 'default', eager: true,
 }) as Record<string, string>;
+const yamls = import.meta.glob('../../../contenido/**/conceptos.yaml', {
+  query: '?raw', import: 'default', eager: true,
+}) as Record<string, string>;
 const datasets = import.meta.glob('../../../contenido/**/datasets/*.sql', {
   query: '?raw', import: 'default', eager: true,
 }) as Record<string, string>;
 
-export const DIAS = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'] as const;
-export type Dia = (typeof DIAS)[number];
+export type TipoParada = 'leccion' | 'proyecto' | 'repaso';
 
-export const NOMBRE_DIA: Record<Dia, string> = {
-  lunes: 'Lunes', martes: 'Martes', miercoles: 'Miércoles', jueves: 'Jueves', viernes: 'Viernes',
-};
+// Una parada del camino de la unidad (unidad.json → paradas)
+export interface Parada {
+  id: string;             // "leccion-1": también nombra su historia (<id>.historia.yaml)
+  tipo: TipoParada;
+  corto: string;          // etiqueta en el mapa: "SELECT", "Proyecto 1"
+  archivo: string;        // lección completa en Markdown
+  titulo?: string;        // si no se indica, sale del frontmatter del archivo
+  objetivo?: string;
+  duracion_min?: number;
+}
+
+// Ficha de un tema en el mapa (conceptos.yaml de la unidad)
+export interface Concepto {
+  id: string;
+  parada: string;
+  codigo: string;
+  titulo: string;
+  significado: string;
+  ejemplo?: string;
+}
 
 export interface Frontmatter {
   id: string;
@@ -45,11 +64,11 @@ export interface Ejercicio {
 }
 
 export interface Sesion {
-  clave: string;          // "m02-sql/s01-primera-consulta/lunes": identifica el avance
-  dia: Dia;
-  tipo: 'leccion' | 'proyecto' | 'nota';
+  clave: string;          // "m02-sql/s01-primera-consulta/leccion-1": identifica el avance
+  parada: Parada;
+  tipo: TipoParada;
   modulo: { id: string; nombre: string };
-  semana: { id: string; titulo: string; numero: number };
+  semana: { id: string; titulo: string; numero: number };   // la unidad
   meta: Frontmatter;
   cuerpo: string;         // Markdown sin frontmatter
   dataset: string;        // script SQL que se carga en el editor
@@ -84,57 +103,89 @@ function leerHistoria(ruta: string): Historia | undefined {
   return { ...h, version: String(h.version ?? '1.0') };
 }
 
-function construirCatalogo(): Sesion[] {
-  const sesiones: Sesion[] = [];
+// Unidad del módulo tal como la ve el mapa: con contenido (sesiones) o "próximamente"
+export interface Unidad {
+  id: string;
+  numero: number;
+  titulo: string;
+  temas: string[];
+  modulo: { id: string; nombre: string };
+  sesiones: Sesion[];      // vacío si aún no está escrita
+  conceptos: Concepto[];
+  tipsHashy: string[];
+}
+
+interface ModuloJson {
+  id: string;
+  nombre: string;
+  unidades: { id: string; titulo: string; temas?: string[] }[];
+}
+
+interface UnidadJson {
+  numero: number;
+  dataset: string;
+  paradas: Parada[];
+}
+
+function construirUnidades(): Unidad[] {
+  const unidades: Unidad[] = [];
   const modulos = Object.entries(jsons)
     .filter(([ruta]) => ruta.endsWith('/modulo.json'))
     .sort(([a], [b]) => a.localeCompare(b));
 
   for (const [rutaModulo, mod] of modulos) {
     const carpetaModulo = rutaModulo.replace(/\/modulo\.json$/, '');
-    const modulo = mod as { id: string; nombre: string; semanas: { id: string; titulo: string }[] };
+    const modulo = mod as ModuloJson;
+    const infoModulo = { id: modulo.id, nombre: modulo.nombre };
 
-    for (const sem of modulo.semanas) {
-      const carpeta = `${carpetaModulo}/${sem.id}`;
-      const semana = jsons[`${carpeta}/semana.json`] as
-        | { dataset: string; dias: Record<Dia, string> }
-        | undefined;
-      if (!semana) continue;
-      const dataset = datasets[resolverRuta(carpeta, semana.dataset)] ?? '';
+    modulo.unidades.forEach((u, n) => {
+      const carpeta = `${carpetaModulo}/${u.id}`;
+      const unidad = jsons[`${carpeta}/unidad.json`] as UnidadJson | undefined;
+      const extra = yamls[`${carpeta}/conceptos.yaml`];
+      const fichas = extra ? (parseYaml(extra) as { conceptos?: Concepto[]; tips_hashy?: string[] }) : {};
+      const base: Unidad = {
+        id: u.id, numero: unidad?.numero ?? n + 1, titulo: u.titulo, temas: u.temas ?? [],
+        modulo: infoModulo, sesiones: [], conceptos: fichas.conceptos ?? [], tipsHashy: fichas.tips_hashy ?? [],
+      };
+      unidades.push(base);
+      if (!unidad) return;
+
+      const dataset = datasets[resolverRuta(carpeta, unidad.dataset)] ?? '';
       const ejercicios =
         (jsons[`${carpeta}/ejercicios.json`] as { ejercicios: Ejercicio[] } | undefined)?.ejercicios ?? [];
 
-      for (const dia of DIAS) {
-        const archivo = semana.dias[dia];
-        const texto = markdown[`${carpeta}/${archivo}`];
+      for (const parada of unidad.paradas) {
+        const texto = markdown[`${carpeta}/${parada.archivo}`];
         if (!texto) continue;
         const { meta, cuerpo } = separarFrontmatter(texto);
-        sesiones.push({
-          clave: `${modulo.id}/${sem.id}/${dia}`,
-          dia,
-          tipo: archivo.startsWith('proyecto') ? 'proyecto' : archivo.startsWith('nota') ? 'nota' : 'leccion',
-          modulo: { id: modulo.id, nombre: modulo.nombre },
-          semana: { id: sem.id, titulo: sem.titulo, numero: Number(meta.semana ?? 1) },
+        base.sesiones.push({
+          clave: `${modulo.id}/${u.id}/${parada.id}`,
+          parada,
+          tipo: parada.tipo,
+          modulo: infoModulo,
+          semana: { id: u.id, titulo: u.titulo, numero: base.numero },
           meta: {
             id: String(meta.id ?? ''),
-            titulo: String(meta.titulo ?? archivo),
-            objetivo: String(meta.objetivo ?? ''),
-            duracion_min: Number(meta.duracion_min ?? 60),
+            titulo: parada.titulo ?? String(meta.titulo ?? parada.archivo),
+            objetivo: parada.objetivo ?? String(meta.objetivo ?? ''),
+            duracion_min: parada.duracion_min ?? Number(meta.duracion_min ?? 60),
             dataset: meta.dataset ? String(meta.dataset) : undefined,
             version: normalizarVersion(meta.version),
           },
           cuerpo,
           dataset,
-          ejercicios: ejercicios.filter((e) => e.archivo === archivo),
-          historia: leerHistoria(`${carpeta}/${archivo.replace(/\.md$/, '')}.historia.yaml`),
+          // Las paradas de proyecto comparten archivo; su historia elige los retos por id
+          ejercicios: ejercicios.filter((e) => e.archivo === parada.archivo),
+          historia: leerHistoria(`${carpeta}/${parada.id}.historia.yaml`),
         });
       }
-    }
+    });
   }
-  return sesiones;
+  return unidades;
 }
 
-export const catalogo = construirCatalogo();
+export const unidades = construirUnidades();
+export const catalogo = unidades.flatMap((u) => u.sesiones);
 
 export function buscarSesion(clave: string): Sesion | undefined {
   return catalogo.find((s) => s.clave === clave);

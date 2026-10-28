@@ -1,10 +1,10 @@
-# Lección del lunes contada como historia, tarjeta por tarjeta.
+# Lección 1 contada como historia, tarjeta por tarjeta.
 # Cubre las 11 secciones de lunes.md (skill docente-datos) en formato de juego.
 # Personajes: yo (el avatar del alumno; {nombre} se reemplaza por su nombre),
 # rafa (Don Rafa), hashy (schnauzer de los tips). Ver docs/estilo-y-personajes.md
 # Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
 id: m02-s01-lunes-historia
-version: "1.1"
+version: "1.2"
 pasos:
   # 1. Objetivo
   - tipo: portada
@@ -129,7 +129,7 @@ pasos:
   - tipo: quiz
     pregunta: "Corres `SELECT producto FROM ventas;`. ¿Cuántas filas ves?"
     opciones:
-      - { texto: "1, porque pediste una columna.", porque: "Elegir columnas no reduce filas. Filtrar filas lo verás mañana." }
+      - { texto: "1, porque pediste una columna.", porque: "Elegir columnas no reduce filas. Filtrar filas lo verás en la siguiente lección." }
       - { texto: "8, una por cada venta.", correcta: true }
       - { texto: "6, una por cada producto distinto.", porque: "SELECT no quita repetidos: si un producto se vendió dos veces, aparece dos veces." }
 
@@ -147,4 +147,4 @@ pasos:
       - "**SELECT** dice qué columnas quieres; **FROM**, de qué tabla."
       - "Las columnas van separadas por comas, sin coma después de la última."
       - "`SELECT *` trae todas las columnas; úsalo para explorar."
-    cierre: { quien: rafa, texto: "Gracias, {nombre}. Mañana te pido algo más difícil: solo las ventas de una sucursal." }
+    cierre: { quien: rafa, texto: "Gracias, {nombre}. En la siguiente lección te pido algo más difícil: solo las ventas de una sucursal." }

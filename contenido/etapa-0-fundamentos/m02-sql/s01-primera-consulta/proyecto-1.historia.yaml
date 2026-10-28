@@ -1,0 +1,82 @@
+# Mini-proyecto, parte 1, contado como historia (texto completo en proyecto.md).
+# Explorar la tabla, planear cada pregunta y responder las preguntas 1 y 2 de Don Rafa.
+# Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
+id: m02-s01-proyecto-1-historia
+version: "1.0"
+pasos:
+  - tipo: portada
+
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "{nombre}, antes de hacer el pedido a los proveedores quiero entender mis ventas de octubre." }
+      - { quien: rafa, texto: "Te mandé **5 preguntas** por WhatsApp. ¿Me ayudas?" }
+      - { quien: yo, texto: "Claro. Las respondo con consultas y te explico lo que encuentre sin palabras técnicas." }
+      - { quien: yo, texto: "Hoy van las 2 primeras; en la parte 2, las otras 3 y el reporte." }
+
+  - tipo: idea
+    quien: yo
+    texto: "Un analista primero **explora** los datos y después responde."
+    nota: "Explorar es mirar la tabla completa con calma antes de filtrar nada."
+
+  - tipo: tabla
+    quien: yo
+    texto: "Empiezo con `SELECT *` para ver las 8 ventas completas."
+    consulta: "SELECT * FROM ventas;"
+    nota: "Fíjate cómo están escritos los valores: 'Centro' con mayúscula y 'Lácteos' con acento."
+
+  - tipo: conceptos
+    titulo: "El plan de cada pregunta"
+    items:
+      - { codigo: SELECT, significado: "¿Qué columnas necesito para responder?" }
+      - { codigo: FROM, significado: "¿De qué tabla salen?" }
+      - { codigo: WHERE, significado: "¿Qué condición deben cumplir las filas?" }
+    nota: "Antes de escribir, responde estas tres preguntas en tu cabeza."
+
+  - tipo: quiz
+    etiqueta: "planear la pregunta 1"
+    pregunta: "Don Rafa pregunta: «¿Qué se vendió en Centro, en qué fecha y cuántas piezas?». ¿Cuál es la condición?"
+    opciones:
+      - { texto: "`sucursal = 'Centro'`", correcta: true }
+      - { texto: "`producto = 'Centro'`", porque: "Centro es una sucursal, no un producto. Busca en qué columna aparece ese valor." }
+      - { texto: "`fecha, producto, cantidad`", porque: "Esas son las columnas que van en SELECT. La condición dice qué filas pasan." }
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Pregunta 1: ¿qué se vendió en la sucursal Centro, en qué fecha y cuántas piezas?" }
+    titulo: "Muestra `fecha`, `producto` y `cantidad` de las ventas con `sucursal` igual a `'Centro'`"
+    ejercicio: proyecto-1
+
+  - tipo: chat
+    mensajes:
+      - { quien: yo, texto: "En Centro hubo 3 ventas: refrescos, leche y papas, entre el 1 y el 4 de octubre." }
+      - { quien: rafa, texto: "Muy bien. ¿Y cómo vamos con la leche y los otros lácteos?" }
+
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Pregunta 2: ¿cuánta leche y otros lácteos vendimos, y en qué sucursales?" }
+    titulo: "Muestra las ventas con `categoria` igual a `'Lácteos'`"
+    antes: |-
+      SELECT producto, cantidad, sucursal
+      FROM ventas
+      WHERE
+    despues: ";"
+    piezas: [sucursal, "=", "'Lacteos'", categoria, "'Lácteos'"]
+    ejercicio: proyecto-2
+
+  - tipo: tip
+    quien: hashy
+    texto: "Si escribes `'Lacteos'` sin acento, no hay error, pero salen **0 filas**. Antes de filtrar, olfatea cómo está escrito el valor en la tabla."
+
+  - tipo: quiz
+    etiqueta: "explicar el resultado"
+    pregunta: "Salieron 2 filas: Leche 1 L, 2 piezas, Centro; y Leche 1 L, 1 pieza, Sur. ¿Qué le contestas a Don Rafa?"
+    opciones:
+      - { texto: "Vendimos 3 litros de leche: 2 en Centro y 1 en Sur.", correcta: true }
+      - { texto: "Vendimos 2 lácteos.", porque: "Son 2 ventas, pero 3 piezas. Para saber cuánto se vendió, suma la columna cantidad." }
+      - { texto: "`WHERE categoria = 'Lácteos'` devolvió 2 filas.", porque: "Es cierto, pero Don Rafa no habla SQL. Dile qué se vendió y dónde." }
+
+  - tipo: resumen
+    titulo: "¡Parte 1 lista!"
+    ideas:
+      - "Antes de responder, **explora** con `SELECT *` y fíjate cómo están escritos los valores."
+      - "Para cada pregunta: columnas (SELECT), tabla (FROM) y condición (WHERE)."
+      - "Un resultado se explica en palabras de negocio, no en SQL."
+    cierre: { quien: rafa, texto: "Vas muy bien, {nombre}. Me faltan 3 respuestas; te espero en la parte 2." }

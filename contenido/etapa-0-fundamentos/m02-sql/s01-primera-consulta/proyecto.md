@@ -1,19 +1,19 @@
 ---
 id: m02-s01-proyecto
 modulo: M2 SQL desde cero
-semana: 1
-dia: miercoles-jueves
+unidad: 1
+parada: proyecto-1, proyecto-2
 titulo: "Mini-proyecto: reporte para el dueño"
 objetivo: "Al terminar podrás responder preguntas de negocio reales con SELECT, FROM y WHERE y explicar los hallazgos sin términos técnicos."
 duracion_min: 120
-prerequisitos: [m02-s01-lunes, m02-s01-martes]
+prerequisitos: [m02-s01-leccion-1, m02-s01-leccion-2]
 dataset: abarrotes_ventas
-version: 1.0
+version: 1.1
 ---
 
-# Miércoles y jueves · Mini-proyecto: reporte para el dueño
+# Mini-proyecto: reporte para el dueño
 
-*2 sesiones de 1 h · usa solo SELECT, FROM y WHERE*
+*2 paradas de 1 h · usa solo SELECT, FROM y WHERE*
 
 ## El encargo
 
@@ -27,7 +27,7 @@ Don Rafa, dueño de Abarrotes La Esquina, quiere entender sus primeras ventas de
 4. ¿Qué se vendió el 3 de octubre y dónde?
 5. ¿Qué productos vendimos que **no** cuestan 18 pesos?
 
-## Miércoles · Preparar y explorar
+## Parte 1 · Preparar y explorar
 
 1. Abre el editor del proyecto: la tabla `ventas` ya está cargada.
 2. Corre `SELECT * FROM ventas;` y lee las 8 filas con calma.
@@ -36,7 +36,7 @@ Don Rafa, dueño de Abarrotes La Esquina, quiere entender sus primeras ventas de
 
 > Truco: antes de escribir WHERE, busca en el resultado de `SELECT *` cómo está escrito exactamente el valor (mayúsculas, acentos).
 
-## Jueves · Responder y concluir
+## Parte 2 · Responder y concluir
 
 1. Escribe y prueba las consultas de las preguntas 3, 4 y 5.
 2. Revisa que cada resultado tenga sentido contra la tabla completa.
@@ -45,7 +45,7 @@ Don Rafa, dueño de Abarrotes La Esquina, quiere entender sus primeras ventas de
 
 ## Entregable
 
-Un archivo `reporte_semana1.sql` con:
+Un archivo `reporte_unidad1.sql` con:
 
 - Cada consulta precedida de un comentario `--` con la pregunta que responde.
 - Al final, en comentarios, tu mensaje para Don Rafa.
@@ -91,4 +91,4 @@ P5: SELECT producto, sucursal FROM ventas WHERE precio_unitario <> 18;
 
 ## Extensión opcional
 
-Don Rafa agrega: "¿Y cuántas bebidas vendimos solo en Norte?". Con lo que sabes hasta hoy, ¿cómo lo resolverías? Escribe tu intento. La próxima semana verás cómo combinar dos condiciones en un solo WHERE.
+Don Rafa agrega: "¿Y cuántas bebidas vendimos solo en Norte?". Con lo que sabes hasta hoy, ¿cómo lo resolverías? Escribe tu intento. En la Unidad 2 verás cómo combinar dos condiciones en un solo WHERE.

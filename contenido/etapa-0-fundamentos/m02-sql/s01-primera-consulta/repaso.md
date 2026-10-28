@@ -1,17 +1,17 @@
 ---
-id: m02-s01-viernes
+id: m02-s01-repaso
 modulo: M2 SQL desde cero
-semana: 1
-dia: viernes
+unidad: 1
+parada: repaso
 titulo: Nota pública
-objetivo: "Al terminar podrás explicar con tus palabras lo aprendido en la semana y publicarlo."
+objetivo: "Al terminar podrás explicar con tus palabras lo aprendido en la unidad y publicarlo."
 duracion_min: 60
 prerequisitos: [m02-s01-proyecto]
 dataset: abarrotes_ventas
-version: 1.0
+version: 1.1
 ---
 
-# Viernes · Nota pública
+# Repaso · Nota pública
 
 *1 h: 15 min de repaso, 30 min de escritura, 15 min para publicar*
 
@@ -19,7 +19,7 @@ Explicar lo que aprendiste es la mejor prueba de que lo entendiste. Además, cad
 
 ## Repaso (15 min)
 
-Vuelve a responder, sin ver las lecciones, las preguntas de "Revisa tu comprensión" del lunes y del martes. Las que falles son tu tema para la nota.
+Vuelve a responder, sin ver las lecciones, las preguntas de "Revisa tu comprensión" de las lecciones 1 y 2. Las que falles son tu tema para la nota.
 
 ## Plantilla (máximo 200 palabras)
 
@@ -28,7 +28,7 @@ Vuelve a responder, sin ver las lecciones, las preguntas de "Revisa tu comprensi
 3. **Un error que cometí** y cómo lo resolví.
 4. **Una pregunta abierta** para quien lea.
 
-**Temas sugeridos para esta semana**
+**Temas sugeridos para esta unidad**
 
 - La diferencia entre elegir columnas (SELECT) y elegir filas (WHERE).
 - Por qué `'Norte'` y `'norte'` no son lo mismo.
@@ -51,7 +51,7 @@ Esta nota tiene unas 100 palabras. Úsala como guía de tono, no la copies: tu e
 
 ## Evaluación piloto (solo durante la prueba)
 
-Lee la semana como si no supieras SQL y marca todo lo que te haga detenerte:
+Lee la unidad como si no supieras SQL y marca todo lo que te haga detenerte:
 
 - [ ] ¿"La idea en una frase" se entiende sin leer lo demás?
 - [ ] ¿Las analogías ayudan o distraen?

@@ -50,11 +50,15 @@ Lo que el piloto rechazó, para no repetirlo:
 
 **Avatares:** caras animadas dibujadas con código (SVG), no imágenes (`app/src/lib/personajes.ts`). Pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
 
-**Creador de avatar:** nombre, piel (6 tonos), complexión (delgada o llenita), peinado (con vista previa de tu propia cara), color de pelo (6), barba, bigote, aretes y color favorito (6). Se edita tocando tu avatar en Hoy.
+**Creador de avatar:** nombre, piel (6 tonos), complexión (delgada o llenita), peinado (con vista previa de tu propia cara), color de pelo (6), barba, bigote, aretes y color favorito (6). Se edita tocando tu avatar en la barra del mapa.
 
 **Cuerpo completo:** el avatar del alumno tiene cuerpo completo con proporciones naturales (brazos con codo y manos, cintura, piernas y tenis). En el chat se ve el recorte de su cara, con gorro y lentes incluidos. El elenco sigue en busto. Dibujo en `app/src/lib/armario.ts`.
 
 **Hashy:** dos expresiones. Feliz: orejas paradas, ojos con brillo y lengua. Triste: orejas caídas, cejas preocupadas, lagrimita y boca hacia abajo. Habla como perrito ("¡Guau!", "olfatea otra vez") y nunca regaña.
+
+## Mapa de la Ruta
+
+Pantalla principal. Fondo violeta oscuro (igual en modo claro y oscuro, como la terminal). Camino punteado de abajo hacia arriba con paradas en forma de piedra: **menta ✓** terminada, **ámbar grande** la que toca (con globo EMPEZAR/CONTINUAR) y **morado con candado** bloqueada. Junto a cada parada, las **fichas de código** de sus temas (estilo terminal); bloqueadas muestran candado. Hashy se asoma por la orilla junto a la parada actual. Arriba, las unidades próximas como islas punteadas. Todo abre una hoja desde abajo con información; maqueta en `docs/maquetas/ruta-mapa.html`.
 
 ## Clóset y XP
 

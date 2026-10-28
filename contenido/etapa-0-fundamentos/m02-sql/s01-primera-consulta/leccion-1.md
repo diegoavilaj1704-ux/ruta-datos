@@ -1,19 +1,19 @@
 ---
-id: m02-s01-lunes
+id: m02-s01-leccion-1
 modulo: M2 SQL desde cero
-semana: 1
-dia: lunes
+unidad: 1
+parada: leccion-1
 titulo: Elegir columnas con SELECT y FROM
 objetivo: "Al terminar podrás escribir una consulta que muestre solo las columnas que necesitas de una tabla."
 duracion_min: 30
 prerequisitos: []
 dataset: abarrotes_ventas
-version: 1.0
+version: 1.1
 ---
 
-# Lunes · Elegir columnas con SELECT y FROM
+# Lección 1 · Elegir columnas con SELECT y FROM
 
-Toda la semana trabajas con la misma tabla: las ventas de **Abarrotes La Esquina**, una tienda con tres sucursales. La tabla ya está cargada en el editor de esta lección.
+Toda la unidad trabajas con la misma tabla: las ventas de **Abarrotes La Esquina**, una tienda con tres sucursales. La tabla ya está cargada en el editor de esta lección.
 
 | Columna | Qué guarda | Ejemplo |
 | --- | --- | --- |
@@ -170,7 +170,7 @@ En los ejercicios 1 y 2 debes ver 8 filas. En el 3, 8 filas y 7 columnas.
 - b) 8, una por cada venta. ✅
 - c) 6, una por cada producto distinto.
 
-> a) Elegir columnas no reduce filas; filtrar filas lo verás mañana. · c) SELECT no quita repetidos: si un producto se vendió dos veces, aparece dos veces.
+> a) Elegir columnas no reduce filas; filtrar filas lo verás en la lección 2. · c) SELECT no quita repetidos: si un producto se vendió dos veces, aparece dos veces.
 
 **Pregunta 4 (repaso del M1).** En la tabla `ventas`, ¿qué representa una fila?
 

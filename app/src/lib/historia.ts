@@ -1,4 +1,4 @@
-// Formato de las lecciones contadas como historia (<dia>.historia.yaml en contenido/).
+// Formato de las paradas contadas como historia (<parada>.historia.yaml en contenido/).
 import type { Quien } from './personajes';
 
 export interface Mensaje { quien: Quien; texto: string }
@@ -16,7 +16,8 @@ export type Paso =
   | { tipo: 'tip'; quien: Quien; texto: string }
   | { tipo: 'escribir'; encargo?: Mensaje; titulo: string; ejercicio: string }
   | { tipo: 'quiz'; pregunta: string; etiqueta?: string; opciones: { texto: string; correcta?: boolean; porque?: string }[] }
-  | { tipo: 'resumen'; ideas: string[]; cierre?: Mensaje };
+  | { tipo: 'nota'; titulo: string; plantilla: string[]; temas?: string[]; ejemplo?: string }
+  | { tipo: 'resumen'; titulo?: string; ideas: string[]; cierre?: Mensaje };
 
 export interface Historia {
   id: string;
@@ -25,7 +26,7 @@ export interface Historia {
 }
 
 // Pasos que se tienen que resolver antes de continuar (dan XP)
-export const INTERACTIVOS: Paso['tipo'][] = ['terminal', 'armar', 'error', 'escribir', 'quiz'];
+export const INTERACTIVOS: Paso['tipo'][] = ['terminal', 'armar', 'error', 'escribir', 'quiz', 'nota'];
 
 // Une piezas de código respetando la puntuación: "producto , cantidad" → "producto, cantidad"
 export function unirPiezas(piezas: string[]): string {

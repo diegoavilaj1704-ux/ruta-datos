@@ -1,0 +1,86 @@
+# Mini-proyecto, parte 2, contado como historia (texto completo en proyecto.md).
+# Preguntas 3, 4 y 5 de Don Rafa, y el mensaje final del reporte con un patrón.
+# Datos del patrón (verificados contra el dataset): 24 piezas en total;
+# Bebidas 3 ventas y 14 piezas; Norte 11 piezas, Centro 7, Sur 6.
+id: m02-s01-proyecto-2-historia
+version: "1.0"
+pasos:
+  - tipo: portada
+
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "¡{nombre}! Ya revisé tus primeras dos respuestas. Me faltan 3." }
+      - { quien: rafa, texto: "Las ventas grandes, lo del 3 de octubre y lo que **no** cuesta 18 pesos." }
+      - { quien: yo, texto: "Va. Al final te mando un reporte con lo que encontré." }
+
+  - tipo: quiz
+    etiqueta: "planear la pregunta 3"
+    pregunta: "«Ventas grandes, de **más de 3** piezas». ¿Qué condición usas?"
+    opciones:
+      - { texto: "`cantidad > 3`", correcta: true }
+      - { texto: "`cantidad >= 3`", porque: "`>=` incluye el 3. El refresco de Centro (3 piezas) entraría, y Don Rafa dijo «más de 3»." }
+      - { texto: "`cantidad = 3`", porque: "Eso trae solo las ventas de exactamente 3 piezas." }
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Pregunta 3: ¿cuáles fueron las ventas grandes, de más de 3 piezas?" }
+    titulo: "Muestra `producto`, `cantidad` y `sucursal` de las ventas con `cantidad` mayor a 3"
+    ejercicio: proyecto-3
+
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Pregunta 4: el 3 de octubre hubo mucho movimiento. ¿Qué se vendió y dónde?" }
+    titulo: "Muestra las ventas con `fecha` igual al 3 de octubre de 2026"
+    antes: |-
+      SELECT producto, sucursal
+      FROM ventas
+      WHERE
+    despues: ";"
+    piezas: ["'03-10-2026'", fecha, "2026-10-03", "=", "'2026-10-03'"]
+    ejercicio: proyecto-4
+
+  - tipo: tip
+    quien: hashy
+    texto: "Las fechas van entre comillas y en formato **año-mes-día**: `'2026-10-03'`. Sin comillas, SQL hace la resta 2026 − 10 − 3 y no encuentra nada."
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Pregunta 5: ¿qué productos vendimos que **no** cuestan 18 pesos?" }
+    titulo: "Muestra `producto` y `sucursal` de las ventas con `precio_unitario` distinto de 18"
+    ejercicio: proyecto-5
+
+  - tipo: chat
+    mensajes:
+      - { quien: yo, texto: "Ya tengo las 5 respuestas. Ahora viene lo más importante: el mensaje para Don Rafa." }
+      - { quien: yo, texto: "Un buen reporte da la respuesta y, además, algo que el dueño no había notado." }
+
+  - tipo: quiz
+    etiqueta: "escribir el reporte"
+    pregunta: "¿Cuál mensaje le mandas sobre las ventas grandes?"
+    opciones:
+      - { texto: "Las ventas grandes fueron de bebidas y galletas: refrescos en Sur, y agua y galletas en Norte.", correcta: true }
+      - { texto: "`WHERE cantidad > 3` devolvió 3 filas.", porque: "Es correcto, pero Don Rafa no habla SQL. Dile qué se vendió y dónde." }
+      - { texto: "Norte vende más que todas las sucursales.", porque: "Con estas 3 filas no puedes saberlo: solo ves las ventas grandes, no todas." }
+
+  - tipo: terminal
+    quien: yo
+    texto: "Para buscar un patrón, reviso cuánto se mueve de **bebidas**:"
+    codigo: |
+      -- ¿Cuánto se vende de bebidas?
+      SELECT producto, cantidad, sucursal
+      FROM ventas
+      WHERE categoria = 'Bebidas';
+    despues: "3 + 5 + 6 = **14 piezas** de 24 que se vendieron en total. En la Unidad 2 SQL hará la suma por ti."
+
+  - tipo: quiz
+    etiqueta: "el patrón"
+    pregunta: "Con todo lo que viste, ¿qué patrón le compartes a Don Rafa?"
+    opciones:
+      - { texto: "Las bebidas son lo que más se mueve: 14 de las 24 piezas.", correcta: true }
+      - { texto: "Centro es la sucursal que más vende.", porque: "Norte vendió 11 piezas; Centro, 7, y Sur, 6." }
+      - { texto: "El pan es lo más vendido.", porque: "Solo hubo una venta de pan, de 1 pieza." }
+
+  - tipo: resumen
+    titulo: "¡Reporte entregado!"
+    ideas:
+      - "Respondiste 5 preguntas de negocio solo con SELECT, FROM y WHERE."
+      - "`>` deja fuera el límite, `<>` significa «distinto de» y las fechas van entre comillas, año-mes-día."
+      - "Un buen reporte da la respuesta y un patrón, en palabras simples."
+    cierre: { quien: rafa, texto: "¡Con esto ya hago mi pedido: más bebidas para Norte! Gracias, {nombre}." }

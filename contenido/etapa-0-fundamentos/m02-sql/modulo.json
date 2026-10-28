@@ -2,18 +2,72 @@
   "id": "m02-sql",
   "etapa": 0,
   "nombre": "SQL desde cero",
-  "semanas_estimadas": 6,
   "objetivo": "Consultar, filtrar, ordenar, resumir y unir tablas con SQL para responder preguntas de negocio.",
   "proyecto_integrador": "Reporte de clientes de Abarrotes La Esquina",
+  "unidades_estimadas": 6,
   "datasets": [
     "datasets/abarrotes_ventas.sql"
   ],
-  "semanas": [
+  "unidades": [
     {
       "id": "s01-primera-consulta",
       "titulo": "Tu primera consulta",
       "estado": "piloto-aprobado",
-      "version": "1.0"
+      "version": "1.1",
+      "temas": [
+        "SELECT y FROM",
+        "WHERE y comparadores"
+      ]
+    },
+    {
+      "id": "s02-ordenar-filtrar",
+      "titulo": "Ordenar y filtrar mejor",
+      "estado": "proximamente",
+      "temas": [
+        "ORDER BY y LIMIT",
+        "DISTINCT",
+        "AND, OR, IN, BETWEEN y LIKE"
+      ]
+    },
+    {
+      "id": "s03-columnas-calculadas",
+      "titulo": "Columnas calculadas y vacíos",
+      "estado": "proximamente",
+      "temas": [
+        "Alias y operaciones",
+        "NULL",
+        "CASE WHEN"
+      ]
+    },
+    {
+      "id": "s04-resumir",
+      "titulo": "Resumir datos",
+      "estado": "proximamente",
+      "temas": [
+        "COUNT, SUM, AVG, MIN y MAX",
+        "GROUP BY",
+        "HAVING"
+      ]
+    },
+    {
+      "id": "s05-fechas-texto",
+      "titulo": "Fechas y texto",
+      "estado": "proximamente",
+      "temas": [
+        "Extraer mes y año",
+        "Diferencia de días",
+        "Limpiar texto y CAST"
+      ]
+    },
+    {
+      "id": "s06-unir-tablas",
+      "titulo": "Unir tablas",
+      "estado": "proximamente",
+      "temas": [
+        "INNER y LEFT JOIN",
+        "Llaves",
+        "Duplicados por un JOIN mal hecho"
+      ]
     }
   ],
   "siguiente_modulo": "m03-sql-analisis"

@@ -1,0 +1,182 @@
+# Lección 2 contada como historia, tarjeta por tarjeta.
+# Cubre las 11 secciones de leccion-2.md (skill docente-datos) en formato de juego.
+# Personajes: yo (el avatar del alumno; {nombre} se reemplaza por su nombre),
+# rafa (Don Rafa), hashy (schnauzer de los tips). Ver docs/estilo-y-personajes.md
+# Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
+id: m02-s01-leccion-2-historia
+version: "1.0"
+pasos:
+  # 1. Objetivo
+  - tipo: portada
+
+  # 2. Por qué importa
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "{nombre}, la lista que me hiciste me sirvió muchísimo." }
+      - { quien: rafa, texto: "Pero ahora solo quiero ver lo que se vendió en la sucursal **Norte**. Me salen las 8 ventas y me pierdo." }
+      - { quien: yo, texto: "Entonces hay que **filtrar filas**. En la lección pasada elegimos columnas; hoy elegimos filas." }
+
+  # 3. Lo que ya sabes
+  - tipo: tabla
+    quien: yo
+    texto: "Estas son las 8 ventas. Don Rafa solo quiere las de **Norte**. Si has usado el filtro de Excel (la flechita del encabezado), ya conoces la idea."
+    consulta: "SELECT producto, cantidad, sucursal FROM ventas;"
+    nota: "Búscalas a ojo: ¿cuántas ventas son de Norte?"
+
+  # 4. La idea en una frase
+  - tipo: idea
+    texto: "**WHERE** deja pasar solo las filas que cumplen la condición que tú escribes."
+
+  # 5. Analogía
+  - tipo: analogia
+    quien: yo
+    titulo: "Como un colador"
+    texto: "Echas todas las filas al colador. Las que cumplen la condición pasan; las demás se quedan fuera."
+    limite: "Ojo: un colador separa para siempre. En SQL las filas que no pasaron siguen en la tabla; solo no aparecen en tu resultado."
+
+  # 6. Explicación por capas (capa 1: dónde va)
+  - tipo: conceptos
+    titulo: "Ahora son tres palabras"
+    items:
+      - { codigo: SELECT, significado: "Qué columnas quieres." }
+      - { codigo: FROM, significado: "De qué tabla salen." }
+      - { codigo: WHERE, significado: "«Donde»: qué filas pasan." }
+    nota: "Siempre en ese orden: SELECT → FROM → WHERE."
+
+  # Capas 2 y 3: la condición y los comparadores
+  - tipo: conceptos
+    titulo: "Para escribir la condición"
+    items:
+      - { codigo: "=", significado: "Igual a: `sucursal = 'Norte'`" }
+      - { codigo: "<>", significado: "Distinto de: `categoria <> 'Bebidas'`" }
+      - { codigo: ">  <", significado: "Mayor que, menor que: `cantidad > 3`" }
+      - { codigo: ">=  <=", significado: "Mayor o igual, menor o igual: `cantidad >= 4`" }
+    nota: "Cada fila responde sí o no a la condición. Solo las filas con «sí» aparecen."
+
+  # Capa 4: comillas sí o no
+  - tipo: idea
+    quien: yo
+    texto: "Texto y fechas van entre **comillas simples**: `'Norte'`, `'2026-10-02'`. Los números van **sin comillas**: `4`, `18`."
+
+  # 7. Ejemplo resuelto
+  - tipo: terminal
+    quien: yo
+    texto: "Así le respondo a Don Rafa. Toca **EJECUTAR**."
+    codigo: |
+      -- Ventas de la sucursal Norte
+      SELECT producto, cantidad, sucursal
+      FROM ventas
+      WHERE sucursal = 'Norte';
+    despues: "De 8 filas pasan 3. Las otras 5 siguen en la tabla; solo no aparecen en el resultado."
+
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "¡Así sí! Pan, galletas y agua en Norte." }
+      - { quien: yo, texto: "Ahora te toca a ti." }
+
+  # 9. Práctica guiada (ejercicio 1, con piezas)
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Quiero revisar cómo van las bebidas. Enséñame solo esas ventas." }
+    titulo: "Muestra solo las ventas con `categoria` igual a `'Bebidas'`"
+    antes: |-
+      SELECT producto, categoria
+      FROM ventas
+      WHERE
+    despues: ";"
+    piezas: [categoria, "<>", "'Bebidas'", "=", "'Lácteos'", producto]
+    ejercicio: martes-1
+
+  # 8. Errores comunes
+  - tipo: error
+    titulo: "Caza el error: toca la pieza que está mal"
+    piezas: [SELECT, producto, FROM, ventas, WHERE, sucursal, "=", Norte, ";"]
+    error: 7
+    explicacion: "Norte es texto y va entre comillas: `'Norte'`. Sin comillas, SQL cree que Norte es el nombre de una columna y marca error."
+    pista: "Revisa cuál de los valores es texto."
+    tip: "¡Guau! Sin comillas, SQL busca una columna llamada Norte y no la encuentra."
+
+  - tipo: tip
+    quien: hashy
+    texto: "`WHERE sucursal = 'norte'` con minúscula no marca error, pero devuelve **0 filas**: 'norte' y 'Norte' son textos distintos. Copia el valor tal como está en la tabla."
+
+  - tipo: tip
+    quien: hashy
+    texto: "WHERE siempre va **después** de FROM. `SELECT producto WHERE sucursal = 'Norte' FROM ventas;` da error."
+
+  # 7. Ejemplo resuelto (segundo ejemplo, con número)
+  - tipo: terminal
+    quien: yo
+    texto: "Con números no van comillas. Estas son las ventas de **4 piezas o más**:"
+    codigo: |
+      -- Ventas grandes: 4 piezas o más
+      SELECT producto, cantidad, sucursal
+      FROM ventas
+      WHERE cantidad >= 4;
+    despues: "Galletas entra porque tiene exactamente 4: `>=` incluye el 4. Con `> 4` se habría quedado fuera."
+
+  # 9. Práctica guiada (ejercicio 2, con piezas)
+  - tipo: armar
+    encargo: { quien: rafa, texto: "¿Qué cosas vendimos baratas, de menos de 20 pesos la pieza?" }
+    titulo: "Muestra las ventas con `precio_unitario` menor a 20"
+    antes: |-
+      SELECT producto, precio_unitario
+      FROM ventas
+      WHERE
+    despues: ";"
+    piezas: [cantidad, ">", "20", precio_unitario, "<", "18"]
+    ejercicio: martes-2
+
+  - tipo: tip
+    quien: hashy
+    texto: "Las papas cuestan 20 y **no** entran: 20 no es menor que 20. Si las quisieras incluir, usarías `<=`."
+
+  # 9. Práctica guiada (ejercicio 3, escrito a mano)
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "El 2 de octubre llegó el proveedor y me desordenó todo. ¿Qué se vendió ese día?" }
+    titulo: "Muestra `id_venta` y `producto` de las ventas con `fecha` igual a `'2026-10-02'`"
+    ejercicio: martes-3
+
+  # 10. Revisa tu comprensión
+  - tipo: quiz
+    pregunta: "¿Qué hace WHERE?"
+    opciones:
+      - { texto: "Elige qué columnas mostrar.", porque: "Eso es SELECT. SELECT recorta columnas; WHERE recorta filas." }
+      - { texto: "Elige qué filas mostrar.", correcta: true }
+      - { texto: "Ordena las filas.", porque: "Ordenar es otra instrucción que verás en la Unidad 2." }
+
+  - tipo: quiz
+    pregunta: "¿Cuál condición está bien escrita?"
+    opciones:
+      - { texto: "`WHERE categoria = Lácteos`", porque: "Sin comillas, SQL busca una columna llamada Lácteos y marca error." }
+      - { texto: "`WHERE categoria = 'Lácteos'`", correcta: true }
+      - { texto: "`WHERE cantidad = '2'`", porque: "Puede funcionar en algunas bases, pero es mala práctica: los números van sin comillas." }
+
+  - tipo: quiz
+    pregunta: "`WHERE cantidad > 4` en esta tabla, ¿cuántas filas devuelve?"
+    opciones:
+      - { texto: "3", porque: "Ese es el resultado de `>= 4`. Con `>` solo, Galletas (4 piezas) queda fuera." }
+      - { texto: "2", correcta: true }
+      - { texto: "4", porque: "Solo pasan el refresco de Sur (5 piezas) y el agua de Norte (6)." }
+
+  - tipo: quiz
+    pregunta: "Escribes `WHERE sucursal = 'sur'` y obtienes 0 filas. ¿Qué pasó?"
+    opciones:
+      - { texto: "No hay ventas en Sur.", porque: "Sí hay: las ventas 4 y 6." }
+      - { texto: "En la tabla dice 'Sur', con mayúscula.", correcta: true }
+      - { texto: "WHERE no funciona con texto.", porque: "Sí funciona, pero compara letra por letra. Revisa cómo está escrito el valor en la tabla." }
+
+  - tipo: quiz
+    etiqueta: "repaso de la lección 1"
+    pregunta: "¿Qué trae `SELECT *`?"
+    opciones:
+      - { texto: "Todas las columnas.", correcta: true }
+      - { texto: "Todas las tablas.", porque: "FROM sigue indicando una sola tabla." }
+      - { texto: "Solo la primera fila.", porque: "El asterisco se refiere a columnas; las filas se controlan con WHERE." }
+
+  # 11. Resumen
+  - tipo: resumen
+    ideas:
+      - "**WHERE** filtra filas; va siempre después de FROM."
+      - "Texto y fechas entre comillas simples; números sin comillas."
+      - "`>` deja fuera el valor del límite; `>=` lo incluye."
+    cierre: { quien: rafa, texto: "Con esto ya te puedo preguntar lo que sea, {nombre}. Te mando unas preguntas por WhatsApp para el proyecto." }

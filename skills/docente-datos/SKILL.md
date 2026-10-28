@@ -93,14 +93,15 @@ Cada ejercicio tiene solo dos piezas de texto, para no saturar la pantalla del c
 
 Regla: **Don Rafa da el contexto; el título da la instrucción.** Nunca hay que adivinar qué se pide. Las pistas van aparte, escondidas detrás de un botón.
 
-## Lección contada como historia (`<dia>.historia.yaml`)
+## Lección contada como historia (`<parada>.historia.yaml`)
 
-Cada lección se entrega también como historia en tarjetas, en un archivo junto al Markdown (ejemplo: `s01-primera-consulta/lunes.historia.yaml`). Es lo que la app muestra primero; el Markdown queda como "lección completa" para consultar.
+Cada parada de la unidad (lecciones, las dos partes del proyecto y el repaso) se entrega también como historia en tarjetas, en un archivo junto al Markdown con el id de la parada de `unidad.json` (ejemplo: `s01-primera-consulta/leccion-1.historia.yaml`). Es lo que la app muestra primero; el Markdown queda como "lección completa" para consultar.
 
 - Cubre las mismas 11 secciones, en el mismo orden pedagógico, pero contadas por los personajes: Don Rafa plantea, tu avatar (`yo`) explica y resuelve, Hashy avisa de los errores.
 - Una idea por tarjeta. Textos de 1–3 frases. Nada de muros de texto.
-- Tipos de tarjeta: `portada`, `chat`, `tabla`, `idea`, `analogia`, `conceptos`, `terminal` (ejemplo que se ejecuta), `armar` (consulta con piezas), `error` (caza el error), `tip`, `escribir` (consulta a mano), `quiz`, `resumen`. El formato exacto está en `app/src/lib/historia.ts`.
+- Tipos de tarjeta: `portada`, `chat`, `tabla`, `idea`, `analogia`, `conceptos`, `terminal` (ejemplo que se ejecuta), `armar` (consulta con piezas), `error` (caza el error), `tip`, `escribir` (consulta a mano), `quiz`, `nota` (la nota pública del repaso), `resumen` (con `titulo` opcional). En `armar`, `antes` puede ocupar varias líneas (`SELECT … / FROM … / WHERE`). El formato exacto está en `app/src/lib/historia.ts`.
 - Los retos `armar` y `escribir` apuntan a un ejercicio de `ejercicios.json` por su `id`; las piezas de `armar` deben alcanzar para armar la solución.
+- Cada tema nuevo lleva su ficha en `conceptos.yaml` (código, título, significado en 1–2 frases y un ejemplo que corra), ligada a la parada que lo enseña: es lo que se toca en el mapa.
 - Después de escribirla, corre `npm run verificar` en `app/`: revisa que los retos existan, que las piezas alcancen, que los ejemplos corran y que cada quiz tenga una sola respuesta correcta.
 
 ## Al revisar una lección existente

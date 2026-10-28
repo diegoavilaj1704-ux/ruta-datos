@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { dividirEnSecciones, nombreSeccion, NOMBRE_DIA, type Sesion } from '../lib/contenido';
+import { dividirEnSecciones, nombreSeccion, type Sesion } from '../lib/contenido';
 import { acciones, useProgreso } from '../lib/progreso';
 import { Markdown } from '../componentes/Markdown';
 import { EditorSQL } from '../componentes/EditorSQL';
@@ -26,13 +26,13 @@ export function Leccion({ sesion, volver }: Props) {
   return (
     <main className="pantalla leccion">
       <header className="barra-superior">
-        <button className="atras" onClick={volver} aria-label="Volver a Hoy">‹ Hoy</button>
-        <span className="barra-titulo">{NOMBRE_DIA[sesion.dia]}</span>
+        <button className="atras" onClick={volver} aria-label="Volver a la ruta">‹ Ruta</button>
+        <span className="barra-titulo">{sesion.parada.corto}</span>
         <span className="version">v{sesion.meta.version}</span>
       </header>
 
       <div className="portada">
-        <p className="modulo">{sesion.modulo.nombre} · Semana {sesion.semana.numero}</p>
+        <p className="modulo">{sesion.modulo.nombre} · Unidad {sesion.semana.numero}</p>
         <h1>{sesion.meta.titulo}</h1>
         <p className="meta">⏱ {sesion.meta.duracion_min} min</p>
       </div>
@@ -124,7 +124,7 @@ function ContenidoSeccion({ nombre, markdown, sesion, ejercicios, probar }: Cont
     );
   }
 
-  if (sesion.tipo === 'nota' && nombre.startsWith('Plantilla')) {
+  if (sesion.tipo === 'repaso' && nombre.startsWith('Plantilla')) {
     return (
       <>
         <Markdown texto={markdown} />

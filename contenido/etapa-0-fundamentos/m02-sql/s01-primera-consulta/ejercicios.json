@@ -1,30 +1,34 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "nota": "Ejercicios auto-evaluables. La app corre la consulta del alumno y la 'solucion' contra el dataset y compara resultados. 'seccion' es el título (## …) donde la app muestra el editor. 'filas_esperadas' se comprueba con `npm run verificar` en app/.",
   "ejercicios": [
     {
       "id": "lunes-1",
-      "archivo": "lunes.md",
+      "archivo": "leccion-1.md",
       "seccion": "Práctica guiada",
       "titulo": "Ejercicio 1",
       "enunciado": "Muestra el producto y la sucursal de cada venta.",
-      "pistas": ["Las columnas se llaman producto y sucursal. Sigue la forma SELECT … FROM …;"],
+      "pistas": [
+        "Las columnas se llaman producto y sucursal. Sigue la forma SELECT … FROM …;"
+      ],
       "solucion": "SELECT producto, sucursal FROM ventas;",
       "filas_esperadas": 8
     },
     {
       "id": "lunes-2",
-      "archivo": "lunes.md",
+      "archivo": "leccion-1.md",
       "seccion": "Práctica guiada",
       "titulo": "Ejercicio 2",
       "enunciado": "Muestra la fecha, el producto y el precio de una pieza.",
-      "pistas": ["El precio de una pieza está en la columna que termina en \"unitario\"."],
+      "pistas": [
+        "El precio de una pieza está en la columna que termina en \"unitario\"."
+      ],
       "solucion": "SELECT fecha, producto, precio_unitario FROM ventas;",
       "filas_esperadas": 8
     },
     {
       "id": "lunes-3",
-      "archivo": "lunes.md",
+      "archivo": "leccion-1.md",
       "seccion": "Práctica guiada",
       "titulo": "Ejercicio 3",
       "enunciado": "Muestra todas las columnas de la tabla sin escribir sus nombres.",
@@ -34,27 +38,31 @@
     },
     {
       "id": "martes-1",
-      "archivo": "martes.md",
+      "archivo": "leccion-2.md",
       "seccion": "Práctica guiada",
       "titulo": "Ejercicio 1",
       "enunciado": "Muestra producto y categoría de las ventas de la categoría Bebidas.",
-      "pistas": ["La condición es categoria = 'Bebidas'. Va después de FROM."],
+      "pistas": [
+        "La condición es categoria = 'Bebidas'. Va después de FROM."
+      ],
       "solucion": "SELECT producto, categoria FROM ventas WHERE categoria = 'Bebidas';",
       "filas_esperadas": 3
     },
     {
       "id": "martes-2",
-      "archivo": "martes.md",
+      "archivo": "leccion-2.md",
       "seccion": "Práctica guiada",
       "titulo": "Ejercicio 2",
       "enunciado": "Muestra producto y precio de las ventas con precio unitario menor a 20 pesos.",
-      "pistas": ["El precio es un número, así que va sin comillas."],
+      "pistas": [
+        "El precio es un número, así que va sin comillas."
+      ],
       "solucion": "SELECT producto, precio_unitario FROM ventas WHERE precio_unitario < 20;",
       "filas_esperadas": 3
     },
     {
       "id": "martes-3",
-      "archivo": "martes.md",
+      "archivo": "leccion-2.md",
       "seccion": "Práctica guiada",
       "titulo": "Ejercicio 3",
       "enunciado": "Muestra el id de venta y el producto de todo lo vendido el 2 de octubre de 2026.",
@@ -68,7 +76,9 @@
       "seccion": "El encargo",
       "titulo": "Pregunta 1",
       "enunciado": "¿Qué se vendió en la sucursal Centro, en qué fecha y cuántas piezas?",
-      "pistas": ["Columnas: fecha, producto y cantidad. Filtra por sucursal."],
+      "pistas": [
+        "Columnas: fecha, producto y cantidad. Filtra por sucursal."
+      ],
       "solucion": "SELECT fecha, producto, cantidad FROM ventas WHERE sucursal = 'Centro';",
       "filas_esperadas": 3
     },
@@ -78,7 +88,9 @@
       "seccion": "El encargo",
       "titulo": "Pregunta 2",
       "enunciado": "¿Cuánta leche y otros lácteos vendimos, y en qué sucursales?",
-      "pistas": ["Columnas: producto, cantidad y sucursal. Revisa cómo está escrita la categoría (lleva acento)."],
+      "pistas": [
+        "Columnas: producto, cantidad y sucursal. Revisa cómo está escrita la categoría (lleva acento)."
+      ],
       "solucion": "SELECT producto, cantidad, sucursal FROM ventas WHERE categoria = 'Lácteos';",
       "filas_esperadas": 2
     },
@@ -88,7 +100,9 @@
       "seccion": "El encargo",
       "titulo": "Pregunta 3",
       "enunciado": "¿Cuáles fueron las ventas \"grandes\", de más de 3 piezas?",
-      "pistas": ["Columnas: producto, cantidad y sucursal. \"Más de 3\" no incluye el 3."],
+      "pistas": [
+        "Columnas: producto, cantidad y sucursal. \"Más de 3\" no incluye el 3."
+      ],
       "solucion": "SELECT producto, cantidad, sucursal FROM ventas WHERE cantidad > 3;",
       "filas_esperadas": 3
     },
@@ -98,7 +112,9 @@
       "seccion": "El encargo",
       "titulo": "Pregunta 4",
       "enunciado": "¿Qué se vendió el 3 de octubre y dónde?",
-      "pistas": ["Columnas: producto y sucursal. La fecha va entre comillas, año-mes-día."],
+      "pistas": [
+        "Columnas: producto y sucursal. La fecha va entre comillas, año-mes-día."
+      ],
       "solucion": "SELECT producto, sucursal FROM ventas WHERE fecha = '2026-10-03';",
       "filas_esperadas": 2
     },
@@ -108,9 +124,23 @@
       "seccion": "El encargo",
       "titulo": "Pregunta 5",
       "enunciado": "¿Qué productos vendimos que no cuestan 18 pesos?",
-      "pistas": ["Columnas: producto y sucursal. \"Distinto de\" se escribe <>."],
+      "pistas": [
+        "Columnas: producto y sucursal. \"Distinto de\" se escribe <>."
+      ],
       "solucion": "SELECT producto, sucursal FROM ventas WHERE precio_unitario <> 18;",
       "filas_esperadas": 6
+    },
+    {
+      "id": "repaso-1",
+      "archivo": "repaso.md",
+      "seccion": "Repaso (15 min)",
+      "titulo": "Repaso",
+      "enunciado": "Muestra producto y cantidad de las ventas de la sucursal Sur.",
+      "pistas": [
+        "Columnas: producto y cantidad. La condición es sobre sucursal, y Sur es texto."
+      ],
+      "solucion": "SELECT producto, cantidad FROM ventas WHERE sucursal = 'Sur';",
+      "filas_esperadas": 2
     }
   ]
 }

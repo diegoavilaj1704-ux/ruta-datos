@@ -119,6 +119,7 @@ function Tarjeta({ paso, sesion, onResuelto }: { paso: Paso; sesion: Sesion; onR
     case 'tip': return <T.Tip paso={paso} {...p} />;
     case 'escribir': return <T.Escribir paso={paso} {...p} />;
     case 'quiz': return <T.Quiz paso={paso} {...p} />;
+    case 'nota': return <T.Nota paso={paso} {...p} />;
     case 'resumen': return <T.Resumen paso={paso} {...p} />;
   }
 }

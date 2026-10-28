@@ -10,7 +10,7 @@ export interface Progreso {
   diasActivos: string[];                           // "2026-10-27" (fecha local)
   ejercicios: Record<string, { codigo: string; resuelto: boolean }>;
   quiz: Record<string, number>;                    // "clave#n" → opción elegida
-  notas: Record<string, string>;                   // borrador de la nota del viernes
+  notas: Record<string, string>;                   // borrador de la nota pública del repaso
   xp: number;                                      // XP disponibles: se ganan en lecciones y se gastan en el clóset
   historias: Record<string, { paso: number; xp: number }>; // tarjeta actual y XP de la lección en curso
   perfil?: Perfil;                                 // avatar y nombre del alumno (protagonista de las historias)
@@ -20,10 +20,29 @@ export interface Progreso {
 
 const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true, comprados: [] };
 
+// Antes la ruta iba por días; las claves viejas se renombran a su parada
+const DIA_A_PARADA: Record<string, string> = {
+  lunes: 'leccion-1', martes: 'leccion-2', miercoles: 'proyecto-1', jueves: 'proyecto-2', viernes: 'repaso',
+};
+function migrarClave(clave: string): string {
+  return clave.replace(/\/(lunes|martes|miercoles|jueves|viernes)(?=$|#)/, (_, d: string) => `/${DIA_A_PARADA[d]}`);
+}
+function migrarLlaves<T>(r: Record<string, T>): Record<string, T> {
+  return Object.fromEntries(Object.entries(r).map(([k, v]) => [migrarClave(k), v]));
+}
+
 function leer(): Progreso {
   try {
     const guardado = localStorage.getItem(LLAVE);
-    return guardado ? { ...vacio, ...JSON.parse(guardado) } : vacio;
+    if (!guardado) return vacio;
+    const p: Progreso = { ...vacio, ...JSON.parse(guardado) };
+    return {
+      ...p,
+      completadas: migrarLlaves(p.completadas),
+      historias: migrarLlaves(p.historias),
+      quiz: migrarLlaves(p.quiz),
+      notas: migrarLlaves(p.notas),
+    };
   } catch {
     return vacio;
   }

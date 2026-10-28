@@ -1,0 +1,29 @@
+{
+  "id": "m02-s01",
+  "numero": 1,
+  "titulo": "Tu primera consulta",
+  "resumen": "Elegir columnas (SELECT/FROM) y filtrar filas (WHERE), aplicado en un reporte para una tienda.",
+  "dataset": "../datasets/abarrotes_ventas.sql",
+  "paradas": [
+    { "id": "leccion-1", "tipo": "leccion", "corto": "SELECT", "archivo": "leccion-1.md" },
+    { "id": "leccion-2", "tipo": "leccion", "corto": "WHERE", "archivo": "leccion-2.md" },
+    {
+      "id": "proyecto-1", "tipo": "proyecto", "corto": "Proyecto 1", "archivo": "proyecto.md",
+      "titulo": "Proyecto, parte 1: explorar y responder",
+      "objetivo": "Al terminar podrás explorar una tabla antes de filtrarla y responder las dos primeras preguntas de Don Rafa.",
+      "duracion_min": 25
+    },
+    {
+      "id": "proyecto-2", "tipo": "proyecto", "corto": "Proyecto 2", "archivo": "proyecto.md",
+      "titulo": "Proyecto, parte 2: el reporte para Don Rafa",
+      "objetivo": "Al terminar podrás responder las últimas tres preguntas y explicarle a Don Rafa lo que encontraste, sin términos técnicos.",
+      "duracion_min": 30
+    },
+    {
+      "id": "repaso", "tipo": "repaso", "corto": "Repaso", "archivo": "repaso.md",
+      "titulo": "Repaso y nota pública",
+      "duracion_min": 25
+    }
+  ],
+  "version": "1.1"
+}
