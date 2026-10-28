@@ -122,7 +122,7 @@
 .hashy-mapa.der > button { transform: rotate(-12deg); }
 .hashy-mapa.izq > button { transform: rotate(12deg); }
 .hashy-globo {
-  margin: 0; max-width: 190px; background: #fff; color: var(--texto); font-size: 13px; font-weight: 800; line-height: 1.35;
+  margin: 0; max-width: 190px; background: #fff; color: #2a2838; font-size: 13px; font-weight: 800; line-height: 1.35;
   padding: 8px 11px; border-radius: 14px; border-bottom: 3px solid #d6d2ea; animation: entrar 0.25s ease-out;
 }
 
