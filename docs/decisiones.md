@@ -44,6 +44,9 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 | 2026-10-27 | Avatar del alumno con **cuerpo completo** de proporciones naturales; en el chat se ve el recorte de la cara | El piloto rechazó un primer cuerpo "raro" y pidió brazos, piernas y cuerpo normales; el busto no mostraba tenis ni pantalones |
 | 2026-10-27 | En el clóset, lo que no tienes **se prueba antes de comprar** (botón "Comprar por ◆ N" aparte) | Evitar gastar XP por accidente con un toque |
 | 2026-10-27 | Cada ejecución SQL usa una base nueva con el dataset | El alumno no puede romper la tabla (ni con DROP TABLE) |
+| 2026-10-27 | La ruta va por **unidades con paradas** (Lección 1, Lección 2, Proyecto 1, Proyecto 2, Repaso) en un **mapa**, no por días de la semana | El piloto prefirió avanzar por módulos y no atarse al calendario; se puede hacer más de una parada al día |
+| 2026-10-27 | **SQL se divide en dos módulos**: M2 SQL desde cero y M3 SQL para análisis (CTE, funciones de ventana, cohortes), con examen de salida antes de Python | Con 5 semanas solo se aprendía a consultar, no a analizar; lo más usado por un Data Analyst estaba hasta Engineering. Así pandas se enseña como traducción de SQL |
+| 2026-10-27 | Nueva **etapa Data Analyst** (estadística y visualización + métricas, KPIs, dashboards y storytelling); **Git** pasa a Fundamentos; se agrega **IA aplicada a datos**; M11 "SQL avanzado" queda como Modelado de datos. Ahora son 19 módulos | La ruta decía Analyst → Scientist → Engineer pero saltaba de Fundamentos a Data Science; el portafolio en GitHub se usa desde el inicio |
 
 ## Decisiones pendientes
 
@@ -52,7 +55,7 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 - Cuenta de Apple Developer y cómo compilar para iOS desde Windows (Mac prestada, Codemagic o GitHub Actions).
 - Nombre y marca de la plataforma.
 - Modelo para otros usuarios: gratis, freemium o pago.
-- Mockups de las pantallas Hoy y Ruta con el estilo nuevo (la pantalla de reto ya está definida).
+- Barra inferior de la app. Propuesta: **Ruta · Práctica · Chuleta · Tú** (Portafolio cuando haya proyectos). El piloto no quiere Inicio · Ruta · Clóset · Perfil. El mapa de la Ruta ya está aprobado (`docs/maquetas/ruta-mapa.html`).
 
 ## Enlaces de referencia (claude.ai)
 

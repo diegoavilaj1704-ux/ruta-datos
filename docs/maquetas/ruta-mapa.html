@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruta por módulos</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root { --v:#6C4CF1; --vr:#4B2FC9; --co:#FF6B5B; --am:#FFB020; --tx:#2A2838; --bo:#ECEAF3; --mi:#7CF2C3; --fondo:#F4F2FB; --texto:#2A2838; --tenue:#6B6880; --hoja:#fff; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --fondo:#16141F; --texto:#F1EFFA; --tenue:#A9A6BC; --hoja:#211E2E; } }
+  :root[data-theme="dark"] { --fondo:#16141F; --texto:#F1EFFA; --tenue:#A9A6BC; --hoja:#211E2E; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--fondo); font-family:Nunito, system-ui, sans-serif; color:var(--tx); padding:16px; }
+  h1.t { color:var(--texto); font-size:18px; font-weight:900; margin:4px 0 2px; text-align:center; }
+  p.st { text-align:center; color:var(--tenue); margin:0 0 16px; font-size:14px; }
+  .fila { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
+  .cel { width:310px; height:640px; border-radius:36px; overflow:hidden; position:relative; background:#fff; box-shadow:0 10px 30px rgba(60,40,140,.15); display:flex; flex-direction:column; }
+  .eti { text-align:center; font-weight:900; font-size:13px; color:var(--v); margin-top:8px; letter-spacing:.5px; }
+  .cont { flex:1; overflow:hidden; padding:18px 18px 0; }
+  .nav { height:62px; border-top:2px solid var(--bo); display:flex; justify-content:space-around; align-items:center; background:#fff; }
+  .nav div { font-size:11px; font-weight:800; color:#A9A6BC; text-align:center; }
+  .nav div b { display:block; font-size:20px; line-height:22px; }
+  .nav .on { color:var(--v); }
+  .saludo { display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:13px; color:#6B6880; }
+  .av { width:38px; height:38px; border-radius:50%; background:#FFD9C7; border:3px solid var(--v); display:grid; place-items:center; font-size:12px; font-weight:900; color:var(--vr); }
+  .chips { display:flex; gap:8px; }
+  .chip { border:2px solid var(--bo); border-radius:12px; padding:3px 8px; font-weight:900; font-size:13px; }
+  .h { font-size:24px; font-weight:900; margin:16px 0 2px; }
+  .sub { color:#6B6880; font-size:13px; margin:0 0 14px; }
+  .carr { display:flex; gap:12px; margin-right:-18px; }
+  .card { flex:none; width:180px; height:170px; border-radius:22px; padding:14px; color:#fff; position:relative; border-bottom:5px solid rgba(0,0,0,.18); }
+  .card .ic { width:46px; height:46px; border-radius:12px; background:rgba(255,255,255,.22); display:grid; place-items:center; font-family:'JetBrains Mono'; font-size:15px; }
+  .card h3 { margin:16px 0 2px; font-size:19px; font-weight:900; }
+  .card small { font-weight:700; opacity:.9; font-size:12px; }
+  .pct { position:absolute; top:12px; right:12px; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:11px; font-weight:900; }
+  .sec { font-weight:900; font-size:16px; margin:18px 0 10px; }
+  .item { display:flex; align-items:center; gap:12px; border:2px solid var(--bo); border-bottom-width:4px; border-radius:16px; padding:10px 12px; margin-bottom:10px; }
+  .item .ic2 { width:38px; height:38px; border-radius:11px; display:grid; place-items:center; font-weight:900; font-family:'JetBrains Mono'; font-size:13px; flex:none; }
+  .item b { display:block; font-size:14px; }
+  .item span { font-size:12px; color:#6B6880; font-weight:700; }
+  .item i { margin-left:auto; font-style:normal; font-weight:900; font-size:12px; color:var(--v); }
+  /* mapa */
+  .mapa { flex:1; background:#2B2160; position:relative; overflow:hidden; }
+  .glifo { position:absolute; font-family:'JetBrains Mono'; color:rgba(185,168,255,.16); font-size:13px; }
+  .top { position:absolute; top:16px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:center; z-index:3; }
+  .pill { background:#fff; color:var(--tx); border-radius:14px; padding:5px 12px; font-weight:900; font-size:12px; border-bottom:3px solid #D6D2EA; }
+  .unidad { position:absolute; left:16px; right:16px; background:var(--v); border-radius:16px; padding:9px 12px; color:#fff; border-bottom:4px solid var(--vr); z-index:2; }
+  .unidad small { display:block; font-size:11px; font-weight:800; opacity:.85; }
+  .unidad b { font-size:15px; }
+  .unidad.bloq { background:#3B3175; border-color:#2A2259; color:#A9A0DA; }
+  .nodo { position:absolute; width:76px; height:70px; border-radius:46% 54% 50% 50% / 55% 50% 50% 45%; display:grid; place-items:center; text-align:center; font-weight:900; font-size:11px; z-index:2; }
+  .nodo .s { font-size:22px; line-height:22px; display:block; }
+  .hecho { background:var(--mi); color:#0D5A43; border-bottom:6px solid #3FC497; }
+  .bloq2 { background:#43397F; color:#A9A0DA; border-bottom:6px solid #2F2766; }
+  .actual { width:104px; height:96px; background:var(--am); color:#5A3B00; border-bottom:7px solid #D18700; font-size:14px; }
+  .actual .s { font-size:28px; line-height:30px; }
+  .anillo { position:absolute; border:3px dashed rgba(255,176,32,.55); border-radius:50%; z-index:1; }
+  .bocadillo { position:absolute; background:#fff; color:var(--tx); font-size:12px; font-weight:800; padding:7px 10px; border-radius:12px; z-index:4; width:150px; }
+  .bocadillo.izq:after { left:-7px; top:16px; bottom:auto; border:7px solid transparent; border-right-color:#fff; border-left:0; }
+  .bocadillo:not(.izq):after { content:''; position:absolute; bottom:-7px; left:24px; border:7px solid transparent; border-top-color:#fff; border-bottom:0; }
+  svg.camino { position:absolute; inset:0; z-index:1; }
+  .notas { max-width:660px; margin:22px auto 0; background:var(--hoja); color:var(--texto); border-radius:18px; padding:14px 18px; font-size:14px; line-height:1.5; }
+  .notas b { color:var(--v); }
+  .leyenda { display:flex; gap:14px; flex-wrap:wrap; margin-top:6px; font-weight:800; font-size:12px; }
+  .leyenda span:before { content:''; display:inline-block; width:12px; height:12px; border-radius:4px; margin-right:5px; vertical-align:-1px; background:var(--c); }
+</style>
+</head>
+<body>
+<h1 class="t">Propuesta: estudiar por módulos con un mapa</h1>
+<p class="st">Maqueta. Así se verían la pantalla de Inicio y el mapa de la ruta</p>
+
+<div class="fila">
+  <div>
+    <div class="cel">
+      <div class="cont">
+        <div class="saludo">
+          <div class="av">D</div>
+          <div class="chips"><span class="chip" style="color:var(--co)">🔥 3</span><span class="chip" style="color:#C98600">◆ 120</span></div>
+        </div>
+        <div class="h">¿Listo, Diego?</div>
+        <p class="sub">Sigue donde te quedaste</p>
+        <div class="carr">
+          <div class="card" style="background:var(--v)">
+            <div class="ic">SQL</div>
+            <div class="pct" style="border:4px solid rgba(255,255,255,.35);border-top-color:#fff">40%</div>
+            <h3>SQL</h3>
+            <small>Unidad 1 · Tu primera consulta</small>
+          </div>
+          <div class="card" style="background:var(--co)">
+            <div class="ic">🔒</div>
+            <h3>Python</h3>
+            <small>Se abre al terminar SQL</small>
+          </div>
+        </div>
+        <div class="sec">Para hoy</div>
+        <div class="item">
+          <div class="ic2" style="background:#EDE8FF;color:var(--v)">WHERE</div>
+          <div><b>Lección 2: filtrar filas</b><span>~10 min · +65 XP</span></div>
+          <i>IR ▶</i>
+        </div>
+        <div class="item">
+          <div class="ic2" style="background:#FFF2D9;color:#B07400">↺</div>
+          <div><b>Repaso rápido</b><span>5 preguntas de SELECT</span></div>
+          <i>IR ▶</i>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="on"><b>⌂</b>Inicio</div>
+        <div><b>⛳</b>Ruta</div>
+        <div><b>👕</b>Clóset</div>
+        <div><b>☺</b>Perfil</div>
+      </div>
+    </div>
+    <div class="eti">INICIO</div>
+  </div>
+
+  <div>
+    <div class="cel">
+      <div class="mapa">
+        <span class="glifo" style="top:90px;left:20px">SELECT *</span>
+        <span class="glifo" style="top:250px;left:200px">{ }</span>
+        <span class="glifo" style="top:330px;left:16px">;</span>
+        <span class="glifo" style="top:440px;left:230px">FROM</span>
+        <span class="glifo" style="top:520px;left:24px">⛁</span>
+        <span class="glifo" style="top:170px;left:240px">⛁</span>
+
+        <div class="top">
+          <span class="pill">Módulo 2 · SQL</span>
+          <div class="av" style="width:34px;height:34px">D</div>
+        </div>
+
+        <div class="unidad" style="top:58px"><small>UNIDAD 1 · 1 DE 5 PARADAS</small><b>Tu primera consulta</b></div>
+
+        <svg class="camino" viewBox="0 0 310 578" preserveAspectRatio="none">
+          <path d="M232 535 C 160 540, 60 460, 120 440 S 240 400, 210 350 S 70 300, 100 250 S 230 200, 170 160" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-dasharray="7 8" stroke-linecap="round"/>
+        </svg>
+
+        <div class="nodo bloq2" style="top:132px;left:136px"><div><span class="s">🏆</span>Repaso</div></div>
+        <div class="nodo bloq2" style="top:220px;left:62px"><div><span class="s">🔒</span>Proyecto 2</div></div>
+        <div class="nodo bloq2" style="top:316px;left:170px"><div><span class="s">🔒</span>Proyecto 1</div></div>
+
+        <div class="anillo" style="top:398px;left:58px;width:132px;height:124px"></div>
+        <div class="nodo actual" style="top:412px;left:72px"><div><span class="s">▶</span>WHERE</div></div>
+        <div class="bocadillo izq" style="top:420px;left:186px;width:112px">Don Rafa quiere solo las ventas de Centro</div>
+
+        <div class="nodo hecho" style="top:500px;left:196px"><div><span class="s">✓</span>SELECT</div></div>
+
+              </div>
+      <div class="nav">
+        <div><b>⌂</b>Inicio</div>
+        <div class="on"><b>⛳</b>Ruta</div>
+        <div><b>👕</b>Clóset</div>
+        <div><b>☺</b>Perfil</div>
+      </div>
+    </div>
+    <div class="eti">RUTA (MAPA)</div>
+  </div>
+</div>
+
+<div class="notas">
+  <b>Cómo funciona:</b> la ruta ya no va por días. Cada <b>módulo</b> (SQL, Python…) tiene <b>unidades</b> (lo que antes era una semana), y cada unidad es un camino de paradas:
+  <b>Lección 1 → Lección 2 → Proyecto 1 → Proyecto 2 → Repaso</b>. Terminas una parada y se abre la siguiente. Puedes hacer una o varias en el día; la racha cuenta si haces al menos una.
+  <div class="leyenda">
+    <span style="--c:#7CF2C3">Terminada</span>
+    <span style="--c:#FFB020">Toca ahora</span>
+    <span style="--c:#43397F">Bloqueada</span>
+  </div>
+</div>
+</body>
+</html>

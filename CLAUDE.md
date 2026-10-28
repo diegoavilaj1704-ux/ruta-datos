@@ -25,12 +25,12 @@ Idioma del proyecto: **español** (contenido, comentarios de código, commits y 
 5. **Versionado de lecciones.** Cada corrección sube `version` en el frontmatter (1.0 → 1.1).
 6. **Pensado para celular:** bloques cortos, código de máximo 10–12 líneas por bloque.
 
-## Modelo de estudio (1 h, lunes a viernes)
+## Modelo de estudio (1 h al día, por unidades)
 
-- Lunes y martes: lección (concepto + profundización).
-- Miércoles y jueves: mini-proyecto de la semana.
-- Viernes: repaso + nota pública (LinkedIn, blog o GitHub).
-- Cada módulo (4–6 semanas) cierra con un proyecto integrador para portafolio.
+- La ruta va por **módulos → unidades → paradas**, no por días. En la app se ve como un mapa.
+- Cada unidad (antes "semana"): Lección 1 → Lección 2 → Proyecto 1 → Proyecto 2 → Repaso + nota pública. Las paradas se abren en orden; ritmo sugerido, una por día.
+- Cada módulo (4–6 unidades) cierra con un proyecto integrador para portafolio; SQL cierra con examen de salida.
+- Temario completo (19 módulos, 4 etapas) en `docs/plan-maestro.md`. SQL se cubre a fondo (M2 y M3) antes de Python.
 
 ## Estructura del contenido
 
@@ -62,7 +62,8 @@ Frontmatter de cada lección: `id, modulo, semana, dia, objetivo, duracion_min, 
 - Hecho (27 oct): lección del lunes como historia en tarjetas (`lunes.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
 - Hecho (27 oct): avatar propio con nombre (protagonista), Hashy el schnauzer (tips y errores) y sonidos.
 - Hecho (27 oct): avatar de cuerpo completo y clóset donde se gastan los XP (catálogo en `app/src/lib/armario.ts`).
-- Siguiente: historia del martes, mini-proyecto y viernes con el mismo estilo; después Capacitor + recordatorio diario.
+- Definido (27 oct): ruta por unidades con paradas en un mapa (maqueta `docs/maquetas/ruta-mapa.html`) y temario ampliado: SQL en dos módulos, etapa Data Analyst, Git al inicio, IA aplicada a datos.
+- Siguiente: mapa de la Ruta en la app + historia del martes, proyecto y repaso de la Unidad 1; después Capacitor + recordatorio diario. Barra inferior por definir.
 
 ## Comandos de la app (desde `app/`)
 
