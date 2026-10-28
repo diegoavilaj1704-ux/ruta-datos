@@ -111,10 +111,15 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
     }, '');
   const iActual = paradas.findIndex((s) => estadoDe(s, progreso) === 'actual');
 
-  // Hashy se para junto a la parada que toca (o junto al premio si ya terminaste)
-  const junto = iActual >= 0 ? puntos[iActual] : premio;
-  const hashyIzq = (iActual >= 0 ? VAIVEN[iActual % VAIVEN.length] : VAIVEN[paradas.length % VAIVEN.length]) <= 0;
-  const hashy = { x: junto.x + (hashyIzq ? -78 : 78), y: junto.y + 20 };
+  // Lugares donde Hashy puede estar: del lado libre de cada parada (las gráficas van del otro)
+  // y junto al premio. El primero es junto a la parada que toca, para que empiece ahí.
+  const libre = (i: number, p: { x: number; y: number }) => {
+    const izq = VAIVEN[i % VAIVEN.length] <= 0;
+    return { x: Math.min(ancho - 52, Math.max(40, p.x + (izq ? -84 : 84))), y: p.y + 20 };
+  };
+  const lugares = [...puntos, premio].map((p, i) => libre(i, p));
+  const inicio = iActual >= 0 ? iActual : paradas.length;
+  const lugaresHashy = [lugares[inicio], ...lugares.filter((_, i) => i !== inicio)];
 
   return (
     <section className="tramo">
@@ -195,7 +200,7 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
         </button>
 
         {unidad.tipsHashy.length > 0 && (
-          <HashyPaseo x={hashy.x} y={hashy.y} mira={hashyIzq ? 1 : -1} tips={unidad.tipsHashy} />
+          <HashyPaseo lugares={lugaresHashy} tips={unidad.tipsHashy} />
         )}
       </div>
     </section>
