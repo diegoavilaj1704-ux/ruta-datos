@@ -22,7 +22,7 @@ export interface Figura {
 // Encuadres (viewBox) para cada vista
 export const ENCUADRE = {
   completo: '20 4 160 424',
-  cara: '44 6 112 112',
+  cara: '52 18 96 96',
   peinado: '40 0 120 120', gorro: '30 -6 140 120', lentes: '62 48 76 70',
   accesorio: '24 20 152 260', ropa: '24 118 152 152', pantalon: '30 238 140 160', tenis: '30 360 140 66',
 } as const;
@@ -351,5 +351,7 @@ export function svgFigura(f: Figura, e: Equipo, id: string, encuadre: string, ci
   const marco = circulo
     ? `<defs><clipPath id="c${id}"><circle cx="${x + ancho / 2}" cy="${y + alto / 2}" r="${ancho / 2}"/></clipPath></defs><g clip-path="url(#c${id})"><rect x="${x}" y="${y}" width="${ancho}" height="${alto}" fill="${f.fondo}"/>`
     : '<g>';
-  return `<svg viewBox="${encuadre}" width="100%" height="100%" role="img" aria-label="${f.nombre}">${marco}${dibujarFigura(f, e, id)}</g></svg>`;
+  // En el círculo las líneas se encogen con el dibujo: con grosor fijo, a 40 px la cara se vuelve una mancha
+  const dibujo = circulo ? dibujarFigura(f, e, id).replace(/ vector-effect="non-scaling-stroke"/g, '') : dibujarFigura(f, e, id);
+  return `<svg viewBox="${encuadre}" width="100%" height="100%" role="img" aria-label="${f.nombre}">${marco}${dibujo}</g></svg>`;
 }
