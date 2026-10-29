@@ -57,6 +57,7 @@ Registro de lo que se decidió (y por qué) en las conversaciones de planeación
 
 ## Decisiones pendientes
 
+- **Temario revisado (20 módulos), historia de toda la ruta y nuevas herramientas** en `docs/plan-de-contenido.md` (29 oct). Falta que Diego lo apruebe; al aprobarse reemplaza la tabla de `plan-maestro.md`.
 - Stack de la app nativa. **Propuesta (27 oct): Capacitor** sobre la misma PWA, por la meta de diciembre. Expo o SwiftUI implicarían reescribir la app. Falta que Diego lo confirme.
 - Cuándo pasar a GitHub Pro para volver privado el repositorio.
 - Cuenta de Apple Developer y cómo compilar para iOS desde Windows (Mac prestada, Codemagic o GitHub Actions).
