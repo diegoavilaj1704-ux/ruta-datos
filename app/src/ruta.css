@@ -1,5 +1,5 @@
-/* Camino de la Ruta (pantalla principal): botones redondos con relieve en violeta,
-   íconos y gráficas de datos junto al camino, y una base de datos de premio al final. */
+/* Camino de la Ruta (pantalla principal): botones redondos con relieve sobre el degradado del
+   módulo, regalos de monedas y un banco de monedas de premio al final. */
 :root {
   --camino-punto: rgba(108, 76, 241, 0.13);
   --linea-falta: #e2def0;
@@ -110,46 +110,6 @@
 }
 @keyframes flota { 50% { transform: translate(-50%, -4px); } }
 
-/* Gráficas junto al camino: se tocan para repasar los temas */
-.ilustracion {
-  position: absolute; z-index: 2; transform: translate(-50%, -50%);
-  width: 72px; height: 58px; display: grid; place-items: center; padding: 0;
-  background: var(--tarjeta-ilus); border: 2px solid var(--borde); border-bottom-width: 4px; border-radius: 16px;
-}
-.ilustracion:active { transform: translate(-50%, calc(-50% + 2px)); border-bottom-width: 2px; }
-.ilustracion .g-eje { stroke: var(--texto); stroke-width: 1.5; }
-.ilustracion .g1 { fill: #b9a8ff; }
-.ilustracion .g2 { fill: var(--marca); }
-.ilustracion .g3 { fill: var(--acento); }
-.ilustracion .g-tendencia { stroke: var(--ambar); stroke-width: 1.5; stroke-dasharray: 3 3; fill: none; }
-.ilustracion .g-linea { stroke: var(--marca); stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.ilustracion.cerrada svg { opacity: 0.35; filter: grayscale(1); }
-.insignia {
-  position: absolute; top: -9px; right: -9px; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 5px;
-  display: grid; place-items: center; font-size: 11px; font-weight: 900;
-  background: var(--term-id); color: #0d5a43; border: 3px solid var(--fondo);
-}
-.ilustracion.cerrada .insignia { background: var(--parada-off); font-size: 9px; }
-
-/* Premio: una base de datos que guarda XP */
-.premio {
-  position: absolute; z-index: 2; transform: translate(-50%, -50%);
-  display: grid; place-items: center; padding: 0; background: none; border: 0; font: inherit;
-}
-.premio > span { position: absolute; top: 25px; font-size: 12px; font-weight: 900; }
-.premio .bd-lado, .premio .bd-tapa { stroke-width: 2.5; }
-.premio .bd-raya { fill: none; stroke-width: 2.5; }
-.premio.cerrado .bd-lado, .premio.cerrado .bd-tapa { fill: var(--parada-off); stroke: var(--parada-off-relieve); }
-.premio.cerrado .bd-raya { stroke: var(--parada-off-relieve); }
-.premio.cerrado > span { color: var(--parada-off-icono); }
-.premio.listo { animation: latido 1.4s ease-in-out infinite; }
-.premio.listo .bd-lado, .premio.listo .bd-tapa { fill: var(--ambar); stroke: #d18700; }
-.premio.listo .bd-raya { stroke: #d18700; }
-.premio.listo > span { color: #5a3b00; }
-.premio.cobrado .bd-lado, .premio.cobrado .bd-tapa { fill: var(--term-id); stroke: #3fc497; }
-.premio.cobrado .bd-raya { stroke: #3fc497; }
-.premio.cobrado > span { color: #0d5a43; }
-@keyframes latido { 50% { transform: translate(-50%, -50%) scale(1.08); } }
 
 /* Hashy paseando */
 .hashy-paseo { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; z-index: 4; pointer-events: none; }
@@ -277,38 +237,36 @@
 .racha-dia.hecho { background: var(--acento); border-color: var(--acento); color: #fff; }
 .racha-dia.hoy { border-color: var(--marca); }
 
-/* ---------- El barrio (lib/barrio.ts) ---------- */
-.camino.barrio { max-width: none; overflow: hidden; }
-.barrio-escena { position: absolute; inset: 0; display: block; }
-.toque-negocio { position: absolute; transform: translate(-50%, -50%); background: none; border: 0; padding: 0; border-radius: 24px; }
-.toque-regalo, .toque-banco { position: absolute; transform: translate(-50%, -50%); width: 86px; height: 86px; background: none; border: 0; padding: 0; display: flex; align-items: flex-end; justify-content: center; }
-.toque-banco { width: 150px; height: 170px; margin-top: -30px; }
-.toque-regalo span, .toque-banco span {
-  transform: translateY(26px); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
-  background: #fff; color: #1F1A22; border: 2px solid #1F1A22; border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 900;
+/* ---------- Degradado del módulo (lib/colores.ts) ---------- */
+/* El camino va sobre el color de su módulo, del principal al profundo; los botones se aclaran
+   para resaltar y lo bloqueado es blanco translúcido. Igual en modo claro y oscuro. */
+.tramo { background: linear-gradient(180deg, var(--mod) 0%, var(--mod-hondo) 100%); padding-top: 12px; }
+.tramo .tarjeta-unidad { background: color-mix(in srgb, var(--mod) 78%, #fff); border-bottom-color: var(--mod-hondo); box-shadow: 0 8px 20px rgba(0, 0, 0, .22); margin-top: 0; }
+.tramo .linea-falta { stroke: rgba(255, 255, 255, .22); }
+.tramo .linea-hecha { stroke: #7CF2C3; opacity: .9; }
+.tramo .boton-parada:not(.bloqueada) { background: color-mix(in srgb, var(--mod) 82%, #fff); border-bottom-color: var(--mod-hondo); }
+.tramo .boton-parada.bloqueada { background: rgba(255, 255, 255, .18); border-bottom-color: rgba(0, 0, 0, .25); color: rgba(255, 255, 255, .6); }
+.tramo .nombre-parada { color: #fff; }
+.tramo .nombre-parada.bloqueada { color: rgba(255, 255, 255, .55); }
+.tramo .anillo-fondo { stroke: rgba(255, 255, 255, .3); }
+.tramo .palomita { border-color: #fff; }
+.tramo .globo-parada, .tramo .globo-parada::after { background: #fff; border-color: #fff; }
+.tramo .globo-parada { color: var(--mod-hondo); }
+
+/* Regalo de monedas y banco */
+.regalo-monedas, .banco-monedas {
+  position: absolute; z-index: 2; transform: translate(-50%, -50%);
+  display: grid; justify-items: center; gap: 2px; background: none; border: 0; padding: 0; font: inherit;
 }
-.toque-banco span { transform: translateY(46px); font-size: 12px; }
-.toque-regalo.listo span, .toque-banco.listo span { background: #FFC531; }
-.toque-regalo.abierto span, .toque-banco.abierto span { color: #0d5a43; }
-.barrio .nombre-parada { background: #fff; color: #1F1A22; border: 2px solid #1F1A22; border-radius: 999px; padding: 1px 10px; }
-.barrio .nombre-parada.bloqueada { color: #6B6880; }
-.ficha-pide { margin: 0; background: var(--marca-suave); border-radius: 14px; padding: 8px 12px; font-weight: 700; }
+.regalo-monedas svg, .banco-monedas svg { filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .25)); }
+.regalo-monedas span, .banco-monedas span {
+  display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  background: #fff; color: #2A2838; border-radius: 999px; padding: 2px 9px; font-size: 11px; font-weight: 900;
+}
+.regalo-monedas.listo span, .banco-monedas.listo span { background: #FFC531; }
+.regalo-monedas.listo > svg, .banco-monedas.listo > svg { animation: brinca 1.1s ease-in-out infinite; }
+.regalo-monedas.cerrado > svg, .banco-monedas.cerrado > svg { filter: grayscale(.85) opacity(.6); }
+.regalo-monedas.abierto span, .banco-monedas.cobrado span { color: #0d5a43; }
+@keyframes brinca { 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { .regalo-monedas.listo svg, .banco-monedas.listo svg { animation: none; } }
 .ficha-regalo { display: block; filter: drop-shadow(0 6px 10px rgba(201, 138, 0, .35)); }
-.b-flota { animation: b-flota 3.2s ease-in-out infinite; }
-@keyframes b-flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-.b-rebota { animation: b-rebota 1.2s ease-in-out infinite; }
-@keyframes b-rebota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
-.b-vapor { animation: b-vapor 2.4s ease-in-out infinite; }
-@keyframes b-vapor { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: .9; } 100% { opacity: 0; transform: translateY(-10px); } }
-.b-destello { animation: b-destello 1.6s ease-in-out infinite; }
-@keyframes b-destello { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .b-flota, .b-rebota, .b-vapor, .b-destello { animation: none; } }
-/* En el barrio los botones siempre van sobre pasto: colores claros en ambos temas */
-.barrio .boton-parada.bloqueada { background: #C9C5D8; border-bottom-color: #9A96AE; color: #6B6880; border-color: #1F1A22; }
-.barrio .globo-parada { background: #fff; color: #6C4CF1; border-color: #1F1A22; }
-.barrio .globo-parada::after { background: #fff; border-color: #1F1A22; }
-.barrio .anillo-fondo { stroke: rgba(255, 255, 255, .7); }
-.barrio .palomita { border-color: #fff; }
-/* La etiqueta del regalo va arriba del montón: abajo queda el globo de la siguiente parada */
-.toque-regalo { align-items: flex-start; }
-.toque-regalo span { transform: translateY(-34px); }

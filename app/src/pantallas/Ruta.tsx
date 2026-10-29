@@ -1,21 +1,23 @@
-import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Moneda } from '../componentes/Moneda';
 import { tipsGenerales, unidades, type Concepto, type Sesion, type TipoParada, type Unidad } from '../lib/contenido';
 import { acciones, calcularRacha, hoyLocal, useProgreso, type Progreso } from '../lib/progreso';
 import { ejecutar, type Resultado } from '../lib/sql';
 import { sonidos } from '../lib/sonidos';
-import { Avatar, equipoDe } from '../componentes/Avatar';
-import { ANCHO, dibujarBarrio, ladoLibre, ORDEN_NEGOCIOS, PASO, puntoParada } from '../lib/barrio';
-import { dibujarFigura } from '../lib/figura';
-import { figuraDePerfil, PERFIL_INICIAL } from '../lib/personajes';
+import { Avatar } from '../componentes/Avatar';
+import { colorModulo } from '../lib/colores';
 import { elegirRegalo, regalosDeUnidad, type Regalo } from '../lib/regalos';
 import { HashyPaseo } from '../componentes/HashyPaseo';
 import { TextoEnLinea } from '../componentes/Markdown';
 import { Codigo, Salida, Terminal } from '../componentes/Tarjetas';
 
-// Pantalla principal: la unidad es una calle del barrio, de arriba hacia abajo. Cada parada es un
-// negocio que se abre al terminar la anterior; cada 3 paradas hay un regalo de monedas, Hashy se
-// pasea dando tips y al final de la calle el Banco de Datos paga el premio de la unidad.
+// Pantalla principal: el camino de la unidad, de arriba hacia abajo, sobre un degradado del color
+// de su módulo. Cada parada se abre al terminar la anterior; cada 3 paradas hay un regalo de
+// monedas, Hashy se pasea dando tips y al final espera el banco con el premio de la unidad.
+
+const FILA = 136;            // distancia vertical entre paradas
+const ARRIBA = 96;           // espacio para el globo de la primera parada
+const VAIVEN = [0, -62, -78, -24, 56, 76, 22];   // desplazamiento horizontal de cada parada
 const PREMIO_XP = 50;
 
 type Estado = 'hecha' | 'actual' | 'bloqueada';
@@ -84,12 +86,12 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
   const caja = useRef<HTMLDivElement>(null);
   const actual = useRef<HTMLButtonElement>(null);
   const alBanco = useRef<HTMLButtonElement>(null);
-  const id = useId().replace(/:/g, '');
   const [ancho, setAncho] = useState(() => Math.min(innerWidth, 460));
   const paradas = unidad.sesiones;
   const hechas = paradas.filter((s) => progreso.completadas[s.clave]).length;
   const completa = hechas === paradas.length;
   const cobrado = progreso.premios.includes(unidad.id);
+  const color = colorModulo(unidad.modulo.id);
 
   useLayoutEffect(() => {
     const el = caja.current;
@@ -100,52 +102,40 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
-  // Al abrir, el camino se centra en la parada que toca
+  // Al abrir, el camino se centra en la parada que toca (o en el banco si ya terminaste)
   useEffect(() => {
     (actual.current ?? alBanco.current)?.scrollIntoView({ block: 'center' });
   }, []);
 
-  // Todo se coloca en el lienzo de 390 de ancho del barrio y se escala a la pantalla
-  const k = ancho / ANCHO;
-  const puntos = paradas.map((_, i) => puntoParada(i));
-  const ultimo = puntos[puntos.length - 1];
-  const banco = { x: ANCHO / 2, y: ultimo.y + PASO + 50 };
-  const alto = banco.y + 150;
-  const regalos = regalosDeUnidad(paradas.length).map((n) => ({
-    n, clave: `${unidad.id}#${n}`,
-    // A media calle, en la orilla libre (lejos de los negocios y de los globos de las paradas)
-    x: puntos[n - 1].x < ANCHO / 2 ? 312 : 78, y: (puntos[n - 1].y + puntos[n].y) / 2,
-  }));
-  const estadoRegalo = (r: { n: number; clave: string }) => progreso.regalos[r.clave] ? 'abierto' : hechas >= r.n ? 'listo' : 'cerrado';
-  const estadoBanco = cobrado ? 'abierto' : completa ? 'listo' : 'cerrado';
+  const centro = ancho / 2;
+  const punto = (i: number) => ({ x: centro + VAIVEN[i % VAIVEN.length], y: ARRIBA + i * FILA });
+  const puntos = paradas.map((_, i) => punto(i));
+  const banco = punto(paradas.length);
+  const alto = banco.y + 110;
+  const curva = (hasta: number) =>
+    [...puntos, banco].slice(0, hasta + 1).reduce((d, p, i, arr) => {
+      if (i === 0) return `M ${p.x} ${p.y}`;
+      const a = arr[i - 1];
+      const m = (a.y + p.y) / 2;
+      return `${d} C ${a.x} ${m}, ${p.x} ${m}, ${p.x} ${p.y}`;
+    }, '');
   const iActual = paradas.findIndex((s) => estadoDe(s, progreso) === 'actual');
-  const perfil = progreso.perfil ?? PERFIL_INICIAL;
+  // Un lado del camino queda para los regalos; el otro, para Hashy
+  const ladoRegalo = (i: number) => (VAIVEN[i % VAIVEN.length] <= 0 ? 1 : -1);
 
-  // Tu avatar espera junto a la parada que toca, del lado de la calle sin negocio
-  const dondeYo = iActual >= 0
-    ? { x: puntos[iActual].x + ladoLibre(puntos[iActual]) * 64, y: puntos[iActual].y }
-    : { x: banco.x + 74, y: banco.y + 34 };
-  const escena = useMemo(() => dibujarBarrio({
-    paradas: paradas.map((s, i) => ({
-      ...puntos[i],
-      negocio: s.parada.negocio ?? ORDEN_NEGOCIOS[i % ORDEN_NEGOCIOS.length],
-      letrero: s.parada.letrero ?? s.parada.corto.toUpperCase(),
-      estado: estadoDe(s, progreso),
-    })),
-    regalos: regalos.map((r) => ({ x: r.x, y: r.y, estado: estadoRegalo(r) })),
-    banco: { ...banco, estado: estadoBanco },
-    alto,
-    avatar: { ...dondeYo, svg: dibujarFigura(figuraDePerfil(perfil), equipoDe(perfil), `${id}yo`) },
-  }, id),
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [progreso, id]);
+  // Regalos de monedas: junto a la 3.ª parada, la 6.ª…
+  const regalos = regalosDeUnidad(paradas.length).map((n) => {
+    const p = puntos[n - 1];
+    return { n, clave: `${unidad.id}#${n}`, x: p.x + ladoRegalo(n - 1) * 100, y: p.y - 6 };
+  });
+  const estadoRegalo = (r: { n: number; clave: string }) => (progreso.regalos[r.clave] ? 'abierto' : hechas >= r.n ? 'listo' : 'cerrado');
+  const estadoBanco = cobrado ? 'cobrado' : completa ? 'listo' : 'cerrado';
 
-  // Lugares donde Hashy puede estar: más afuera del lado libre de cada parada y junto al banco.
+  // Lugares donde Hashy puede estar: del lado contrario a los regalos y junto al banco.
   // El primero es junto a la parada que toca, para que empiece ahí.
-  const lugares = [
-    ...puntos.map((p) => ({ x: Math.min(ANCHO - 54, Math.max(54, p.x + ladoLibre(p) * 112)), y: p.y + 44 })),
-    { x: banco.x - 112, y: banco.y + 40 },
-  ].map((l) => ({ x: l.x * k, y: l.y * k }));
+  const lugares = [...puntos, banco].map((p, i) => ({
+    x: Math.min(ancho - 52, Math.max(40, p.x - ladoRegalo(i) * 84)), y: p.y + 20,
+  }));
   const inicio = iActual >= 0 ? iActual : paradas.length;
   const lugaresHashy = [lugares[inicio], ...lugares.filter((_, i) => i !== inicio)];
 
@@ -158,7 +148,7 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
   ];
 
   return (
-    <section className="tramo">
+    <section className="tramo" style={{ '--mod': color.principal, '--mod-hondo': color.profundo } as React.CSSProperties}>
       <div className="tarjeta-unidad">
         <button className="tu-info" onClick={() => abrirFicha({ tipo: 'unidad', unidad })}>
           <small>{unidad.modulo.nombre.split(' ')[0]} · Unidad {unidad.numero}</small>
@@ -173,9 +163,11 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
         </button>
       </div>
 
-      <div className="camino barrio" ref={caja} style={{ height: alto * k }}>
-        <svg className="barrio-escena" viewBox={`0 0 ${ANCHO} ${alto}`} width={ancho} height={alto * k} aria-hidden="true"
-          dangerouslySetInnerHTML={{ __html: escena }} />
+      <div className="camino" ref={caja} style={{ height: alto }}>
+        <svg className="camino-linea" width={ancho} height={alto} aria-hidden="true">
+          <path d={curva(paradas.length)} className="linea-falta" />
+          {hechas > 0 && <path d={curva(completa ? paradas.length : hechas)} className="linea-hecha" />}
+        </svg>
 
         {paradas.map((s, i) => {
           const estado = estadoDe(s, progreso);
@@ -183,36 +175,28 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
           const enCurso = progreso.historias[s.clave];
           const total = s.historia?.pasos.length ?? 1;
           const avance = enCurso ? Math.max(0.08, enCurso.paso / total) : 0.04;
-          const ladoNegocio = x > ANCHO / 2 ? 102 : 292;
           return (
             <div key={s.clave}>
-              {/* El negocio también se toca: abre la misma ficha que su parada */}
-              <button
-                className="toque-negocio"
-                style={{ left: ladoNegocio * k, top: (y - 20) * k, width: 140 * k, height: 150 * k }}
-                onClick={() => abrirFicha({ tipo: 'parada', sesion: s, unidad })}
-                aria-label={`${s.parada.letrero ?? s.parada.corto}: ${s.parada.pide ?? s.meta.titulo}`}
-              />
               {estado === 'actual' && (
                 <>
-                  <svg className="anillo" style={{ left: x * k - 50, top: y * k - 50 }} width="100" height="100" aria-hidden="true">
+                  <svg className="anillo" style={{ left: x - 50, top: y - 50 }} width="100" height="100" aria-hidden="true">
                     <circle cx="50" cy="50" r="45" className="anillo-fondo" />
                     <circle cx="50" cy="50" r="45" className="anillo-avance" strokeDasharray={`${avance * 283} 283`} transform="rotate(-90 50 50)" />
                   </svg>
-                  <span className="globo-parada" style={{ left: x * k, top: y * k - 80 }}>{enCurso ? 'CONTINUAR' : 'EMPEZAR'}</span>
+                  <span className="globo-parada" style={{ left: x, top: y - 80 }}>{enCurso ? 'CONTINUAR' : 'EMPEZAR'}</span>
                 </>
               )}
               <button
                 ref={estado === 'actual' ? actual : undefined}
                 className={`boton-parada ${estado}`}
-                style={{ left: x * k, top: y * k }}
+                style={{ left: x, top: y }}
                 onClick={() => abrirFicha({ tipo: 'parada', sesion: s, unidad })}
                 aria-label={`${s.parada.corto}: ${estado === 'hecha' ? 'terminada' : estado === 'actual' ? 'te toca' : 'bloqueada'}`}
               >
                 <IconoParada tipo={s.tipo} />
                 {estado === 'hecha' && <span className="palomita" aria-hidden="true">✓</span>}
               </button>
-              <span className={`nombre-parada ${estado}`} style={{ left: x * k, top: y * k + 37 }}>{s.parada.corto}</span>
+              <span className={`nombre-parada ${estado}`} style={{ left: x, top: y + 37 }}>{s.parada.corto}</span>
             </div>
           );
         })}
@@ -221,17 +205,19 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
           const e = estadoRegalo(r);
           const faltan = r.n - hechas;
           return (
-            <button key={r.clave} className={`toque-regalo ${e}`} style={{ left: r.x * k, top: r.y * k }}
+            <button key={r.clave} className={`regalo-monedas ${e}`} style={{ left: r.x, top: r.y }}
               onClick={() => abrirFicha({ tipo: 'regalo', unidad, clave: r.clave, faltan })}
               aria-label={e === 'listo' ? 'Regalo de monedas: ábrelo' : e === 'abierto' ? 'Regalo de monedas abierto' : `Regalo de monedas: faltan ${faltan} paradas`}>
+              <MontonMonedas abierto={e === 'abierto'} />
               <span>{e === 'abierto' ? 'ABIERTO' : e === 'listo' ? '¡ÁBRELO!' : `${faltan} PARADA${faltan === 1 ? '' : 'S'}`}</span>
             </button>
           );
         })}
 
-        <button ref={alBanco} className={`toque-banco ${estadoBanco}`} style={{ left: banco.x * k, top: banco.y * k }}
-          onClick={() => abrirFicha({ tipo: 'premio', unidad })} aria-label={`Banco de Datos: premio de la unidad, ${PREMIO_XP} XP`}>
-          <span>{cobrado ? '✓ COBRADO' : <><Moneda tam={14} /> +{PREMIO_XP} XP</>}</span>
+        <button ref={alBanco} className={`banco-monedas ${estadoBanco}`} style={{ left: banco.x, top: banco.y }}
+          onClick={() => abrirFicha({ tipo: 'premio', unidad })} aria-label={`Banco de monedas: premio de la unidad, ${PREMIO_XP} XP`}>
+          <Banco />
+          <span>{cobrado ? '✓ COBRADO' : <><Moneda tam={13} /> +{PREMIO_XP} XP</>}</span>
         </button>
 
         {unidad.tipsHashy.length > 0 && (
@@ -252,6 +238,42 @@ function IconoParada({ tipo }: { tipo: TipoParada }) {
     );
   }
   return <span className="icono-estrella">★</span>;
+}
+
+// Montón de monedas: el regalo del camino
+function MontonMonedas({ abierto }: { abierto: boolean }) {
+  if (abierto) return <Moneda tam={30} />;
+  return (
+    <svg width="56" height="56" viewBox="0 0 60 60" aria-hidden="true">
+      {[0, 1, 2].map((i) => (
+        <g key={i} transform={`translate(0 ${-i * 8})`}>
+          <ellipse cx="30" cy="48" rx="18" ry="6" fill="#C98A00" />
+          <rect x="12" y="42" width="36" height="6" fill="#E8A417" />
+          <ellipse cx="30" cy="42" rx="18" ry="6" fill="#FFD23F" stroke="#A86F00" strokeWidth="1.2" />
+        </g>
+      ))}
+      <ellipse cx="30" cy="26" rx="11" ry="3.6" fill="none" stroke="#D99A00" strokeWidth="1.3" />
+      <g transform="translate(44 18) rotate(18)">
+        <ellipse cx="0" cy="0" rx="8" ry="11" fill="#FFC531" stroke="#A86F00" strokeWidth="1.3" />
+        <ellipse cx="0" cy="0" rx="4.5" ry="7" fill="none" stroke="#D99A00" strokeWidth="1.2" />
+      </g>
+      <path d="M10 14 l1.6 4 l4 1.6 l-4 1.6 l-1.6 4 l-1.6 -4 l-4 -1.6 l4 -1.6 Z" fill="#fff" />
+    </svg>
+  );
+}
+
+// Banco de monedas: el premio al final de la unidad
+function Banco() {
+  return (
+    <svg width="76" height="74" viewBox="0 0 76 74" aria-hidden="true">
+      <ellipse cx="38" cy="66" rx="30" ry="6" fill="rgba(0,0,0,.2)" />
+      <path d="M10 26 L38 10 L66 26 Z" fill="#FFC531" stroke="#A86F00" strokeWidth="1.6" />
+      <rect x="12" y="26" width="52" height="6" fill="#FFD23F" stroke="#A86F00" strokeWidth="1.4" />
+      {[16, 28, 40, 52].map((x) => <rect key={x} x={x} y="33" width="8" height="24" fill="#FFF3C4" stroke="#A86F00" strokeWidth="1.2" />)}
+      <rect x="8" y="57" width="60" height="7" rx="2" fill="#FFD23F" stroke="#A86F00" strokeWidth="1.4" />
+      <circle cx="38" cy="20" r="4" fill="#fff" stroke="#A86F00" strokeWidth="1.2" />
+    </svg>
+  );
 }
 
 // ---------- Hojas con información ----------
@@ -320,7 +342,6 @@ function FichaParada({ sesion, unidad, progreso, cambiar }: { sesion: Sesion; un
         {NOMBRE_TIPO[sesion.tipo]} · {estado === 'hecha' ? '✓ Terminada' : estado === 'actual' ? 'Te toca' : '🔒 Bloqueada'}
       </span>
       <h2>{sesion.meta.titulo}</h2>
-      {sesion.parada.pide && <p className="ficha-pide"><b>{sesion.parada.letrero}</b> · {sesion.parada.pide}</p>}
       <p className="ficha-texto">{sesion.meta.objetivo}</p>
       <p className="ficha-meta">⏱ {sesion.meta.duracion_min} min{total ? ` · ${total} tarjetas` : ''}</p>
 
@@ -472,7 +493,7 @@ function FichaPremio({ unidad, progreso }: { unidad: Unidad; progreso: Progreso 
   return (
     <div className="ficha ficha-premio">
       <Avatar quien="hashy" animo={cobrado || recien ? 'lentes' : 'feliz'} tam={88} />
-      <span className={`ficha-tipo ${cobrado ? 'hecha' : faltan ? 'bloqueada' : 'actual'}`}>Banco de Datos · premio de la unidad</span>
+      <span className={`ficha-tipo ${cobrado ? 'hecha' : faltan ? 'bloqueada' : 'actual'}`}>Banco de monedas · premio de la unidad</span>
       {recien ? (
         <>
           <h2>¡El banco te pagó +{PREMIO_XP} XP!</h2>
@@ -481,17 +502,17 @@ function FichaPremio({ unidad, progreso }: { unidad: Unidad; progreso: Progreso 
       ) : cobrado ? (
         <>
           <h2>Ya cobraste este premio</h2>
-          <p className="ficha-texto">El Banco de Datos te pagó {PREMIO_XP} XP por terminar <b>{unidad.titulo}</b>.</p>
+          <p className="ficha-texto">El banco te pagó {PREMIO_XP} XP por terminar <b>{unidad.titulo}</b>.</p>
         </>
       ) : faltan ? (
         <>
-          <h2>El Banco de Datos guarda {PREMIO_XP} XP para ti</h2>
+          <h2>El banco guarda {PREMIO_XP} XP para ti</h2>
           <p className="ficha-candado">🔒 Te {faltan === 1 ? 'falta 1 parada' : `faltan ${faltan} paradas`} para cobrarlos.</p>
         </>
       ) : (
         <>
           <h2>¡Terminaste la unidad!</h2>
-          <p className="ficha-texto">Ayudaste a todo el barrio: el Banco de Datos te paga {PREMIO_XP} XP.</p>
+          <p className="ficha-texto">Terminaste todas las paradas: el banco te paga {PREMIO_XP} XP.</p>
           <button className="boton-juego" onClick={abrirPremio}>COBRAR · +{PREMIO_XP} XP</button>
         </>
       )}

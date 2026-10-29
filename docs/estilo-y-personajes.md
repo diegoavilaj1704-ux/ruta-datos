@@ -58,13 +58,11 @@ Lo que el piloto rechazó, para no repetirlo:
 
 ## Mapa de la Ruta
 
-*Actualizado el 29 oct 2026. Antes el piloto rechazó un mapa oscuro de piedras, una gráfica, un pipeline y un camino de botones; aprobó la calle de barrio con negocios en 3D (maqueta `docs/maquetas/mapa-barrio.html`).*
+*Actualizado el 29 oct 2026. El piloto probó y descartó la calle de barrio con negocios en 3D (no le gustó cómo se veía); prefirió el camino de botones con un degradado por módulo (maqueta `docs/maquetas/mapa-degradados.html`, propuesta A) y sin gráficas a los lados.*
 
-Pantalla principal. **Cada unidad es una calle del barrio**, de arriba hacia abajo, y **cada parada es un negocio** que te pide ayuda con sus datos (Abarrotes Don Rafa, Café Byte, Fonda La Tabla, Peluquería El Filtro, Papelería La Nota…). Los negocios están en 3D isométrico con luz y sombra, toldo, letrero en la fachada y un **objeto gigante en el techo** (bolsa del súper, taza, taco, tijeras, lápiz). Los que aún no alcanzas salen en gris con candado. Encima de la calle van los botones redondos de las paradas (`>_` lección, barras proyecto, ★ repaso), con palomita al terminar y anillo ámbar con globo EMPEZAR/CONTINUAR en la que toca. **Tu avatar** espera junto a esa parada y **Hashy** se pasea por el barrio dando tips.
+Pantalla principal. Camino de **arriba hacia abajo** sobre un **degradado del color del módulo**: del color principal arriba al profundo abajo, así que al pasar de módulo el mapa cambia de color (paleta en `app/src/lib/colores.ts`: Fundamentos en violetas y azules, Data Analyst en verdes, Data Scientist en corales y naranjas, Data Engineer en azules oscuros). Paradas como **botones redondos con relieve** en el color del módulo, con ícono de datos: `>_` lección, barras proyecto, ★ repaso; palomita menta al terminar; la que toca lleva **anillo ámbar** de avance y globo blanco EMPEZAR/CONTINUAR; las bloqueadas, blanco translúcido. La línea recorrida es menta. Arriba, la tarjeta de la unidad (fija al bajar) con su avance y el botón **{ } FICHAS** (la chuleta). **Hashy** se pasea por el camino dando tips con su foco.
 
-**Premios:** cada 3 paradas aparece un **montón de monedas** en la orilla de la calle; al abrirlo sale al azar +30 o +60 XP, una prenda del clóset gratis o doble XP en la siguiente parada (`app/src/lib/regalos.ts`). Al final de la calle, el **Banco de Datos** paga 50 XP por terminar la unidad. Los XP se muestran con una **moneda dorada** en toda la app.
-
-El negocio de cada parada se define en `unidad.json` (`negocio`, `letrero`, `pide`); el dibujo vive en `app/src/lib/barrio.ts`. El barrio tiene sus propios colores (pasto verde menta) en modo claro y oscuro.
+**Premios:** junto a la 3.ª parada (y cada 3 más) hay un **montón de monedas**; al abrirlo sale al azar +30 o +60 XP, una prenda del clóset gratis o doble XP en la siguiente parada (`app/src/lib/regalos.ts`). Al final del camino, el **banco de monedas** paga 50 XP por terminar la unidad. Los XP se muestran con una **moneda dorada** en toda la app.
 
 ## Clóset y XP
 
