@@ -29,8 +29,9 @@ export const ENCUADRE = {
 
 const L = '#1F1A22';
 const ln = `stroke="${L}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"`;
+// Línea sin relleno; si `extra` trae su propio stroke, ese manda (un atributo repetido se ignora)
 const trazo = (ancho: number, extra = '') =>
-  `fill="none" stroke="${L}" stroke-width="${ancho}" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" ${extra}`;
+  `fill="none" ${/\bstroke="/.test(extra) ? '' : `stroke="${L}" `}stroke-width="${ancho}" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" ${extra}`;
 
 function oscurecer(hex: string, f: number): string {
   if (!hex.startsWith('#')) return hex;

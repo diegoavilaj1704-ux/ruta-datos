@@ -1,0 +1,245 @@
+<title>Mapa del barrio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap">
+<style>
+  /* Maqueta: el camino de la unidad como una calle del barrio. Cada parada es un negocio que
+     te pide ayuda con sus datos; cada 3 paradas hay un regalo sorpresa. Mundo ilustrado de un solo tema. */
+  :root {
+    --pasto: #A8DC8E; --pasto2: #93D07C; --calle: #EFE3CB; --orilla: #CDB892; --linea: #1F1A22;
+    --marca: #6C4CF1; --marca2: #4B2FC9; --coral: #FF6B5B; --ambar: #FFB020; --menta: #2EC4A0;
+    --tarjeta: #FFFFFF; --texto: #2A2838; --suave: #6B6880;
+    --letra: 'Nunito', system-ui, sans-serif;
+    color-scheme: light;
+  }
+  body { background: var(--pasto); color: var(--texto); font-family: var(--letra); font-weight: 800; }
+  .app { max-width: 430px; margin: 0 auto; position: relative; padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--marca); }
+  .unidad { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; margin: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); padding-top: 10px; }
+  .unidad div { background: var(--marca); color: #fff; border-radius: 20px; padding: 12px 16px; box-shadow: 0 5px 0 var(--marca2); display: grid; gap: 6px; }
+  .unidad small { opacity: .75; letter-spacing: .08em; font-size: 12px; }
+  .unidad b { font-size: 19px; font-weight: 900; }
+  .barra { height: 10px; border-radius: 6px; background: rgba(255,255,255,.25); overflow: hidden; }
+  .barra i { display: block; height: 100%; background: #8FF0C8; border-radius: 6px; transition: width .6s; }
+  svg.mapa { display: block; width: 100%; height: auto; margin-top: -70px; }
+  .tocable { cursor: pointer; }
+  .tocable:focus-visible { outline: 3px solid var(--coral); }
+  #yo { transition: transform 1.4s cubic-bezier(.5,0,.3,1); }
+  .rebota { animation: rebota 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
+  @keyframes rebota { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  .destello { animation: destello 1.6s ease-in-out infinite; }
+  @keyframes destello { 0%,100% { opacity: .2 } 50% { opacity: 1 } }
+  @media (prefers-reduced-motion: reduce) { .rebota, .destello { animation: none } #yo { transition: none } }
+  .demo { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 6; display: flex; gap: 8px; background: rgba(31,26,34,.88); padding: 8px; border-radius: 18px; width: min(398px, calc(100% - 32px)); box-sizing: border-box; }
+  .demo button { flex: 1; font: inherit; font-weight: 900; font-size: 14px; border: 0; border-radius: 12px; padding: 10px 8px; background: #fff; color: var(--texto); cursor: pointer; }
+  .demo button.principal { background: var(--coral); color: #fff; box-shadow: 0 3px 0 #C94B3E; }
+  .hoja-fondo { position: fixed; inset: 0; z-index: 20; background: rgba(20,16,30,.55); display: grid; align-items: end; }
+  .hoja { background: var(--tarjeta); border-radius: 26px 26px 0 0; padding: 22px max(20px, env(safe-area-inset-right, 0px)) calc(22px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); max-width: 430px; margin: 0 auto; width: 100%; box-sizing: border-box; display: grid; gap: 10px; text-align: center; }
+  .hoja h2 { margin: 0; font-size: 22px; font-weight: 900; text-wrap: balance; }
+  .hoja p { margin: 0; color: var(--suave); font-weight: 700; line-height: 1.45; }
+  .hoja .premio { font-size: 30px; font-weight: 900; color: var(--marca); }
+  .hoja button { font: inherit; font-weight: 900; font-size: 16px; border: 0; border-radius: 16px; padding: 14px; background: var(--marca); color: #fff; box-shadow: 0 4px 0 var(--marca2); cursor: pointer; }
+  .nota { margin: 0 16px 120px; background: rgba(255,255,255,.85); border-radius: 18px; padding: 14px 16px; font-weight: 700; line-height: 1.5; color: var(--texto); font-size: 14px; }
+  .nota b { font-weight: 900; }
+</style>
+
+<div class="app">
+  <header class="unidad"><div>
+    <small>SQL · UNIDAD 1</small>
+    <b>Tu primera consulta</b>
+    <span class="barra"><i id="avance"></i></span>
+  </div></header>
+  <svg class="mapa" id="mapa" viewBox="0 0 390 1640" role="img" aria-label="Mapa del barrio con las paradas de la unidad"></svg>
+  <p class="nota"><b>Cómo funciona:</b> cada parada es un negocio del barrio que te pide ayuda con sus datos. Tu avatar camina por la calle hasta la parada que te toca. Cada 3 paradas hay un <b>regalo sorpresa</b> (XP, una prenda o doble XP), y al final de la calle el <b>Banco de Datos</b> te paga tu premio de la unidad. La siguiente unidad es otra calle con otros negocios. Usa los botones de abajo para simular que avanzas.</p>
+</div>
+
+<div class="demo">
+  <button id="atras" type="button">◀ Regresar</button>
+  <button id="avanzar" class="principal" type="button">Terminar parada ▶</button>
+</div>
+<div id="hoja"></div>
+
+<script>
+const L = '#1F1A22';
+const ln = `stroke="${L}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"`;
+
+// Tu avatar (mismo dibujo que en la app)
+const YO = `<ellipse cx="100" cy="418" rx="64" ry="6" fill="#000" opacity=".15"/><path d="M38 192 C39 220 48 244 58 266 L74 260 C66 240 59 218 53 198 Z" fill="#EFC3A0" ${ln}/><path d="M38 192 C39 220 48 244 58 266 L74 260 C66 240 59 218 53 198 Z" transform="translate(200 0) scale(-1 1)" fill="#EFC3A0" ${ln}/><path d="M86 131 Q100 139 114 131 L140 137 Q152 141 156 155 L165 191 L146 198 L142 178 L141 250 Q100 256 59 250 L58 178 L54 198 L35 191 L44 155 Q48 141 60 137 Z" fill="#C2302B" ${ln}/><path d="M118 134 L142 140 L141 250 Q130 252 120 252 Q128 200 118 134 Z" fill="#000" opacity=".12"/><path d="M86 131 Q100 147 114 131" fill="none" ${ln}/><path d="M59 246 L141 246 L143 300 L138 398 L106 398 L102 292 L98 292 L94 398 L62 398 L57 300 Z" fill="#3F6C93" ${ln}/><path d="M59 255 L141 255 M100 255 L100 286" fill="none" stroke="${L}" stroke-width="1.8"/><g id="pie"><path d="M60 391 L97 391 L99 411 Q99 418 93 418 L46 418 Q39 418 41 410 Q45 398 60 391 Z" fill="#26252B" ${ln}/><path d="M41.5 411 L99 411 L99 413 Q99 418 93 418 L46 418 Q39 418 41.5 411 Z" fill="#F4F1EA" ${ln}/><path d="M66 397 L74 407 M73 395 L81 405" fill="none" stroke="#E8B53A" stroke-width="3" stroke-linecap="round"/></g><use href="#pie" transform="translate(200 0) scale(-1 1)"/><path d="M90 108 L90 134 Q100 140 110 134 L110 108 Z" fill="#EFC3A0" ${ln}/><ellipse cx="71" cy="80" rx="7" ry="10" fill="#EFC3A0" ${ln}/><ellipse cx="129" cy="80" rx="7" ry="10" fill="#EFC3A0" ${ln}/><path d="M72 66 C70 90 75 108 100 121 C125 108 130 90 128 66 C128 44 116 34 100 34 C84 34 72 44 72 66 Z" fill="#EFC3A0" ${ln}/><ellipse cx="88" cy="83" rx="3.4" ry="4.2" fill="${L}"/><ellipse cx="112" cy="83" rx="3.4" ry="4.2" fill="${L}"/><path d="M80 73 Q87 68 95 72 M105 72 Q113 68 120 73" fill="none" stroke="#211A17" stroke-width="3.6" stroke-linecap="round"/><path d="M100 87 Q97 95 100 97 Q103 98 105 95" fill="none" stroke="${L}" stroke-width="1.7" stroke-linecap="round"/><path d="M91 105 Q101 111 110 103" fill="none" stroke="${L}" stroke-width="2.2" stroke-linecap="round"/><path d="M70 72 C64 44 80 26 101 26 C122 27 135 42 130 72 C128 60 124 52 117 47 C107 52 90 52 81 47 C76 53 72 62 70 72 Z" fill="#211A17" ${ln}/><g fill="#fff" fill-opacity=".18" stroke="${L}" stroke-width="3"><rect x="77" y="74" width="21" height="16" rx="4"/><rect x="102" y="74" width="21" height="16" rx="4"/></g><path d="M98 80 Q100 78 102 80" fill="none" stroke="${L}" stroke-width="2.6"/>`;
+
+// Las paradas de la unidad: cada una en un negocio del barrio
+const PARADAS = [
+  { x: 150, y: 210, tipo: 'leccion', corto: 'SELECT', negocio: 'tienda', nombre: 'Abarrotes Don Rafa', pide: 'Don Rafa quiere ver qué vendió esta semana.' },
+  { x: 240, y: 430, tipo: 'leccion', corto: 'WHERE', negocio: 'cafe', nombre: 'Café Byte', pide: 'La cafetería solo quiere las ventas de la mañana.' },
+  { x: 150, y: 650, tipo: 'proyecto', corto: 'Proyecto 1', negocio: 'fonda', nombre: 'Fonda La Tabla', pide: 'La fonda necesita saber qué platillos piden más.' },
+  { x: 240, y: 920, tipo: 'proyecto', corto: 'Proyecto 2', negocio: 'pelu', nombre: 'Peluquería El Filtro', pide: 'La peluquería quiere un reporte de sus clientes.' },
+  { x: 150, y: 1140, tipo: 'repaso', corto: 'Repaso', negocio: 'papeleria', nombre: 'Papelería La Nota', pide: 'Aquí escribes tu nota pública de la unidad.' },
+];
+const REGALO = { x: 196, y: 790, despues: 3 };
+const BANCO = { x: 196, y: 1330 };
+const PREMIOS = [
+  { titulo: '+30 XP', texto: 'Para gastar en tu clóset.' },
+  { titulo: '+60 XP', texto: '¡Te tocó el regalo grande!' },
+  { titulo: 'Gorro de lana', texto: 'Ya está en tu clóset, gratis.' },
+  { titulo: 'Lentes de sol', texto: 'Ya están en tu clóset, gratis.' },
+  { titulo: 'Doble XP', texto: 'Tu siguiente parada da el doble de XP.' },
+];
+let hechas = 2;
+let regaloAbierto = false, bancoCobrado = false;
+
+const NEGOCIOS = {
+  tienda: { pared: '#F7E6C4', toldo: ['#E2453C', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y})"><path d="M-9 -2 L9 -2 L7 12 L-7 12 Z" fill="#FFB020" ${ln}/><path d="M-5 -2 Q0 -12 5 -2" fill="none" ${ln}/></g>` },
+  cafe: { pared: '#C99A6E', toldo: ['#6B3F22', '#F4E2C8'], icono: (x, y) => `<g transform="translate(${x} ${y})"><path d="M-9 -4 H7 V6 Q7 12 -1 12 Q-9 12 -9 6 Z" fill="#fff" ${ln}/><path d="M7 -1 Q13 -1 13 4 Q13 8 7 8" fill="none" ${ln}/><path d="M-5 -10 Q-3 -13 -5 -16 M0 -10 Q2 -13 0 -16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>` },
+  fonda: { pared: '#F2C6A0', toldo: ['#2E9E5B', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y})"><ellipse cx="0" cy="6" rx="12" ry="5" fill="#fff" ${ln}/><path d="M-8 4 Q0 -10 8 4" fill="#FF6B5B" ${ln}/></g>` },
+  pelu: { pared: '#CFE3F7', toldo: ['#3D6FD1', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y})"><rect x="-4" y="-12" width="8" height="26" rx="4" fill="#fff" ${ln}/><path d="M-4 -6 L4 -10 M-4 2 L4 -2 M-4 10 L4 6" stroke="#E2453C" stroke-width="2.6"/></g>` },
+  papeleria: { pared: '#FFE7A3', toldo: ['#6C4CF1', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y}) rotate(35)"><rect x="-3.5" y="-14" width="7" height="22" fill="#FFB020" ${ln}/><path d="M-3.5 8 L0 15 L3.5 8 Z" fill="#F4D6B0" ${ln}/></g>` },
+};
+
+function edificio(cx, base, n, estado, nombre) {
+  const c = NEGOCIOS[n];
+  const w = 124, h = 80, d = 16;
+  const x0 = cx - w / 2, x1 = cx + w / 2, top = base - h;
+  let s = `<ellipse cx="${cx + 8}" cy="${base + 4}" rx="${w / 2 + 16}" ry="9" fill="#000" opacity=".12"/>`;
+  s += `<path d="M${x1} ${top} L${x1 + d} ${top - 10} L${x1 + d} ${base - 10} L${x1} ${base} Z" fill="${c.pared}" ${ln}/><path d="M${x1} ${top} L${x1 + d} ${top - 10} L${x1 + d} ${base - 10} L${x1} ${base} Z" fill="#000" opacity=".16"/>`;
+  s += `<path d="M${x0} ${top} L${x0 + d} ${top - 10} L${x1 + d} ${top - 10} L${x1} ${top} Z" fill="#E9E1D3" ${ln}/>`;
+  s += `<rect x="${x0}" y="${top}" width="${w}" height="${h}" fill="${c.pared}" ${ln}/>`;
+  // Toldo a rayas con orilla de ondas
+  const franjas = 8, fw = w / franjas, ty = top + 18;
+  for (let i = 0; i < franjas; i++) {
+    s += `<path d="M${x0 + i * fw} ${ty} H${x0 + (i + 1) * fw} V${ty + 14} A${fw / 2} ${fw / 2.6} 0 0 1 ${x0 + i * fw} ${ty + 14} Z" fill="${c.toldo[i % 2]}"/>`;
+  }
+  s += `<path d="M${x0} ${ty} H${x1} V${ty + 14} ${Array.from({ length: franjas }, (_, i) => `A${fw / 2} ${fw / 2.6} 0 0 1 ${x1 - (i + 1) * fw} ${ty + 14}`).join(' ')} Z" fill="none" ${ln}/>`;
+  // Puerta y ventana
+  s += `<rect x="${x0 + 16}" y="${base - 38}" width="26" height="38" rx="3" fill="#8A5634" ${ln}/><circle cx="${x0 + 36}" cy="${base - 19}" r="1.8" fill="#FFD25A"/>`;
+  s += `<rect x="${x0 + 56}" y="${base - 40}" width="54" height="28" rx="3" fill="#BFE7F5" ${ln}/><path d="M${x0 + 83} ${base - 40} V${base - 12}" stroke="${L}" stroke-width="2"/><path d="M${x0 + 62} ${base - 34} L${x0 + 70} ${base - 26}" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>`;
+  // Letrero y su ícono en el techo
+  s += `<rect x="${x0 + 6}" y="${top - 30}" width="${w - 12}" height="22" rx="6" fill="#fff" ${ln}/><text x="${cx}" y="${top - 15}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">${nombre}</text>`;
+  s += c.icono(x1 + 4, top - 30);
+  if (estado === 'bloqueada') return `<g filter="url(#gris)" opacity=".55">${s}</g><g transform="translate(${cx} ${top + 30})"><rect x="-12" y="-6" width="24" height="18" rx="4" fill="#5B5770" ${ln}/><path d="M-7 -6 V-11 Q0 -20 7 -11 V-6" fill="none" stroke="#5B5770" stroke-width="4"/></g>`;
+  return s;
+}
+
+function arbol(x, y, k = 1) {
+  return `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="4" cy="2" rx="18" ry="5" fill="#000" opacity=".12"/><rect x="-4" y="-18" width="8" height="20" rx="2" fill="#8A5634" ${ln}/><circle cx="0" cy="-32" r="20" fill="#5DB86A" ${ln}/><circle cx="-8" cy="-38" r="6" fill="#7ED08A"/></g>`;
+}
+function arbusto(x, y) { return `<g transform="translate(${x} ${y})"><path d="M-18 0 Q-20 -14 -8 -14 Q-4 -24 6 -18 Q18 -20 18 -6 Q22 0 16 0 Z" fill="#6CC277" ${ln}/></g>`; }
+function farol(x, y) { return `<g transform="translate(${x} ${y})"><rect x="-2" y="-46" width="4" height="46" fill="#3A3658" ${ln}/><rect x="-7" y="-58" width="14" height="14" rx="3" fill="#FFE27A" ${ln}/></g>`; }
+function flores(x, y) { return [0, 10, 20].map((d, i) => `<circle cx="${x + d}" cy="${y + (i % 2) * 4}" r="3.4" fill="${['#FF8FB1', '#FFE27A', '#fff'][i]}" ${ln}/>`).join(''); }
+function cartelera(x, y) {
+  return `<g transform="translate(${x} ${y})"><rect x="-2" y="-30" width="4" height="30" fill="#8A5634" ${ln}/><rect x="-30" y="-74" width="60" height="44" rx="5" fill="#fff" ${ln}/>` +
+    [[-20, 14], [-8, 24], [4, 18], [16, 32]].map(([bx, bh]) => `<rect x="${bx}" y="${-36 - bh}" width="8" height="${bh}" fill="#6C4CF1"/>`).join('') + `</g>`;
+}
+
+function paradaBoton(p, i, estado) {
+  const icono = p.tipo === 'leccion' ? `<text x="0" y="6" text-anchor="middle" font-family="monospace" font-weight="700" font-size="17" fill="#fff">&gt;_</text>`
+    : p.tipo === 'proyecto' ? `<path d="M-9 8 V0 M-1 8 V-6 M7 8 V-2" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`
+    : `<text x="0" y="7" text-anchor="middle" font-size="20" fill="#fff">★</text>`;
+  const color = estado === 'bloqueada' ? '#B8B4C8' : '#6C4CF1', sombra = estado === 'bloqueada' ? '#8E8AA3' : '#4B2FC9';
+  let s = `<g class="tocable" tabindex="0" role="button" data-parada="${i}" aria-label="${p.corto}" transform="translate(${p.x} ${p.y})">`;
+  if (estado === 'actual') s += `<circle r="36" fill="none" stroke="#fff" stroke-width="7" opacity=".7"/><circle r="36" fill="none" stroke="${'#FFB020'}" stroke-width="7" stroke-dasharray="70 300" transform="rotate(-90)"/>`;
+  s += `<ellipse cx="0" cy="6" rx="27" ry="24" fill="${sombra}"/><circle r="26" fill="${color}" stroke="${L}" stroke-width="2.4"/>${icono}`;
+  if (estado === 'hecha') s += `<circle cx="20" cy="-20" r="10" fill="#2EC4A0" ${ln}/><path d="M15 -20 L19 -16 L25 -24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+  s += `<rect x="-38" y="32" width="76" height="20" rx="10" fill="#fff" ${ln}/><text x="0" y="46" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="11" fill="${L}">${p.corto}</text>`;
+  if (estado === 'actual') s += `<g class="rebota"><rect x="-44" y="-78" width="88" height="28" rx="12" fill="#fff" ${ln}/><path d="M-6 -50 L0 -43 L6 -50" fill="#fff" ${ln}/><text x="0" y="-59" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="13" fill="#6C4CF1">${hechas === 0 ? 'EMPEZAR' : 'CONTINUAR'}</text></g>`;
+  return s + '</g>';
+}
+
+function regalo(estado) {
+  const { x, y } = REGALO;
+  const caja = estado === 'abierto'
+    ? `<path d="M-16 -4 H16 V18 H-16 Z" fill="#FF6B5B" ${ln}/><path d="M-3 -4 H3 V18 H-3 Z" fill="#FFD25A"/><path d="M-20 -20 L18 -30 L20 -24 L-18 -14 Z" fill="#FF8577" ${ln}/><text x="0" y="-36" text-anchor="middle" font-size="14">✨</text>`
+    : `<path d="M-16 -4 H16 V18 H-16 Z" fill="#FF6B5B" ${ln}/><path d="M-19 -14 H19 V-4 H-19 Z" fill="#FF8577" ${ln}/><path d="M-3 -14 H3 V18 H-3 Z" fill="#FFD25A" ${ln}/><path d="M0 -14 Q-14 -28 -10 -16 M0 -14 Q14 -28 10 -16" fill="#FFD25A" ${ln}/>`;
+  const listo = estado === 'listo';
+  return `<g class="tocable" tabindex="0" role="button" id="regalo" aria-label="Regalo sorpresa" transform="translate(${x} ${y})">
+    ${listo ? `<circle r="30" fill="#FFE27A" class="destello"/>` : ''}
+    <g class="${listo ? 'rebota' : ''}" ${estado === 'cerrado' ? 'filter="url(#gris)" opacity=".75"' : ''}>${caja}</g>
+    <rect x="-34" y="24" width="68" height="18" rx="9" fill="#fff" ${ln}/><text x="0" y="37" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">${estado === 'abierto' ? 'ABIERTO' : estado === 'listo' ? '¡ÁBRELO!' : `${REGALO.despues - hechas} PARADA${REGALO.despues - hechas === 1 ? '' : 'S'}`}</text></g>`;
+}
+
+function banco(estado) {
+  const { x, y } = BANCO;
+  const top = y - 96;
+  let s = `<ellipse cx="${x + 6}" cy="${y + 4}" rx="96" ry="10" fill="#000" opacity=".12"/>`;
+  s += `<path d="M${x - 84} ${y} H${x + 84} V${y - 10} H${x - 84} Z" fill="#E9E1D3" ${ln}/>`;
+  s += `<rect x="${x - 76}" y="${top + 28}" width="152" height="58" fill="#F4F0FF" ${ln}/>`;
+  for (let i = 0; i < 5; i++) s += `<rect x="${x - 66 + i * 30}" y="${top + 32}" width="12" height="50" fill="#fff" ${ln}/>`;
+  s += `<path d="M${x - 90} ${top + 28} L${x} ${top - 6} L${x + 90} ${top + 28} Z" fill="#6C4CF1" ${ln}/>`;
+  s += `<rect x="${x - 54}" y="${top + 6}" width="108" height="18" rx="6" fill="#fff" ${ln}/><text x="${x}" y="${top + 19}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">BANCO DE DATOS</text>`;
+  s += `<g transform="translate(${x} ${top - 20})" class="${estado === 'listo' ? 'rebota' : ''}"><ellipse cx="0" cy="0" rx="16" ry="6" fill="#FFC531" ${ln}/><path d="M-16 0 V10 A16 6 0 0 0 16 10 V0" fill="#FFC531" ${ln}/><text x="0" y="12" text-anchor="middle" font-family="monospace" font-weight="700" font-size="8" fill="#7A4A00">DB</text></g>`;
+  s += `<rect x="${x - 40}" y="${y + 16}" width="80" height="20" rx="10" fill="#fff" ${ln}/><text x="${x}" y="${y + 30}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="11" fill="${L}">${estado === 'cobrado' ? '✓ COBRADO' : '+50 XP'}</text>`;
+  return `<g class="tocable" tabindex="0" role="button" id="banco" aria-label="Banco de Datos, premio de la unidad" ${estado === 'cerrado' ? 'filter="url(#gris)" opacity=".6"' : ''}>${s}</g>`;
+}
+
+function calle() {
+  const pts = [{ x: 196, y: 40 }, ...PARADAS, { x: BANCO.x, y: BANCO.y + 40 }, { x: 196, y: 1460 }];
+  const d = pts.reduce((acc, p, i) => {
+    if (!i) return `M${p.x} ${p.y}`;
+    const a = pts[i - 1], m = (a.y + p.y) / 2;
+    return `${acc} C${a.x} ${m} ${p.x} ${m} ${p.x} ${p.y}`;
+  }, '');
+  return `<path d="${d}" fill="none" stroke="#B9A27B" stroke-width="62" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#EFE3CB" stroke-width="54" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="12 14" stroke-linecap="round" opacity=".9"/>`;
+}
+
+function pintar() {
+  const estadoDe = (i) => i < hechas ? 'hecha' : i === hechas ? 'actual' : 'bloqueada';
+  let s = `<defs><filter id="gris"><feColorMatrix type="saturate" values="0.1"/></filter></defs>`;
+  // Pasto con manchas
+  s += `<rect width="390" height="1640" fill="#A8DC8E"/>` + [[60, 120], [330, 330], [40, 560], [340, 760], [50, 1010], [340, 1210], [80, 1470]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="70" ry="36" fill="#93D07C"/>`).join('');
+  s += calle();
+  // Decoración del barrio
+  s += arbol(40, 150) + arbol(352, 560, .9) + arbol(36, 790) + arbol(354, 1060, .85) + arbol(40, 1240) + arbol(350, 1420, 1.1) + arbol(42, 1440, .8);
+  s += arbusto(360, 250) + arbusto(30, 360) + arbusto(360, 980) + arbusto(28, 1080) + farol(110, 520) + farol(288, 760) + farol(110, 1000);
+  s += flores(320, 470) + flores(30, 690) + flores(310, 1180) + cartelera(330, 860);
+  // Negocios, del lado contrario a la parada
+  PARADAS.forEach((p, i) => {
+    const izq = p.x > 196;
+    s += edificio(izq ? 88 : 290, p.y + 30, p.negocio, estadoDe(i), p.nombre);
+  });
+  s += banco(bancoCobrado ? 'cobrado' : hechas >= PARADAS.length ? 'listo' : 'cerrado');
+  s += regalo(regaloAbierto ? 'abierto' : hechas >= REGALO.despues ? 'listo' : 'cerrado');
+  PARADAS.forEach((p, i) => { s += paradaBoton(p, i, estadoDe(i)); });
+  // Siguiente calle
+  s += `<g transform="translate(196 1530)"><rect x="-4" y="-10" width="8" height="70" fill="#8A5634" ${ln}/><rect x="-128" y="-46" width="256" height="44" rx="10" fill="#3A3658" ${ln}/><text x="0" y="-27" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="12" fill="#B9A8FF">🔒 UNIDAD 2 · CALLE DEL ORDEN</text><text x="0" y="-11" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="10" fill="#fff">Farmacia, gimnasio, florería y más negocios</text></g>`;
+  // Tú, junto a la parada que toca (o en el banco al terminar)
+  const donde = hechas < PARADAS.length ? PARADAS[hechas] : { x: BANCO.x, y: BANCO.y + 20 };
+  const lado = donde.x > 196 ? 46 : -46;
+  s += `<g id="yo" style="transform: translate(${donde.x + lado - 22}px, ${donde.y - 64}px)"><g transform="scale(.22)">${YO}</g></g>`;
+  document.getElementById('mapa').innerHTML = s;
+  document.getElementById('avance').style.width = `${(hechas / PARADAS.length) * 100}%`;
+
+  document.querySelectorAll('[data-parada]').forEach((el) => el.onclick = () => {
+    const i = +el.dataset.parada, p = PARADAS[i], e = estadoDe(i);
+    hoja(p.nombre, p.pide, e === 'bloqueada' ? 'Se abre al terminar la parada anterior.' : e === 'hecha' ? '✓ Ya ayudaste a este negocio. Puedes repasar.' : '¡Te toca! Toca EMPEZAR en la app.', 'Cerrar');
+  });
+  document.getElementById('regalo').onclick = () => {
+    if (regaloAbierto) return hoja('Regalo abierto', 'El siguiente regalo aparece 3 paradas más adelante.', '', 'Cerrar');
+    if (hechas < REGALO.despues) return hoja('Regalo sorpresa', `Se abre al terminar ${REGALO.despues} paradas de la unidad. Te faltan ${REGALO.despues - hechas}.`, 'Puede traer XP, una prenda del clóset o doble XP.', 'Entendido');
+    const pr = PREMIOS[Math.floor(Math.random() * PREMIOS.length)];
+    regaloAbierto = true;
+    pintar();
+    hoja('¡Regalo sorpresa!', pr.texto, pr.titulo, '¡Genial!');
+  };
+  document.getElementById('banco').onclick = () => {
+    if (hechas < PARADAS.length) return hoja('Banco de Datos', 'Al terminar las 5 paradas de la calle, aquí cobras tu premio de la unidad.', '+50 XP', 'Entendido');
+    if (!bancoCobrado) { bancoCobrado = true; pintar(); return hoja('¡Unidad completa!', 'El Banco de Datos te paga por ayudar a todo el barrio.', '+50 XP', 'Cobrar'); }
+    hoja('Premio cobrado', 'Sigue a la Calle del Orden para la Unidad 2.', '', 'Cerrar');
+  };
+}
+
+function hoja(titulo, texto, premio, boton) {
+  const h = document.getElementById('hoja');
+  h.innerHTML = `<div class="hoja-fondo"><div class="hoja" role="dialog" aria-modal="true"><h2>${titulo}</h2>${premio ? `<span class="premio">${premio}</span>` : ''}<p>${texto}</p><button type="button" id="cerrar-hoja">${boton}</button></div></div>`;
+  h.querySelector('.hoja-fondo').onclick = (e) => { if (e.target === e.currentTarget) h.innerHTML = ''; };
+  document.getElementById('cerrar-hoja').onclick = () => (h.innerHTML = '');
+}
+
+function moverA(n) {
+  hechas = Math.max(0, Math.min(PARADAS.length, n));
+  if (hechas < REGALO.despues) regaloAbierto = false;
+  if (hechas < PARADAS.length) bancoCobrado = false;
+  pintar();
+  const yo = document.getElementById('yo').getBoundingClientRect();
+  window.scrollTo({ top: window.scrollY + yo.top - innerHeight / 2, behavior: 'smooth' });
+}
+document.getElementById('avanzar').onclick = () => moverA(hechas + 1);
+document.getElementById('atras').onclick = () => moverA(hechas - 1);
+pintar();
+</script>
