@@ -290,7 +290,7 @@ function FichaRacha({ progreso }: { progreso: Progreso }) {
   return (
     <div className="ficha">
       <span className="ficha-tipo actual">Tu racha</span>
-      <h2>▲ {racha} {racha === 1 ? 'día' : 'días'} seguidos</h2>
+      <h2>▲ {racha === 1 ? '1 día' : `${racha} días seguidos`}</h2>
       <div className="racha-semanas">
         {dias.map((d) => (
           <span key={d.fecha} className={`racha-dia ${progreso.diasActivos.includes(d.fecha) ? 'hecho' : ''} ${d.finde ? 'finde' : ''} ${d.fecha === hoy ? 'hoy' : ''} ${d.fecha > hoy ? 'futuro' : ''}`}>

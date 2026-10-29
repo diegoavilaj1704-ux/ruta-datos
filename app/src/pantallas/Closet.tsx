@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Avatar, Cuerpo, equipoDe } from '../componentes/Avatar';
-import { CATALOGO, CATEGORIAS, clavePrenda, ENCUADRE, type Categoria, type Prenda } from '../lib/armario';
-import { PERFIL_INICIAL, type Peinado, type Perfil } from '../lib/personajes';
+import { CATALOGO, CATEGORIAS, clavePrenda, type Categoria, type Prenda } from '../lib/armario';
+import { ENCUADRE } from '../lib/figura';
+import { PERFIL_INICIAL, peinadoDe, type Perfil } from '../lib/personajes';
 import { acciones, useProgreso } from '../lib/progreso';
 import { sonidos } from '../lib/sonidos';
 
@@ -17,9 +18,9 @@ export function Closet({ volver }: { volver: () => void }) {
   const tiene = (p: Prenda) => p.precio === 0 || progreso.comprados.includes(clavePrenda(p));
   const conPrenda = (base: Perfil, p: Prenda): Perfil =>
     p.cat === 'peinado'
-      ? { ...base, peinado: p.id as Peinado }
+      ? { ...base, peinado: p.id }
       : { ...base, equipo: { ...equipoDe(base), [p.cat]: p.id } };
-  const puesta = (p: Prenda) => (p.cat === 'peinado' ? perfil.peinado === p.id : equipoDe(perfil)[p.cat] === p.id);
+  const puesta = (p: Prenda) => (p.cat === 'peinado' ? peinadoDe(perfil) === p.id : equipoDe(perfil)[p.cat] === p.id);
   const vista = probando ? conPrenda(perfil, probando) : perfil;
 
   function tocar(p: Prenda) {
@@ -52,7 +53,7 @@ export function Closet({ volver }: { volver: () => void }) {
       </header>
 
       <div className="closet-vista">
-        <Cuerpo perfil={vista} ancho={124} alto={219} />
+        <Cuerpo perfil={vista} ancho={120} alto={318} />
         <div className="closet-chat">
           <Avatar quien="yo" perfil={vista} tam={52} />
           <span>en el chat</span>
@@ -81,7 +82,7 @@ export function Closet({ volver }: { volver: () => void }) {
               className={`prenda ${puesta(p) ? 'puesta' : ''} ${probando?.id === p.id && probando.cat === p.cat ? 'probando' : ''} ${!mia && progreso.xp < p.precio ? 'bloqueada' : ''}`}
               onClick={() => tocar(p)}
             >
-              <Cuerpo perfil={conPrenda(perfil, p)} encuadre={ENCUADRE[p.cat]} ancho={p.cat === 'ropa' ? 58 : 76} alto={p.cat === 'ropa' ? 102 : 76} />
+              <Cuerpo perfil={conPrenda(perfil, p)} encuadre={ENCUADRE[p.cat]} ancho={76} alto={76} />
               <b>{p.nombre}</b>
               {etiqueta}
             </button>

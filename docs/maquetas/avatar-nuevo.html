@@ -1,0 +1,221 @@
+<title>Creador de avatar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap">
+<style>
+  /* Maqueta del avatar nuevo de Ruta de datos: caricatura de cuerpo completo con contorno,
+     como la imagen de referencia del piloto. Arriba el avatar; abajo, las opciones para armarlo. */
+  :root {
+    --fondo: #F6F4FB; --superficie: #FFFFFF; --texto: #2A2838; --suave: #6B6880;
+    --borde: #E2DEF0; --marca: #6C4CF1; --coral: #FF6B5B; --escenario: #EFE6D8;
+    --letra: 'Nunito', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --fondo: #15141C; --superficie: #201E2A; --texto: #F1EFF8; --suave: #A7A3BC; --borde: #34313F; --escenario: #2B2733; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --fondo: #15141C; --superficie: #201E2A; --texto: #F1EFF8; --suave: #A7A3BC; --borde: #34313F; --escenario: #2B2733; color-scheme: dark; }
+  body { background: var(--fondo); color: var(--texto); font-family: var(--letra); font-weight: 600; }
+  .pagina { max-width: 880px; margin: 0 auto; padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 18px; }
+  h1 { font-size: 22px; font-weight: 900; margin: 0; text-wrap: balance; }
+  .intro { color: var(--suave); margin: 4px 0 0; max-width: 60ch; line-height: 1.45; }
+  .zona { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 18px; align-items: start; }
+  @media (max-width: 680px) { .zona { grid-template-columns: minmax(0, 1fr); } }
+  .escenario { background: var(--escenario); border-radius: 22px; padding: 14px; display: grid; justify-items: center; gap: 12px; position: sticky; top: env(safe-area-inset-top, 0px); }
+  @media (max-width: 680px) { .escenario { position: static; } }
+  .escenario svg.completo { width: 100%; max-width: 220px; height: auto; }
+  .circulos { display: flex; gap: 14px; align-items: center; }
+  .circulo { border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 3px var(--marca); background: var(--superficie); display: block; }
+  .circulo svg { width: 100%; height: 100%; display: block; }
+  .barra { display: flex; align-items: center; gap: 10px; background: var(--superficie); border-radius: 16px; padding: 8px 12px; width: 100%; box-sizing: border-box; }
+  .barra b { font-weight: 900; font-size: 14px; flex: 1; }
+  .chip { font-weight: 900; font-size: 13px; border: 2px solid var(--borde); border-radius: 12px; padding: 3px 8px; }
+  .opciones { display: grid; gap: 16px; }
+  .grupo { display: grid; gap: 8px; }
+  .grupo > span { font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
+  .fila { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fila button { font: inherit; font-weight: 800; font-size: 14px; color: var(--texto); background: var(--superficie); border: 2px solid var(--borde); border-bottom-width: 4px; border-radius: 14px; padding: 7px 12px; cursor: pointer; }
+  .fila button[aria-pressed="true"] { border-color: var(--marca); color: var(--marca); }
+  .fila button.color { width: 38px; height: 38px; padding: 0; border-radius: 50%; border-bottom-width: 2px; }
+  .fila button.color[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--superficie), 0 0 0 5px var(--marca); }
+  .fila button:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  .nota { font-size: 13px; color: var(--suave); line-height: 1.45; margin: 0; }
+</style>
+
+<div class="pagina">
+  <header>
+    <h1>Tu avatar, estilo caricatura</h1>
+    <p class="intro">Cuerpo completo con contorno, como tu imagen de referencia. Toca las opciones para armarlo; abajo del avatar ves cómo queda en el círculo de la app.</p>
+  </header>
+
+  <div class="zona">
+    <section class="escenario" aria-label="Vista previa">
+      <div id="completo"></div>
+      <div class="barra">
+        <span class="circulo" id="c40" style="width:40px;height:40px"></span>
+        <b>SQL desde cero</b>
+        <span class="chip">▲ 2</span>
+      </div>
+      <div class="circulos">
+        <span class="circulo" id="c84" style="width:84px;height:84px"></span>
+        <span class="circulo" id="c56" style="width:56px;height:56px"></span>
+      </div>
+    </section>
+
+    <section class="opciones" id="opciones"></section>
+  </div>
+  <p class="nota">Es una maqueta: si te gusta la línea, lo paso a la app con estas opciones y el clóset se rehace con prendas en este mismo estilo (gorras, sudaderas, tenis, lentes).</p>
+</div>
+
+<script>
+const L = '#1F1A22';
+const OPC = {
+  piel: { titulo: 'Piel', colores: ['#F7D9C4', '#EFC3A0', '#D9A27A', '#B87A50', '#8A5634', '#5E3A22'] },
+  cuerpo: { titulo: 'Complexión', textos: { delgada: 'Delgada', media: 'Media', llenita: 'Llenita' } },
+  cabello: { titulo: 'Cabello', textos: { corto: 'Corto', lado: 'De lado', rizado: 'Rizado', largo: 'Largo', chongo: 'Chongo', rapado: 'Rapado', calvo: 'Sin pelo' } },
+  pelo: { titulo: 'Color de pelo', colores: ['#211A17', '#4A2F21', '#7B5634', '#A5492B', '#D7B46E', '#B9B3AA'] },
+  lentes: { titulo: 'Lentes', textos: { ninguno: 'Sin lentes', cuadrados: 'Cuadrados', redondos: 'Redondos' } },
+  cara: { titulo: 'Barba y bigote', textos: { nada: 'Nada', bigote: 'Bigote', candado: 'Candado', barba: 'Barba' } },
+  playera: { titulo: 'Playera', colores: ['#C2302B', '#6C4CF1', '#FF6B5B', '#0E9F9A', '#2F3A4A', '#F2EFE8', '#E8A317'] },
+  pantalon: { titulo: 'Pantalón', colores: ['#3F6C93', '#2A3E5C', '#2B2A2E', '#B49A72', '#5A6B4A'] },
+  tenis: { titulo: 'Tenis', colores: ['#26252B', '#F4F2EE', '#C2302B', '#6C4CF1'] },
+};
+// Empieza como la imagen de referencia
+const sel = { piel: 1, cuerpo: 'delgada', cabello: 'corto', pelo: 0, lentes: 'cuadrados', cara: 'nada', playera: 0, pantalon: 0, tenis: 0 };
+
+function oscurecer(hex, f) {
+  const n = parseInt(hex.slice(1), 16);
+  const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v * f));
+  return `rgb(${c.join(',')})`;
+}
+
+function avatar(s, id) {
+  const piel = OPC.piel.colores[s.piel], pielS = oscurecer(piel, 0.86);
+  const pelo = OPC.pelo.colores[s.pelo];
+  const ropa = OPC.playera.colores[s.playera], pant = OPC.pantalon.colores[s.pantalon], tenis = OPC.tenis.colores[s.tenis];
+  const claro = (h) => parseInt(h.slice(1, 3), 16) + parseInt(h.slice(3, 5), 16) + parseInt(h.slice(5, 7), 16) > 600;
+  const raya = claro(tenis) ? '#2A2838' : '#E8B53A';
+  const ancho = { delgada: 1, media: 1.08, llenita: 1.18 }[s.cuerpo];
+  const ln = `stroke="${L}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"`;
+  const esc = `transform="translate(100 0) scale(${ancho} 1) translate(-100 0)"`;
+  const mejillas = s.cuerpo === 'llenita' ? 4 : s.cuerpo === 'media' ? 2 : 0;
+
+  // Torso, brazos y pantalón (se ensanchan con la complexión)
+  const playera = 'M86 131 Q100 139 114 131 L140 137 Q152 141 156 155 L165 191 L146 198 L142 178 L141 250 Q100 256 59 250 L58 178 L54 198 L35 191 L44 155 Q48 141 60 137 Z';
+  const brazo = 'M38 192 C39 220 48 244 58 266 L74 260 C66 240 59 218 53 198 Z';
+  const pantalon = 'M59 246 L141 246 L143 300 L138 398 L106 398 L102 292 L98 292 L94 398 L62 398 L57 300 Z';
+  const cuerpo = `
+    <g ${esc}>
+      <path d="${brazo}" fill="${piel}" ${ln}/>
+      <path d="${brazo}" transform="translate(200 0) scale(-1 1)" fill="${piel}" ${ln}/>
+      <clipPath id="${id}-cp"><path d="${playera}"/></clipPath>
+      <path d="${playera}" fill="${ropa}" ${ln}/>
+      <g clip-path="url(#${id}-cp)"><path d="M118 130 L170 130 L170 260 L120 260 Q128 200 118 130 Z" fill="#000" opacity=".12"/></g>
+      <path d="M86 131 Q100 147 114 131" fill="none" ${ln}/>
+      <path d="M70 200 Q76 220 72 236 M128 200 Q124 218 128 236" fill="none" stroke="${L}" stroke-width="1.4" opacity=".35" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <clipPath id="${id}-cj"><path d="${pantalon}"/></clipPath>
+      <path d="${pantalon}" fill="${pant}" ${ln}/>
+      <g clip-path="url(#${id}-cj)"><path d="M118 246 L150 246 L150 400 L118 400 Q126 320 118 246 Z" fill="#000" opacity=".14"/></g>
+      <path d="M59 255 L141 255 M100 255 L100 286 M60 258 Q70 262 74 272 M140 258 Q130 262 126 272" fill="none" stroke="${L}" stroke-width="1.8" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <path d="M78 300 L79 390 M122 300 L121 390" stroke="${L}" stroke-width="1.2" opacity=".3" vector-effect="non-scaling-stroke"/>
+    </g>`;
+
+  // Tenis
+  const zapato = 'M60 391 L97 391 L99 411 Q99 418 93 418 L46 418 Q39 418 41 410 Q45 398 60 391 Z';
+  const tenisSvg = [0, 1].map((k) => {
+    const espejo = k ? 'transform="translate(200 0) scale(-1 1)"' : '';
+    return `<g ${espejo}>
+      <path d="${zapato}" fill="${tenis}" ${ln}/>
+      <path d="M41 411 L99 411" stroke="${L}" stroke-width="2" vector-effect="non-scaling-stroke"/>
+      <path d="M41.5 411 L99 411 L99 413 Q99 418 93 418 L46 418 Q39 418 41.5 411 Z" fill="#F4F1EA" opacity=".9"/>
+      <path d="M66 397 L74 407 M73 395 L81 405" stroke="${raya}" stroke-width="3" stroke-linecap="round"/>
+    </g>`;
+  }).join('');
+
+  // Cabeza
+  const cara = `M72 66 C70 ${90 + mejillas} ${75 - mejillas} 108 100 121 C${125 + mejillas} 108 ${130 + mejillas} ${90 + mejillas} 128 66 C128 44 116 34 100 34 C84 34 72 44 72 66 Z`;
+  const orejas = `<ellipse cx="${71 - mejillas / 2}" cy="80" rx="7" ry="10" fill="${piel}" ${ln}/><ellipse cx="${129 + mejillas / 2}" cy="80" rx="7" ry="10" fill="${piel}" ${ln}/>
+    <path d="M69 76 Q66 81 70 85 M131 76 Q134 81 130 85" fill="none" stroke="${L}" stroke-width="1.4" opacity=".55"/>`;
+  const cuello = `<path d="M90 108 L90 134 Q100 140 110 134 L110 108 Z" fill="${piel}" ${ln}/><path d="M90 117 Q100 127 110 117 L110 125 Q100 132 90 125 Z" fill="${pielS}"/>`;
+
+  const atras = { largo: `<path d="M70 60 C62 90 60 128 64 150 Q100 160 136 150 C140 128 138 90 130 60 Z" fill="${pelo}" ${ln}/>` }[s.cabello] ?? '';
+  const frente = {
+    corto: `<path d="M70 72 C64 44 80 26 101 26 C122 27 135 42 130 72 C128 60 124 52 117 47 C107 52 90 52 81 47 C76 53 72 62 70 72 Z" fill="${pelo}" ${ln}/><path d="M88 30 Q95 23 104 27" fill="none" ${ln}/>`,
+    lado: `<path d="M70 74 C62 42 84 23 107 27 C127 30 136 46 130 72 C126 58 120 49 109 43 C99 52 84 51 76 55 C73 61 71 67 70 74 Z" fill="${pelo}" ${ln}/><path d="M84 36 Q96 34 107 43" fill="none" stroke="${L}" stroke-width="1.5" opacity=".6"/>`,
+    rizado: (() => {
+      let c = `<path d="M70 70 C66 40 84 26 100 26 C116 26 134 40 130 70 Q100 50 70 70 Z" fill="${pelo}" ${ln}/>`;
+      for (let i = 0; i <= 8; i++) {
+        const a = Math.PI * (1.08 + (i / 8) * 0.84);
+        c += `<circle cx="${(100 + Math.cos(a) * 31).toFixed(1)}" cy="${(64 + Math.sin(a) * 31).toFixed(1)}" r="9.5" fill="${pelo}" ${ln}/>`;
+      }
+      return c + `<path d="M74 64 Q100 46 126 64 Q100 54 74 64 Z" fill="${pelo}"/>`;
+    })(),
+    largo: `<path d="M71 76 C64 44 82 27 100 27 C118 27 136 44 129 76 C126 60 116 46 100 44 C84 46 74 60 71 76 Z" fill="${pelo}" ${ln}/><path d="M100 29 L100 44" stroke="${L}" stroke-width="1.5" opacity=".6"/>`,
+    chongo: `<circle cx="100" cy="24" r="13" fill="${pelo}" ${ln}/><path d="M71 70 C66 44 82 32 100 32 C118 32 134 44 129 70 C124 56 114 46 100 46 C86 46 76 56 71 70 Z" fill="${pelo}" ${ln}/>`,
+    rapado: `<path d="M72 64 C70 42 84 32 100 32 C116 32 130 42 128 64 C122 52 112 46 100 46 C88 46 78 52 72 64 Z" fill="${pelo}" opacity=".75" ${ln}/>`,
+    calvo: `<path d="M86 42 Q92 38 98 40" fill="none" stroke="#fff" stroke-width="3" opacity=".45" stroke-linecap="round"/>`,
+  }[s.cabello];
+
+  const barba = {
+    nada: '',
+    bigote: `<path d="M89 100 Q100 94 111 100 Q105 103 100 101 Q95 103 89 100 Z" fill="${pelo}" ${ln}/>`,
+    candado: `<path d="M89 100 Q100 94 111 100 Q105 103 100 101 Q95 103 89 100 Z" fill="${pelo}" ${ln}/><path d="M92 110 Q100 114 108 110 L107 119 Q100 123 93 119 Z" fill="${pelo}" ${ln}/>`,
+    barba: `<path d="M73 86 C75 ${108 + mejillas} 86 124 100 125 C114 124 ${125 + mejillas} ${108 + mejillas} 127 86 C123 99 117 108 110 109 Q100 104 90 109 C83 108 77 99 73 86 Z" fill="${pelo}" ${ln}/><path d="M89 100 Q100 94 111 100 Q105 103 100 101 Q95 103 89 100 Z" fill="${pelo}" ${ln}/>`,
+  }[s.cara];
+
+  const ojos = `<ellipse cx="88" cy="83" rx="3.4" ry="4.2" fill="${L}"/><ellipse cx="112" cy="83" rx="3.4" ry="4.2" fill="${L}"/>
+    <circle cx="89.2" cy="81.6" r="1.2" fill="#fff"/><circle cx="113.2" cy="81.6" r="1.2" fill="#fff"/>`;
+  const cejas = `<path d="M80 73 Q87 68 95 72" fill="none" stroke="${s.cabello === 'calvo' ? oscurecer(piel, 0.55) : pelo === '#B9B3AA' ? '#8E877C' : pelo}" stroke-width="3.6" stroke-linecap="round"/>
+    <path d="M105 72 Q113 68 120 73" fill="none" stroke="${s.cabello === 'calvo' ? oscurecer(piel, 0.55) : pelo === '#B9B3AA' ? '#8E877C' : pelo}" stroke-width="3.6" stroke-linecap="round"/>`;
+  const nariz = `<path d="M100 87 Q97 95 100 97 Q103 98 105 95" fill="none" stroke="${L}" stroke-width="1.7" stroke-linecap="round"/>`;
+  const boca = `<path d="M91 105 Q101 111 110 103" fill="none" stroke="${L}" stroke-width="2.2" stroke-linecap="round"/>`;
+  const lentes = {
+    ninguno: '',
+    cuadrados: `<g fill="#fff" fill-opacity=".18" stroke="${L}" stroke-width="3"><rect x="77" y="74" width="21" height="16" rx="4"/><rect x="102" y="74" width="21" height="16" rx="4"/></g>
+      <path d="M98 80 Q100 78 102 80 M77 79 L72 77 M123 79 L128 77" fill="none" stroke="${L}" stroke-width="2.6" stroke-linecap="round"/>`,
+    redondos: `<g fill="#fff" fill-opacity=".18" stroke="${L}" stroke-width="2.6"><circle cx="88" cy="83" r="9.5"/><circle cx="112" cy="83" r="9.5"/></g>
+      <path d="M97.5 81 Q100 79 102.5 81 M78.5 81 L72 78 M121.5 81 L128 78" fill="none" stroke="${L}" stroke-width="2.4" stroke-linecap="round"/>`,
+  }[s.lentes];
+
+  return `<ellipse cx="100" cy="418" rx="64" ry="6" fill="#000" opacity=".12"/>
+    ${atras}${cuerpo}${tenisSvg}${cuello}${orejas}
+    <path d="${cara}" fill="${piel}" ${ln}/>
+    <ellipse cx="82" cy="98" rx="5" ry="3" fill="#E8826E" opacity=".25"/><ellipse cx="118" cy="98" rx="5" ry="3" fill="#E8826E" opacity=".25"/>
+    ${barba}${ojos}${cejas}${nariz}${boca}${lentes}${frente}`;
+}
+
+let n = 0;
+function pintar() {
+  const dentro = (vb, w) => `<svg viewBox="${vb}" ${w ? `class="completo"` : ''} role="img" aria-label="Tu avatar">${avatar(sel, 'a' + n++)}</svg>`;
+  document.getElementById('completo').innerHTML = dentro('20 8 160 420', true);
+  // Encuadre del círculo: toda la cabeza (con chongo) y el cuello de la playera
+  for (const k of ['c40', 'c56', 'c84']) document.getElementById(k).innerHTML = dentro('44 8 112 112');
+}
+
+function opciones() {
+  const cont = document.getElementById('opciones');
+  cont.innerHTML = '';
+  for (const [clave, o] of Object.entries(OPC)) {
+    const g = document.createElement('div');
+    g.className = 'grupo';
+    g.innerHTML = `<span id="t-${clave}">${o.titulo}</span>`;
+    const fila = document.createElement('div');
+    fila.className = 'fila';
+    fila.setAttribute('role', 'group');
+    fila.setAttribute('aria-labelledby', `t-${clave}`);
+    const valores = o.colores ? o.colores.map((_, i) => i) : Object.keys(o.textos);
+    valores.forEach((v, i) => {
+      const b = document.createElement('button');
+      b.id = `op-${clave}-${i}`;
+      if (o.colores) { b.className = 'color'; b.style.background = o.colores[v]; b.setAttribute('aria-label', `${o.titulo} ${i + 1}`); }
+      else b.textContent = o.textos[v];
+      b.setAttribute('aria-pressed', String(sel[clave] === v));
+      b.onclick = () => { sel[clave] = v; opciones(); pintar(); };
+      fila.appendChild(b);
+    });
+    g.appendChild(fila);
+    cont.appendChild(g);
+  }
+}
+opciones();
+pintar();
+</script>

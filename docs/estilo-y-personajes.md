@@ -48,11 +48,11 @@ Lo que el piloto rechazó, para no repetirlo:
 
 **Diversidad obligatoria:** el elenco mezcla tonos de piel, complexiones (delgadas y llenitas), edades y peinados (rizos, afro, trenzas, largo, chongo, calvo).
 
-**Avatares:** caras animadas dibujadas con código (SVG), no imágenes (`app/src/lib/personajes.ts`). Pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
+**Avatares:** dibujados con código (SVG), no imágenes (`app/src/lib/figura.ts`). Pesan casi nada, funcionan sin conexión y no tienen problemas de derechos.
 
-**Creador de avatar:** nombre, piel (6 tonos), complexión (delgada o llenita), peinado (con vista previa de tu propia cara), color de pelo (6), barba, bigote, aretes y color favorito (6). Se edita tocando tu avatar en la barra del mapa.
+**Creador de avatar:** nombre, piel (6 tonos), complexión (delgada, media o llenita), cabello (9 estilos gratis, con vista previa de tu propia cara), color de pelo (6), lentes, barba o bigote (nada, bigote, candado, barba), aretes, y color de playera (8), jeans (5) y tenis (4). Se edita tocando tu avatar en la barra del mapa.
 
-**Cuerpo completo:** el avatar del alumno tiene cuerpo completo con proporciones naturales (brazos con codo y manos, cintura, piernas y tenis). En el chat se ve el recorte de su cara, con gorro y lentes incluidos. El elenco sigue en busto. Dibujo en `app/src/lib/armario.ts`.
+**Estilo (29 oct 2026, a partir de una imagen de referencia del piloto):** caricatura de cuerpo completo con contorno oscuro grueso y colores planos con una sombra suave: de pie, manos en las bolsas, playera, jeans y tenis con rayas. Cara con ojos con brillo, cejas gruesas y sonrisa de lado. El círculo (barra del mapa y chat) muestra la cabeza completa y el cuello, sin recortar el pelo ni el gorro, sobre un fondo pastel del color de la playera. El elenco usa el mismo dibujo. Maqueta aprobada: `docs/maquetas/avatar-nuevo.html`.
 
 **Hashy:** dibujado con contorno oscuro, como caricatura, a partir de dos imágenes de referencia del piloto: cara rectangular gris, cejas blancas pobladas, barba ancha que termina en punta, orejas dobladas con interior rosa, nariz negra y collar rojo. Tres caras: normal, **triste** (orejas caídas, lagrimita, boca hacia abajo) y **con lentes oscuros** (al abrir el premio de la unidad). Vive en el mapa: a ratos está **sentado**, **dormido** (con Zzz) o **jugando con su pelota**; solo **camina** cuando va a darte un tip, a otro lugar del mapa, donde ladra y prende un foco. Si lo tocas, se despierta y te da un tip. Habla como perrito ("¡Guau!", "olfatea otra vez") y nunca regaña.
 

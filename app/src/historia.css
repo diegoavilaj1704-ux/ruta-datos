@@ -199,7 +199,7 @@
 .perfil-barra h1 { margin: 0; font-size: 22px; font-weight: 900; }
 .perfil-bienvenida { display: flex; gap: 12px; align-items: center; background: var(--marca-suave); border-radius: 20px; padding: 12px 14px; }
 .perfil-bienvenida p { margin: 0; }
-.perfil-vista { display: flex; justify-content: center; margin: 18px 0 8px; }
+.perfil-vista { display: flex; align-items: flex-end; justify-content: center; gap: 16px; margin: 18px 0 8px; }
 .perfil-vista .avatar { box-shadow: 0 0 0 4px var(--superficie), 0 0 0 6px var(--marca); }
 .perfil-campo { display: grid; gap: 6px; margin: 14px 0; font-weight: 800; }
 .perfil-campo input {

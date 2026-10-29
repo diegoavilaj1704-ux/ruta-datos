@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { Avatar, Cuerpo } from '../componentes/Avatar';
-import { clavePrenda, precioDe } from '../lib/armario';
-import { COLORES_PELO, PEINADOS, PERFIL_INICIAL, PIELES, ROPAS, type Peinado, type Perfil as PerfilT } from '../lib/personajes';
+import { Avatar, Cuerpo, equipoDe } from '../componentes/Avatar';
+import { CATALOGO, clavePrenda, precioDe } from '../lib/armario';
+import {
+  COLORES_PELO, COMPLEXIONES, complexionDe, PANTALONES, PEINADOS, peinadoDe, PERFIL_INICIAL, PIELES, PLAYERAS, TENIS, VELLO, velloDe,
+  type Complexion, type Peinado, type Perfil as PerfilT, type Vello,
+} from '../lib/personajes';
 import { acciones, useProgreso } from '../lib/progreso';
 
 interface Props {
@@ -16,9 +19,11 @@ export function Perfil({ bienvenida, listo }: Props) {
   const [p, setP] = useState<PerfilT>(progreso.perfil ?? PERFIL_INICIAL);
   const [error, setError] = useState('');
   const cambiar = (c: Partial<PerfilT>) => setP((v) => ({ ...v, ...c }));
-  const peinados = (Object.keys(PEINADOS) as Peinado[]).filter(
-    (k) => precioDe('peinado', k) === 0 || progreso.comprados.includes(clavePrenda({ cat: 'peinado', id: k })),
-  );
+  const tiene = (cat: 'peinado' | 'lentes', id: string) =>
+    precioDe(cat, id) === 0 || progreso.comprados.includes(clavePrenda({ cat, id }));
+  const peinados = (Object.keys(PEINADOS) as Peinado[]).filter((k) => tiene('peinado', k));
+  const lentes = CATALOGO.filter((x) => x.cat === 'lentes' && tiene('lentes', x.id));
+  const equipo = equipoDe(p);
 
   function guardar(despues: () => void) {
     if (!p.nombre.trim()) {
@@ -44,7 +49,8 @@ export function Perfil({ bienvenida, listo }: Props) {
       )}
 
       <div className="perfil-vista">
-        <Cuerpo perfil={p} ancho={120} alto={212} />
+        <Cuerpo perfil={p} ancho={120} alto={318} />
+        <Avatar quien="yo" perfil={p} tam={64} />
       </div>
 
       <label className="perfil-campo">
@@ -64,13 +70,14 @@ export function Perfil({ bienvenida, listo }: Props) {
       </Grupo>
 
       <Grupo titulo="Complexión">
-        <Chip activo={!p.llenito} onClick={() => cambiar({ llenito: false })}>Delgada</Chip>
-        <Chip activo={p.llenito} onClick={() => cambiar({ llenito: true })}>Llenita</Chip>
+        {(Object.keys(COMPLEXIONES) as Complexion[]).map((k) => (
+          <Chip key={k} activo={complexionDe(p) === k} onClick={() => cambiar({ complexion: k })}>{COMPLEXIONES[k]}</Chip>
+        ))}
       </Grupo>
 
-      <Grupo titulo="Peinado">
+      <Grupo titulo="Cabello">
         {peinados.map((k) => (
-          <button key={k} className={`peinado ${p.peinado === k ? 'activo' : ''}`} onClick={() => cambiar({ peinado: k })} aria-label={PEINADOS[k]}>
+          <button key={k} className={`peinado ${peinadoDe(p) === k ? 'activo' : ''}`} onClick={() => cambiar({ peinado: k })} aria-label={PEINADOS[k]}>
             <Avatar quien="yo" perfil={{ ...p, peinado: k }} tam={52} />
             <span>{PEINADOS[k]}</span>
           </button>
@@ -86,14 +93,29 @@ export function Perfil({ bienvenida, listo }: Props) {
         {COLORES_PELO.map((c, i) => <Muestra key={c} color={c} activa={p.pelo === i} onClick={() => cambiar({ pelo: i })} etiqueta={`Pelo ${i + 1}`} />)}
       </Grupo>
 
-      <Grupo titulo="Detalles">
-        <Chip activo={p.barba} onClick={() => cambiar({ barba: !p.barba })}>Barba</Chip>
-        <Chip activo={p.bigote} onClick={() => cambiar({ bigote: !p.bigote })}>Bigote</Chip>
+      <Grupo titulo="Lentes">
+        {lentes.map((x) => (
+          <Chip key={x.id} activo={equipo.lentes === x.id} onClick={() => cambiar({ lentes: false, equipo: { ...equipo, lentes: x.id } })}>{x.nombre}</Chip>
+        ))}
+      </Grupo>
+
+      <Grupo titulo="Barba y bigote">
+        {(Object.keys(VELLO) as Vello[]).map((k) => (
+          <Chip key={k} activo={velloDe(p) === k} onClick={() => cambiar({ vello: k })}>{VELLO[k]}</Chip>
+        ))}
         <Chip activo={p.aretes} onClick={() => cambiar({ aretes: !p.aretes })}>Aretes</Chip>
       </Grupo>
 
-      <Grupo titulo="Color favorito">
-        {ROPAS.map(([c], i) => <Muestra key={c} color={c} activa={p.ropa === i} onClick={() => cambiar({ ropa: i })} etiqueta={`Color ${i + 1}`} />)}
+      <Grupo titulo="Playera">
+        {PLAYERAS.map((c, i) => <Muestra key={c} color={c} activa={p.ropa === i} onClick={() => cambiar({ ropa: i })} etiqueta={`Playera ${i + 1}`} />)}
+      </Grupo>
+
+      <Grupo titulo="Jeans">
+        {PANTALONES.map((c, i) => <Muestra key={c} color={c} activa={(p.pantalon ?? 0) === i} onClick={() => cambiar({ pantalon: i })} etiqueta={`Jeans ${i + 1}`} />)}
+      </Grupo>
+
+      <Grupo titulo="Tenis">
+        {TENIS.map((c, i) => <Muestra key={c} color={c} activa={(p.tenis ?? 0) === i} onClick={() => cambiar({ tenis: i })} etiqueta={`Tenis ${i + 1}`} />)}
       </Grupo>
 
       <footer className="historia-pie">
