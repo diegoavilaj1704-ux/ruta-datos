@@ -34,10 +34,23 @@ export function colorModulo(idModulo: string): ColorModulo {
   return { principal, profundo };
 }
 
-// Cada unidad del mapa lleva su propio degradado (propuesta A): estos colores, en este orden,
-// para que dos unidades seguidas nunca se parezcan
-const POR_UNIDAD = [2, 3, 1, 5, 10, 13, 6, 9, 15, 8, 11, 16, 7, 12, 4, 19, 18, 14, 17];
-export function colorUnidad(indice: number): ColorModulo {
-  const [principal, profundo] = PALETA[POR_UNIDAD[indice % POR_UNIDAD.length] - 1];
-  return { principal, profundo };
+// Cada unidad lleva su propio degradado (propuesta A) dentro de la familia de color de su módulo:
+// la primera unidad usa el color del módulo y el tono avanza poco a poco hasta la última.
+// En SQL desde cero van del violeta al magenta rosado.
+const GIRO = 70;   // grados de tono que recorre la familia completa
+
+function tonoDe(hex: string): number {
+  const n = parseInt(hex.slice(1), 16);
+  const [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map((v) => v / 255);
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  if (!d) return 0;
+  const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return (h * 60 + 360) % 360;
+}
+
+export function colorUnidad(idModulo: string, indice: number, total: number): ColorModulo {
+  const base = tonoDe(colorModulo(idModulo).principal);
+  const paso = total > 1 ? indice / (total - 1) : 0;
+  const h = Math.round((base + paso * GIRO + 360) % 360);
+  return { principal: `hsl(${h} 72% 60%)`, profundo: `hsl(${h} 68% 22%)` };
 }

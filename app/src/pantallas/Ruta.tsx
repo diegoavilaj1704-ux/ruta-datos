@@ -44,12 +44,17 @@ export function Ruta() {
   const progreso = useProgreso();
   const racha = calcularRacha(progreso.diasActivos);
   const [ficha, setFicha] = useState<Ficha | null>(null);
-  // Cada unidad con su degradado: una va de claro a profundo y la siguiente de profundo a claro,
-  // así se unen por tonos parecidos; arriba se mezcla con el color en que terminó la anterior
+  // Cada unidad con su degradado, en la familia de color de su módulo: una va de claro a profundo y
+  // la siguiente de profundo a claro, así se unen por tonos parecidos; arriba se mezcla con el
+  // color en que terminó la anterior
+  const colorDe = (u: Unidad) => {
+    const delModulo = unidades.filter((x) => x.modulo.id === u.modulo.id);
+    return colorUnidad(u.modulo.id, delModulo.indexOf(u), delModulo.length);
+  };
   const tramoDe = (u: Unidad): Tramo => {
     const i = unidades.indexOf(u);
-    const color = colorUnidad(i);
-    const anterior = i > 0 ? colorUnidad(i - 1) : undefined;
+    const color = colorDe(u);
+    const anterior = i > 0 ? colorDe(unidades[i - 1]) : undefined;
     return { color, invertido: i % 2 === 1, previo: anterior && (i % 2 === 1 ? anterior.profundo : anterior.principal) };
   };
 
