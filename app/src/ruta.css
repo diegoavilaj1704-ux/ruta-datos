@@ -37,7 +37,9 @@
   padding: calc(env(safe-area-inset-top) + 8px) 16px 8px;
   background: var(--fondo);
 }
-.ruta-yo { background: none; border: 0; padding: 0; flex: none; border-radius: 50%; box-shadow: 0 0 0 3px var(--marca); }
+/* El anillo va en un botón cuadrado del tamaño exacto del ícono: si no, el botón crece con la línea de texto y el anillo sale ovalado */
+.ruta-yo { background: none; border: 0; padding: 0; flex: none; width: 40px; height: 40px; display: block; line-height: 0; border-radius: 50%; box-shadow: 0 0 0 3px var(--marca); }
+.ruta-yo .avatar { display: block; }
 .ruta-modulo { flex: 1; min-width: 0; font-weight: 900; font-size: 14px; color: var(--suave); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 4px; }
 .ruta-chip {
   font: inherit; font-size: 15px; font-weight: 900; white-space: nowrap;
