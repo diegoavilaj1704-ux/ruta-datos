@@ -1,0 +1,161 @@
+# Lección 1 de la Unidad 2 contada como historia, tarjeta por tarjeta.
+# Cubre las 11 secciones de leccion-1.md (skill docente-datos) en formato de juego.
+# Personajes: yo ({nombre}), rafa (Don Rafa), tono (Toño, el proveedor), hashy.
+# Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
+id: m02-s02-leccion-1-historia
+version: "1.0"
+pasos:
+  # 1. Objetivo
+  - tipo: portada
+
+  # 2. Por qué importa
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "¡{nombre}! Ya pasé a la computadora **todo el trimestre**: octubre, noviembre y diciembre." }
+      - { quien: rafa, texto: "Mañana viene Toño, el de las bebidas y botanas. Quiero ver primero mis ventas **más grandes** para saber qué pedirle." }
+      - { quien: yo, texto: "Son 280 ventas, Don Rafa. A ojo no se puede. Hay que **ordenarlas**." }
+
+  # 3. Lo que ya sabes
+  - tipo: tabla
+    quien: yo
+    texto: "Es la misma tabla **ventas**, con las mismas 7 columnas. Las filas salen en el orden en que se capturaron, no de la más grande a la más chica."
+    consulta: "SELECT producto, cantidad, sucursal FROM ventas;"
+    nota: "280 filas. Aquí ves las primeras 4: ninguna es una venta grande."
+
+  # 4. La idea en una frase
+  - tipo: idea
+    texto: "**ORDER BY** acomoda las filas del resultado según los valores de una columna."
+
+  # 5. Analogía
+  - tipo: analogia
+    quien: yo
+    titulo: "Como formarse por estatura"
+    texto: "Le dices al grupo «fórmense de la más alta a la más baja». Nadie entra ni sale: solo cambian de lugar."
+    limite: "Ojo: en SQL la tabla no cambia. El orden solo vive en tu resultado."
+
+  # 6. Explicación por capas (capa 1: dónde va)
+  - tipo: conceptos
+    titulo: "Ahora son cuatro piezas"
+    items:
+      - { codigo: SELECT, significado: "Qué columnas quieres." }
+      - { codigo: FROM, significado: "De qué tabla salen." }
+      - { codigo: WHERE, significado: "Qué filas pasan (opcional)." }
+      - { codigo: ORDER BY, significado: "«Ordenar por»: en qué orden salen." }
+    nota: "ORDER BY va al final, después de WHERE."
+
+  # Capa 2: hacia dónde
+  - tipo: conceptos
+    titulo: "Hacia arriba o hacia abajo"
+    items:
+      - { codigo: ASC, significado: "El normal: de menor a mayor, de la A a la Z, de la fecha más antigua a la más reciente." }
+      - { codigo: DESC, significado: "Al revés: de mayor a menor, de la Z a la A, de la más reciente a la más antigua." }
+    nota: "Si no escribes nada, SQL usa ASC. Para las más grandes primero, escribe DESC."
+
+  # 7. Ejemplo resuelto
+  - tipo: terminal
+    quien: yo
+    texto: "Así veo las ventas más grandes de **Sur**. Toca **EJECUTAR**."
+    codigo: |
+      -- Ventas de Sur, de la más grande a la más chica
+      SELECT producto, cantidad
+      FROM ventas
+      WHERE sucursal = 'Sur'
+      ORDER BY cantidad DESC;
+    despues: "Arriba quedaron 36 refrescos y 21 refrescos. Los 36 se vendieron el 31 de diciembre, para Año Nuevo."
+
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "¡Ándale! Los refrescos de Año Nuevo. Con eso ya sé qué pedirle a Toño." }
+      - { quien: yo, texto: "Ahora te toca a ti." }
+
+  # 9. Práctica guiada (ejercicio 1, con piezas)
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Ahora enséñame Norte, de la venta más grande a la más chica." }
+    titulo: "Ordena las ventas de Norte por `cantidad`, de mayor a menor"
+    antes: |-
+      SELECT producto, cantidad
+      FROM ventas
+      WHERE sucursal = 'Norte'
+      ORDER BY
+    despues: ";"
+    piezas: [producto, cantidad, ASC, DESC, sucursal]
+    ejercicio: leccion-1-1
+
+  # 8. Errores comunes
+  - tipo: tip
+    quien: hashy
+    texto: "¡Guau! Sin DESC, ORDER BY pone primero lo más **chico**. Si tu lista empieza con 1 pieza, te faltó el DESC."
+
+  - tipo: error
+    titulo: "Caza el error: toca la pieza que está fuera de lugar"
+    piezas: [SELECT, producto, FROM, ventas, ORDER BY, cantidad, WHERE, "sucursal = 'Sur'", ";"]
+    error: 4
+    explicacion: "ORDER BY va al final, **después** de WHERE. El orden fijo es SELECT → FROM → WHERE → ORDER BY."
+    pista: "Recuerda cuál de las cuatro piezas va hasta el final."
+    tip: "¡Guau! Primero filtras, después ordenas."
+
+  # Capa 3: texto y fechas
+  - tipo: idea
+    quien: yo
+    texto: "ORDER BY también ordena **texto** (de la A a la Z) y **fechas** (de la más antigua a la más reciente). Y no cambia la tabla: solo tu resultado."
+
+  # 9. Práctica guiada (ejercicio 2, con piezas)
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Quiero ver mis lácteos, de lo más barato a lo más caro." }
+    titulo: "Ordena las ventas de Lácteos por `precio_unitario`, de menor a mayor"
+    antes: |-
+      SELECT producto, precio_unitario
+      FROM ventas
+      WHERE categoria = 'Lácteos'
+      ORDER BY
+    despues: ";"
+    piezas: [cantidad, DESC, precio_unitario]
+    ejercicio: leccion-1-2
+
+  - tipo: tip
+    quien: hashy
+    texto: "De menor a mayor es el orden normal: no hace falta escribir ASC. Arriba salen las leches (28 pesos) y hasta abajo los quesos (55)."
+
+  # 9. Práctica guiada (ejercicio 3, escrito a mano)
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Y las bebidas: de la venta más reciente a la más antigua, para ver cómo terminamos el año." }
+    titulo: "Muestra `fecha`, `producto` y `cantidad` de las ventas con `categoria` igual a `'Bebidas'`, ordenadas por `fecha` de la más reciente a la más antigua"
+    ejercicio: leccion-1-3
+
+  # 10. Revisa tu comprensión
+  - tipo: quiz
+    pregunta: "¿Qué hace ORDER BY?"
+    opciones:
+      - { texto: "Filtra las filas que cumplen una condición.", porque: "Eso es WHERE. ORDER BY no quita filas: solo las acomoda." }
+      - { texto: "Acomoda las filas del resultado según una columna.", correcta: true }
+      - { texto: "Cambia el orden de las filas guardadas en la tabla.", porque: "La tabla no cambia: solo tu resultado sale ordenado." }
+
+  - tipo: quiz
+    pregunta: "Quieres las ventas de la más grande a la más chica. ¿Qué escribes?"
+    opciones:
+      - { texto: "`ORDER BY cantidad`", porque: "Sin DESC va de menor a mayor: la más chica primero." }
+      - { texto: "`ORDER BY cantidad DESC`", correcta: true }
+      - { texto: "`ORDER BY DESC cantidad`", porque: "DESC va después de la columna, no antes." }
+
+  - tipo: quiz
+    pregunta: "`ORDER BY fecha` sin nada más, ¿qué venta sale primero?"
+    opciones:
+      - { texto: "La más antigua.", correcta: true }
+      - { texto: "La más reciente.", porque: "Para la más reciente necesitas DESC." }
+      - { texto: "Una cualquiera.", porque: "Con ORDER BY el orden ya no es al azar: va de la fecha más antigua a la más reciente." }
+
+  - tipo: quiz
+    etiqueta: "repaso de la Unidad 1"
+    pregunta: "¿Cuál condición está bien escrita?"
+    opciones:
+      - { texto: "`WHERE sucursal = 'Sur'`", correcta: true }
+      - { texto: "`WHERE sucursal = Sur`", porque: "Sin comillas, SQL busca una columna llamada Sur." }
+      - { texto: "`WHERE 'sucursal' = Sur`", porque: "Las comillas van en el valor, no en el nombre de la columna." }
+
+  # 11. Resumen
+  - tipo: resumen
+    ideas:
+      - "**ORDER BY** acomoda las filas del resultado; va al final, después de WHERE."
+      - "Sin nada ordena de menor a mayor (ASC); con **DESC**, de mayor a menor."
+      - "Ordena números, texto (A→Z) y fechas (antigua→reciente), sin cambiar la tabla."
+    cierre: { quien: rafa, texto: "Muy bien, {nombre}. Pero 280 ventas ordenadas siguen siendo muchas… mañana te pido solo las primeras." }

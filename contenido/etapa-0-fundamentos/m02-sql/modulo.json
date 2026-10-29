@@ -4,9 +4,10 @@
   "nombre": "SQL desde cero",
   "objetivo": "Consultar, filtrar, ordenar, resumir y unir tablas con SQL para responder preguntas de negocio.",
   "proyecto_integrador": "Reporte de clientes de Abarrotes La Esquina",
-  "unidades_estimadas": 6,
+  "unidades_estimadas": 8,
   "datasets": [
-    "datasets/abarrotes_ventas.sql"
+    "datasets/abarrotes_ventas.sql",
+    "datasets/abarrotes_trimestre.sql"
   ],
   "unidades": [
     {
@@ -20,53 +21,65 @@
       ]
     },
     {
-      "id": "s02-ordenar-filtrar",
-      "titulo": "Ordenar y filtrar mejor",
+      "id": "s02-ordenar-elegir",
+      "titulo": "Ordenar y elegir",
       "estado": "proximamente",
       "temas": [
-        "ORDER BY y LIMIT",
-        "DISTINCT",
-        "AND, OR, IN, BETWEEN y LIKE"
+        "ORDER BY, ASC y DESC",
+        "LIMIT y DISTINCT"
       ]
     },
     {
-      "id": "s03-columnas-calculadas",
-      "titulo": "Columnas calculadas y vacíos",
+      "id": "s03-filtros-combinados",
+      "titulo": "Filtros combinados",
       "estado": "proximamente",
       "temas": [
-        "Alias y operaciones",
-        "NULL",
-        "CASE WHEN"
+        "AND, OR, NOT y paréntesis",
+        "IN, BETWEEN, LIKE e IS NULL"
       ]
     },
     {
-      "id": "s04-resumir",
+      "id": "s04-columnas-calculadas",
+      "titulo": "Columnas calculadas",
+      "estado": "proximamente",
+      "temas": [
+        "Alias, operaciones y ROUND",
+        "CASE WHEN, NULL y COALESCE"
+      ]
+    },
+    {
+      "id": "s05-resumir",
       "titulo": "Resumir datos",
       "estado": "proximamente",
       "temas": [
         "COUNT, SUM, AVG, MIN y MAX",
-        "GROUP BY",
-        "HAVING"
+        "GROUP BY y HAVING"
       ]
     },
     {
-      "id": "s05-fechas-texto",
+      "id": "s06-fechas-texto",
       "titulo": "Fechas y texto",
       "estado": "proximamente",
       "temas": [
-        "Extraer mes y año",
-        "Diferencia de días",
-        "Limpiar texto y CAST"
+        "Mes, día de la semana y días entre fechas",
+        "UPPER, TRIM, REPLACE, SUBSTR y CAST"
       ]
     },
     {
-      "id": "s06-unir-tablas",
+      "id": "s07-unir-tablas",
       "titulo": "Unir tablas",
       "estado": "proximamente",
       "temas": [
-        "INNER y LEFT JOIN",
-        "Llaves",
-        "Duplicados por un JOIN mal hecho"
+        "Llaves e INNER JOIN",
+        "LEFT JOIN y duplicados"
+      ]
+    },
+    {
+      "id": "s08-proyecto-integrador",
+      "titulo": "Proyecto integrador",
+      "estado": "proximamente",
+      "temas": [
+        "Reporte de clientes de La Esquina"
       ]
     }
   ],

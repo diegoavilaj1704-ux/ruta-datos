@@ -1,0 +1,156 @@
+{
+  "version": "1.0",
+  "nota": "Ejercicios auto-evaluables de la Unidad 2 (dataset abarrotes_trimestre). 'orden_importa' hace que la app compare también el orden de las filas: es lo que se practica con ORDER BY. 'filas_esperadas' se comprueba con `npm run verificar` en app/.",
+  "ejercicios": [
+    {
+      "id": "leccion-1-1",
+      "archivo": "leccion-1.md",
+      "seccion": "Práctica guiada",
+      "titulo": "Ejercicio 1",
+      "enunciado": "Muestra producto y cantidad de las ventas de Norte, de la más grande a la más chica.",
+      "pistas": [
+        "Después de WHERE va ORDER BY cantidad. «De la más grande a la más chica» es de mayor a menor: DESC."
+      ],
+      "solucion": "SELECT producto, cantidad FROM ventas WHERE sucursal = 'Norte' ORDER BY cantidad DESC;",
+      "filas_esperadas": 77,
+      "orden_importa": true
+    },
+    {
+      "id": "leccion-1-2",
+      "archivo": "leccion-1.md",
+      "seccion": "Práctica guiada",
+      "titulo": "Ejercicio 2",
+      "enunciado": "Muestra producto y precio de las ventas de Lácteos, del precio más bajo al más alto.",
+      "pistas": [
+        "«Del más bajo al más alto» es el orden normal (ASC): no necesitas escribir nada después de la columna."
+      ],
+      "solucion": "SELECT producto, precio_unitario FROM ventas WHERE categoria = 'Lácteos' ORDER BY precio_unitario;",
+      "filas_esperadas": 47,
+      "orden_importa": true
+    },
+    {
+      "id": "leccion-1-3",
+      "archivo": "leccion-1.md",
+      "seccion": "Práctica guiada",
+      "titulo": "Ejercicio 3",
+      "enunciado": "Muestra fecha, producto y cantidad de las ventas de Bebidas, de la más reciente a la más antigua.",
+      "pistas": [],
+      "solucion": "SELECT fecha, producto, cantidad FROM ventas WHERE categoria = 'Bebidas' ORDER BY fecha DESC;",
+      "filas_esperadas": 81,
+      "orden_importa": true
+    },
+    {
+      "id": "leccion-2-1",
+      "archivo": "leccion-2.md",
+      "seccion": "Práctica guiada",
+      "titulo": "Ejercicio 1",
+      "enunciado": "Muestra producto, cantidad y sucursal de las 3 ventas más grandes del trimestre.",
+      "pistas": [
+        "Primero ordena de mayor a menor (ORDER BY cantidad DESC) y al final corta con LIMIT 3."
+      ],
+      "solucion": "SELECT producto, cantidad, sucursal FROM ventas ORDER BY cantidad DESC LIMIT 3;",
+      "filas_esperadas": 3,
+      "orden_importa": true
+    },
+    {
+      "id": "leccion-2-2",
+      "archivo": "leccion-2.md",
+      "seccion": "Práctica guiada",
+      "titulo": "Ejercicio 2",
+      "enunciado": "Muestra la lista de productos que vende La Esquina, sin repetir ninguno.",
+      "pistas": [
+        "DISTINCT va justo después de SELECT."
+      ],
+      "solucion": "SELECT DISTINCT producto FROM ventas;",
+      "filas_esperadas": 16
+    },
+    {
+      "id": "leccion-2-3",
+      "archivo": "leccion-2.md",
+      "seccion": "Práctica guiada",
+      "titulo": "Ejercicio 3",
+      "enunciado": "Muestra id_venta, fecha y producto de las últimas 5 ventas que se registraron.",
+      "pistas": [],
+      "solucion": "SELECT id_venta, fecha, producto FROM ventas ORDER BY id_venta DESC LIMIT 5;",
+      "filas_esperadas": 5,
+      "orden_importa": true
+    },
+    {
+      "id": "proyecto-1",
+      "archivo": "proyecto.md",
+      "seccion": "El encargo",
+      "titulo": "Pregunta 1",
+      "enunciado": "¿Qué bebidas distintas vende La Esquina? En orden alfabético.",
+      "pistas": [
+        "DISTINCT producto, la condición sobre categoria y ORDER BY producto al final."
+      ],
+      "solucion": "SELECT DISTINCT producto FROM ventas WHERE categoria = 'Bebidas' ORDER BY producto;",
+      "filas_esperadas": 4,
+      "orden_importa": true
+    },
+    {
+      "id": "proyecto-2",
+      "archivo": "proyecto.md",
+      "seccion": "El encargo",
+      "titulo": "Pregunta 2",
+      "enunciado": "¿Y qué botanas distintas? También en orden alfabético.",
+      "pistas": [
+        "Es la misma consulta de la pregunta 1, cambiando el valor de la categoría."
+      ],
+      "solucion": "SELECT DISTINCT producto FROM ventas WHERE categoria = 'Botanas' ORDER BY producto;",
+      "filas_esperadas": 3,
+      "orden_importa": true
+    },
+    {
+      "id": "proyecto-3",
+      "archivo": "proyecto.md",
+      "seccion": "El encargo",
+      "titulo": "Pregunta 3",
+      "enunciado": "¿Cuáles fueron las 3 ventas de bebidas más grandes del trimestre, cuándo y dónde?",
+      "pistas": [
+        "Columnas: fecha, producto, cantidad y sucursal. Filtra Bebidas, ordena por cantidad de mayor a menor y corta en 3."
+      ],
+      "solucion": "SELECT fecha, producto, cantidad, sucursal FROM ventas WHERE categoria = 'Bebidas' ORDER BY cantidad DESC LIMIT 3;",
+      "filas_esperadas": 3,
+      "orden_importa": true
+    },
+    {
+      "id": "proyecto-4",
+      "archivo": "proyecto.md",
+      "seccion": "El encargo",
+      "titulo": "Pregunta 4",
+      "enunciado": "¿Cuáles son los 3 productos más caros que vendemos y cuánto cuestan?",
+      "pistas": [
+        "DISTINCT producto, precio_unitario; ordena por precio de mayor a menor y corta en 3."
+      ],
+      "solucion": "SELECT DISTINCT producto, precio_unitario FROM ventas ORDER BY precio_unitario DESC LIMIT 3;",
+      "filas_esperadas": 3,
+      "orden_importa": true
+    },
+    {
+      "id": "proyecto-5",
+      "archivo": "proyecto.md",
+      "seccion": "El encargo",
+      "titulo": "Pregunta 5",
+      "enunciado": "¿Qué productos distintos se vendieron el último día del año?",
+      "pistas": [
+        "El último día es '2026-12-31'. Ese día hubo 4 ventas, pero un producto se repite."
+      ],
+      "solucion": "SELECT DISTINCT producto FROM ventas WHERE fecha = '2026-12-31';",
+      "filas_esperadas": 3
+    },
+    {
+      "id": "repaso-1",
+      "archivo": "repaso.md",
+      "seccion": "Repaso (15 min)",
+      "titulo": "Repaso",
+      "enunciado": "Muestra producto y cantidad de las 3 ventas más grandes de la sucursal Norte.",
+      "pistas": [
+        "Las cuatro piezas en orden: WHERE, luego ORDER BY … DESC y al final LIMIT."
+      ],
+      "solucion": "SELECT producto, cantidad FROM ventas WHERE sucursal = 'Norte' ORDER BY cantidad DESC LIMIT 3;",
+      "filas_esperadas": 3,
+      "orden_importa": true
+    }
+  ]
+}

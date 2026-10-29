@@ -1,0 +1,29 @@
+{
+  "id": "m02-s02",
+  "numero": 2,
+  "titulo": "Ordenar y elegir",
+  "resumen": "Ordenar resultados (ORDER BY, ASC, DESC), quedarse con los primeros (LIMIT) y quitar repetidos (DISTINCT), aplicado en la lista de pedido para el proveedor.",
+  "dataset": "../datasets/abarrotes_trimestre.sql",
+  "paradas": [
+    { "id": "leccion-1", "tipo": "leccion", "corto": "ORDER BY", "archivo": "leccion-1.md" },
+    { "id": "leccion-2", "tipo": "leccion", "corto": "LIMIT", "archivo": "leccion-2.md" },
+    {
+      "id": "proyecto-1", "tipo": "proyecto", "corto": "Proyecto 1", "archivo": "proyecto.md",
+      "titulo": "Proyecto, parte 1: qué le pedimos a Toño",
+      "objetivo": "Al terminar podrás sacar la lista de productos distintos de una categoría, en orden alfabético, para armar un pedido.",
+      "duracion_min": 25
+    },
+    {
+      "id": "proyecto-2", "tipo": "proyecto", "corto": "Proyecto 2", "archivo": "proyecto.md",
+      "titulo": "Proyecto, parte 2: el top para Don Rafa",
+      "objetivo": "Al terminar podrás encontrar los primeros lugares de una lista (los más grandes, los más caros) y explicárselos a Don Rafa sin términos técnicos.",
+      "duracion_min": 30
+    },
+    {
+      "id": "repaso", "tipo": "repaso", "corto": "Repaso", "archivo": "repaso.md",
+      "titulo": "Repaso y nota pública",
+      "duracion_min": 25
+    }
+  ],
+  "version": "1.0"
+}

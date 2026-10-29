@@ -1,0 +1,76 @@
+# Mini-proyecto de la Unidad 2, parte 2, contado como historia (texto completo en proyecto.md).
+# Los tops para la plática con Toño: ORDER BY + LIMIT y DISTINCT (preguntas 3, 4 y 5) y el mensaje final.
+# Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
+id: m02-s02-proyecto-2-historia
+version: "1.0"
+pasos:
+  - tipo: portada
+
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "{nombre}, faltan 3 preguntas. Con estas le demuestro a Toño cuánto le movemos." }
+      - { quien: yo, texto: "Son puros tops: primero ordenar, después cortar." }
+
+  - tipo: conceptos
+    titulo: "Las 5 piezas, en su orden"
+    items:
+      - { codigo: SELECT, significado: "Qué columnas (y DISTINCT si no quiero repetidos)." }
+      - { codigo: FROM, significado: "De qué tabla." }
+      - { codigo: WHERE, significado: "Qué filas." }
+      - { codigo: ORDER BY, significado: "En qué orden." }
+      - { codigo: LIMIT, significado: "Cuántas me quedo." }
+    nota: "Las que no necesites se quitan, pero el orden nunca cambia."
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Pregunta 3: ¿cuáles fueron las 3 ventas de bebidas más grandes, cuándo y dónde?" }
+    titulo: "Muestra `fecha`, `producto`, `cantidad` y `sucursal` de las 3 ventas de `'Bebidas'` con la `cantidad` más grande"
+    ejercicio: proyecto-3
+
+  - tipo: chat
+    mensajes:
+      - { quien: yo, texto: "36 refrescos en Sur el 31 de diciembre, 30 aguas en Norte el 2 de noviembre y 21 refrescos en Sur el 20 de noviembre." }
+      - { quien: rafa, texto: "¡Las fiestas! Hay que pedirle a Toño más refresco para diciembre." }
+
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Pregunta 4: ¿cuáles son mis 3 productos más caros y cuánto cuestan?" }
+    titulo: "Ordena por `precio_unitario` de mayor a menor y quédate con 3"
+    antes: |-
+      SELECT DISTINCT producto, precio_unitario
+      FROM ventas
+      ORDER BY precio_unitario
+    despues: ";"
+    piezas: [DESC, LIMIT, "3", ASC, "5"]
+    ejercicio: proyecto-4
+
+  - tipo: tip
+    quien: hashy
+    texto: "¡Guau! Sin DISTINCT el café saldría repetido en los 3 lugares: se vendió 20 veces. DISTINCT deja cada producto una vez."
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Pregunta 5: ¿qué productos distintos se vendieron el último día del año?" }
+    titulo: "Muestra los `producto` distintos de las ventas con `fecha` igual a `'2026-12-31'`"
+    ejercicio: proyecto-5
+
+  - tipo: quiz
+    etiqueta: "explicar el resultado"
+    pregunta: "El 31 de diciembre hubo 4 ventas, pero la pregunta 5 devolvió 3 filas. ¿Por qué?"
+    opciones:
+      - { texto: "El refresco se vendió dos veces ese día y DISTINCT lo dejó una sola vez.", correcta: true }
+      - { texto: "Se borró una venta.", porque: "DISTINCT no borra nada de la tabla: solo quita la fila repetida de tu resultado." }
+      - { texto: "LIMIT cortó una fila.", porque: "Esa consulta no tiene LIMIT." }
+
+  - tipo: quiz
+    etiqueta: "el mensaje para Don Rafa"
+    pregunta: "¿Cuál es el mejor cierre para Don Rafa?"
+    opciones:
+      - { texto: "«Las ventas más grandes de bebidas fueron en fiestas. Para Navidad y Año Nuevo conviene pedirle a Toño más refresco y agua.»", correcta: true }
+      - { texto: "«Usé ORDER BY cantidad DESC LIMIT 3.»", porque: "A Don Rafa no le sirve la consulta: le sirve qué hacer con el resultado." }
+      - { texto: "«Hay 81 ventas de bebidas.»", porque: "Es un dato cierto, pero no le dice qué pedirle a Toño." }
+
+  - tipo: resumen
+    titulo: "¡Proyecto terminado!"
+    ideas:
+      - "Un top es **ORDER BY … DESC + LIMIT**; con DISTINCT, cada producto aparece una vez."
+      - "El orden de las piezas: SELECT, FROM, WHERE, ORDER BY, LIMIT."
+      - "El mejor reporte termina con una **recomendación**, no con una consulta."
+    cierre: { quien: tono, texto: "¡Quedó clarísimo! Para diciembre le traigo doble de refresco, Don Rafa." }

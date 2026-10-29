@@ -1,6 +1,6 @@
 # Plan de contenido: temario revisado, historia de toda la ruta y nuevas herramientas
 
-*Propuesta del 29 oct 2026 para que Diego la apruebe. Cuando se apruebe, el temario reemplaza la tabla de `plan-maestro.md` y la historia guía la escritura de cada unidad.*
+*Aprobado por Diego el 29 oct 2026. El temario ya está en `plan-maestro.md`; la historia guía la escritura de cada unidad.*
 
 ## Parte 1 · Revisión del temario para alguien que empieza en cero
 

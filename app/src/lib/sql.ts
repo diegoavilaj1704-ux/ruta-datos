@@ -108,6 +108,18 @@ export function comparar(alumno: Resultado | null, esperado: Resultado, ej: Ejer
     return { estado: 'correcto', mensaje: `¡Correcto! ${nfe} fila${nfe === 1 ? '' : 's'} y ${ne} columna${ne === 1 ? '' : 's'}, igual que la solución.` };
   }
 
+  // ¿Las mismas filas, pero en otro orden? (pasa al olvidar DESC o al ordenar por otra columna)
+  if (ej.orden_importa) {
+    const fa = alumno.filas.map(clave).sort();
+    const fb = esperado.filas.map(clave).sort();
+    if (fa.every((f, i) => f === fb[i])) {
+      return {
+        estado: 'casi',
+        mensaje: 'Casi: tienes las filas correctas, pero en otro orden. Revisa la columna de ORDER BY y si va de menor a mayor (ASC) o de mayor a menor (DESC).',
+      };
+    }
+  }
+
   // ¿Mismas columnas pero en otro orden?
   const porColumna = (r: Resultado) => r.columnas.map((_, j) => JSON.stringify(r.filas.map((f) => f[j]).map(String).sort())).sort();
   const ca = porColumna(alumno);

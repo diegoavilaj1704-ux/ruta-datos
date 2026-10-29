@@ -35,33 +35,36 @@ Cada módulo se divide en **unidades** (antes "semanas"). Cada unidad es un cami
 
 ## Ruta completa
 
-*Actualizado el 27 oct 2026: SQL se divide en dos módulos, se agrega la etapa Data Analyst, Git sube al inicio y se agrega IA aplicada a datos.*
+*Aprobado el 29 oct 2026. La revisión completa (por qué cambió cada cosa), la historia de toda la ruta y las herramientas propuestas están en `docs/plan-de-contenido.md`.*
 
-Cuatro etapas y 19 módulos, unas 84 unidades (una unidad ≈ una semana a 1 h diaria). Las duraciones son estimadas y se ajustan con la prueba piloto.
+Cuatro etapas y 20 módulos, unas 90 unidades (una unidad = 5 paradas, una por día a 1 h diaria). Las duraciones se ajustan con la prueba piloto.
 
 | Etapa | Módulo | Unidades | Proyecto integrador |
 | --- | --- | --- | --- |
-| 0 · Fundamentos | M1. Pensar con datos: tipos de datos, preguntas de negocio, Excel | 4 | Análisis de ventas de una tienda en Excel |
-| 0 · Fundamentos | M2. SQL desde cero | 6 | Reporte de clientes de Abarrotes La Esquina |
-| 0 · Fundamentos | M3. SQL para análisis | 6 | Análisis de retención de clientes de La Esquina |
-| 0 · Fundamentos | M4. Python desde cero (puente desde SQL) | 5 | Script que limpia y resume un CSV |
-| 0 · Fundamentos | M5. Git y GitHub | 2 | Repositorio de portafolio con tus proyectos |
-| 1 · Data Analyst | M6. Estadística descriptiva y visualización | 4 | Reporte visual de un dataset público |
-| 1 · Data Analyst | M7. Métricas, KPIs, dashboards y storytelling | 4 | Dashboard de negocio con recomendación |
-| 2 · Data Science | M8. Probabilidad | 4 | Simulador de escenarios de ventas |
-| 2 · Data Science | M9. Inferencia y pruebas A/B | 5 | Evaluación de una campaña con prueba A/B |
-| 2 · Data Science | M10. Álgebra lineal y cálculo para ML (lo esencial) | 4 | Regresión lineal programada a mano |
-| 2 · Data Science | M11. pandas avanzado y feature engineering | 4 | Dataset listo para modelar |
-| 2 · Data Science | M12. Machine learning supervisado | 6 | Modelo de churn con evaluación completa |
-| 2 · Data Science | M13. No supervisado y series de tiempo | 5 | Segmentación de clientes + pronóstico de demanda |
-| 2 · Data Science | M14. IA aplicada a datos (LLMs) | 3 | Clasificador de comentarios de clientes con un LLM |
-| 3 · Data Engineering | M15. Modelado de datos | 4 | Modelo dimensional (estrella) de ventas |
-| 3 · Data Engineering | M16. Terminal y Docker | 2 | Proyecto empaquetado en un contenedor |
-| 3 · Data Engineering | M17. Pipelines ETL/ELT con dbt y Airflow | 6 | Pipeline diario automatizado |
-| 3 · Data Engineering | M18. Cloud y almacenamiento (data lake, warehouse) | 5 | Pipeline desplegado en la nube |
-| 3 · Data Engineering | M19. Calidad, monitoreo y proyecto final | 5 | Plataforma de datos end-to-end |
+| 0 · Fundamentos | M1. Pensar con datos (sin Excel: datos, tablas, preguntas de negocio, qué es una base de datos) | 3 | Convertir la libreta de Don Rafa en tablas y preguntas |
+| 0 · Fundamentos | M2. SQL desde cero | 8 | Reporte de clientes de Abarrotes La Esquina |
+| 0 · Fundamentos | M3. SQL para análisis | 7 | Examen de salida: un mes completo de La Esquina |
+| 0 · Fundamentos | M4. Python desde cero (puente desde SQL) | 6 | Resumen semanal automático de un CSV |
+| 0 · Fundamentos | M5. Git y GitHub (con simulador en la app) | 2 | Repositorio de portafolio |
+| 1 · Data Analyst | M6. Estadística descriptiva | 4 | Perfil estadístico de las ventas |
+| 1 · Data Analyst | M7. Visualización | 3 | Gráficas para la junta de Mariana |
+| 1 · Data Analyst | M8. Métricas, KPIs, dashboards y storytelling | 4 | Dashboard con recomendación |
+| 2 · Data Scientist | M9. Probabilidad | 4 | Simulador de escenarios de ventas |
+| 2 · Data Scientist | M10. Inferencia y pruebas A/B | 5 | Evaluación de la promoción de Lupita |
+| 2 · Data Scientist | M11. Matemáticas para ML (lo esencial) | 4 | Regresión lineal programada a mano |
+| 2 · Data Scientist | M12. pandas avanzado y feature engineering | 4 | Dataset de clientes listo para modelar |
+| 2 · Data Scientist | M13. Machine learning supervisado | 6 | Modelo de churn contra MegaMart |
+| 2 · Data Scientist | M14. No supervisado y series de tiempo | 5 | Segmentos de clientes y pronóstico de demanda |
+| 2 · Data Scientist | M15. IA aplicada a datos (LLMs) | 3 | Clasificador de comentarios de clientes |
+| 3 · Data Engineer | M16. Modelado de datos | 4 | Modelo en estrella de 20 sucursales |
+| 3 · Data Engineer | M17. Terminal y Docker (terminal simulada) | 2 | Proyecto empaquetado en un contenedor |
+| 3 · Data Engineer | M18. Pipelines ETL/ELT (dbt y Airflow) | 6 | Pipeline nocturno automatizado |
+| 3 · Data Engineer | M19. Cloud y almacenamiento | 5 | Pipeline desplegado en la nube |
+| 3 · Data Engineer | M20. Calidad, monitoreo y proyecto final | 5 | La plataforma de datos de La Esquina, de punta a punta |
 
-**Entrada por nivel:** quien ya trabaja con SQL, Power BI y Python hace la Etapa 0 en modo repaso (examen diagnóstico por módulo; si lo aprueba, pasa directo al integrador).
+**Entrada por nivel:** quien ya trabaja con SQL, Power BI y Python hace la Etapa 0 en modo repaso (diagnóstico por módulo; si lo aprueba, pasa directo al integrador).
+
+**Lo que no se practica en el iPhone** (Excel, Git, terminal, Docker, Airflow, nube) se cubre con simuladores dentro de la app y un proyecto opcional "en tu computadora".
 
 ### SQL a fondo antes de Python
 
@@ -70,26 +73,27 @@ SQL es la base de todo lo demás, así que se cubre completo antes de pasar a Py
 **M2 · SQL desde cero**
 
 1. Tu primera consulta: SELECT, FROM, WHERE *(hecha)*
-2. Ordenar y filtrar mejor: ORDER BY, LIMIT, DISTINCT, AND/OR, IN, BETWEEN, LIKE
-3. Columnas calculadas y vacíos: alias, operaciones, NULL, CASE WHEN
-4. Resumir: COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING
-5. Fechas y texto: extraer mes, diferencias de días, limpiar texto, CAST
-6. Unir tablas: INNER y LEFT JOIN, llaves, duplicados por un JOIN mal hecho
+2. Ordenar y elegir: ORDER BY, ASC/DESC, LIMIT, DISTINCT
+3. Filtros combinados: AND, OR, NOT, paréntesis, IN, BETWEEN, LIKE, IS NULL
+4. Columnas calculadas: alias, operaciones, ROUND, CASE WHEN, NULL y COALESCE
+5. Resumir: COUNT, SUM, AVG, MIN, MAX, GROUP BY, HAVING
+6. Fechas y texto: mes, día de la semana, diferencia de días, UPPER, TRIM, REPLACE, SUBSTR, CAST
+7. Unir tablas: llaves, INNER JOIN, LEFT JOIN y duplicados por un JOIN mal hecho
+8. Proyecto integrador: reporte de clientes de Abarrotes La Esquina
 
 **M3 · SQL para análisis**
 
-1. Subconsultas y CTE (`WITH`): consultas largas pero legibles
-2. Funciones de ventana I: ROW_NUMBER, RANK, top N por grupo
-3. Funciones de ventana II: LAG/LEAD, acumulados, promedio móvil, % del total
-4. Patrones de negocio: embudos, cohortes, retención, clientes recurrentes
-5. Calidad de datos: duplicados, UNION, validaciones, crear tablas y vistas
-6. Consultas eficientes: orden de ejecución, índices, buen estilo
+1. JOIN a fondo y subconsultas
+2. CTE (`WITH`): consultas largas, por pasos y legibles
+3. Funciones de ventana I: ROW_NUMBER, RANK, top N por grupo
+4. Funciones de ventana II: LAG/LEAD, acumulados, promedio móvil, % del total
+5. Patrones de negocio: embudo, cohortes, retención, clientes recurrentes
+6. Crear y cuidar datos: CREATE TABLE, INSERT, UPDATE, DELETE, vistas, UNION, duplicados, índices
+7. Examen de salida: varias tablas, CTE y ventanas, explicado en palabras de negocio. Aprobarlo abre Python
 
-**Examen de salida de SQL:** responder preguntas de negocio sobre varias tablas usando CTE y funciones de ventana, y explicar el resultado. Aprobarlo abre Python.
+**Dataset:** Abarrotes La Esquina crece con la historia: 8 ventas en la Unidad 1, un trimestre (octubre a diciembre de 2026) desde la Unidad 2, tablas de clientes, productos y sucursales desde la Unidad 7, y 12 meses con pedidos en línea en M3. SQLite (sql.js) soporta funciones de ventana.
 
-**Dataset:** Abarrotes La Esquina crece con el curso: tablas de clientes, productos, sucursales y 12 meses de ventas, para que existan tendencias, cohortes y retención. SQLite (sql.js) soporta funciones de ventana.
-
-**Puente a Python (M4):** primero lo básico del lenguaje (variables, listas, diccionarios, ciclos, funciones) con los mismos datos de Don Rafa. Después pandas se enseña como traducción de lo que ya sabes: filtrar = WHERE, `groupby` = GROUP BY, `merge` = JOIN. Al final, lo que SQL no puede hacer: leer archivos y APIs, automatizar y graficar.
+**Puente a Python (M4):** primero lo básico del lenguaje (variables, listas, diccionarios, ciclos, funciones) con los mismos datos de Don Rafa. Después pandas se enseña como traducción de lo que ya sabes: filtrar = WHERE, `groupby` = GROUP BY, `merge` = JOIN.
 
 ## Estándar pedagógico de las lecciones
 

@@ -1,0 +1,64 @@
+# Fichas de los temas de la Unidad 2. La app las pone en el mapa y en la chuleta { } FICHAS;
+# se desbloquean al terminar la parada que las enseña. `npm run verificar` corre los ejemplos.
+version: "1.0"
+conceptos:
+  - id: order-by
+    parada: leccion-1
+    codigo: ORDER BY
+    titulo: "Ordenar el resultado"
+    significado: "«Ordenar por»: acomoda las filas del resultado según una columna. Va al final de la consulta, después de WHERE."
+    ejemplo: "SELECT producto, cantidad\nFROM ventas\nORDER BY cantidad;"
+  - id: asc-desc
+    parada: leccion-1
+    codigo: "ASC DESC"
+    titulo: "Hacia arriba o hacia abajo"
+    significado: "ASC (el normal) va de menor a mayor, de la A a la Z y de la fecha más antigua a la más reciente. DESC va al revés."
+    ejemplo: "SELECT producto, cantidad\nFROM ventas\nORDER BY cantidad DESC;"
+  - id: limit
+    parada: leccion-2
+    codigo: LIMIT
+    titulo: "Solo los primeros"
+    significado: "«Límite»: deja solo las primeras N filas del resultado. Va siempre al final, después de ORDER BY."
+    ejemplo: "SELECT producto, cantidad\nFROM ventas\nORDER BY cantidad DESC\nLIMIT 5;"
+  - id: distinct
+    parada: leccion-2
+    codigo: DISTINCT
+    titulo: "Sin repetir"
+    significado: "«Distinto»: quita las filas repetidas del resultado. Va justo después de SELECT."
+    ejemplo: "SELECT DISTINCT categoria\nFROM ventas;"
+  - id: top-n
+    parada: proyecto-1
+    codigo: "TOP N"
+    titulo: "Los primeros lugares"
+    significado: "Para sacar un top: primero ordenas (ORDER BY … DESC) y después cortas (LIMIT N). Sin ORDER BY, LIMIT da filas cualquiera."
+    ejemplo: "SELECT fecha, producto, cantidad\nFROM ventas\nWHERE categoria = 'Bebidas'\nORDER BY cantidad DESC\nLIMIT 3;"
+  - id: orden-clausulas
+    parada: proyecto-2
+    codigo: "S·F·W·O·L"
+    titulo: "El orden de las piezas"
+    significado: "Una consulta completa siempre va en este orden: SELECT, FROM, WHERE, ORDER BY y LIMIT. Las que no necesites se quitan, pero el orden no cambia."
+    ejemplo: "SELECT DISTINCT producto, precio_unitario\nFROM ventas\nORDER BY precio_unitario DESC\nLIMIT 3;"
+  - id: nota
+    parada: repaso
+    codigo: "NOTA"
+    titulo: "Aprender en público"
+    significado: "Tu nota: qué aprendiste, un ejemplo propio, un error que cometiste y una pregunta para quien lea."
+
+# Tips de Hashy en el mapa. `desde` es la parada que hay que terminar para que salga.
+# Los datos que mencionan están comprobados contra abarrotes_trimestre.sql (regla 3).
+tips_hashy:
+  - "¡Guau! Ya no son 8 ventas: ahora tienes todo el trimestre, 280 ventas de octubre a diciembre."
+  - texto: "Sin DESC, ORDER BY va de menor a mayor. Si tu top empieza con lo más chico, te faltó el DESC."
+    desde: leccion-1
+  - texto: "ORDER BY también ordena texto: de la A a la Z. Y fechas: de la más antigua a la más reciente."
+    desde: leccion-1
+  - texto: "LIMIT sin ORDER BY te da filas cualquiera, no un top. Primero ordena, después corta."
+    desde: leccion-2
+  - texto: "¿Sabías? La venta más grande del trimestre fue de 40 bolillos en Nochebuena, en la sucursal Centro."
+    desde: leccion-2
+  - texto: "DISTINCT con dos columnas quita las combinaciones repetidas: sucursal y categoría juntas dan 15 combinaciones."
+    desde: leccion-2
+  - texto: "Para el proveedor, la lista sin repetir y en orden alfabético se lee mucho más fácil."
+    desde: proyecto-1
+  - texto: "El orden de las piezas nunca cambia: SELECT, FROM, WHERE, ORDER BY, LIMIT."
+    desde: proyecto-2

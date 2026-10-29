@@ -1,0 +1,73 @@
+# Mini-proyecto de la Unidad 2, parte 1, contado como historia (texto completo en proyecto.md).
+# La lista de bebidas y botanas para Toño: DISTINCT + WHERE + ORDER BY (preguntas 1 y 2).
+# Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
+id: m02-s02-proyecto-1-historia
+version: "1.0"
+pasos:
+  - tipo: portada
+
+  - tipo: chat
+    mensajes:
+      - { quien: tono, texto: "¡Buenas, Don Rafa! Mañana paso a las 9 con el camión. ¿Qué le apunto?" }
+      - { quien: rafa, texto: "{nombre}, ayúdame: quiero llegar con la lista de lo que le compro a Toño y con los números del trimestre." }
+      - { quien: yo, texto: "Te mando **5 respuestas**. Hoy van las 2 primeras: la lista de bebidas y la de botanas." }
+
+  - tipo: idea
+    quien: yo
+    texto: "Cuando la lista es para otra persona, va **sin repetidos** y **en orden**. «Agua, Café, Jugo, Refresco» se revisa en segundos."
+
+  - tipo: tabla
+    quien: yo
+    texto: "Primero reviso cómo están escritas las categorías."
+    consulta: "SELECT DISTINCT categoria FROM ventas;"
+    nota: "Toño surte **Bebidas** y **Botanas**. Ojo con la mayúscula del inicio."
+
+  - tipo: conceptos
+    titulo: "El plan de la pregunta 1"
+    items:
+      - { codigo: SELECT DISTINCT, significado: "La columna producto, sin repetir." }
+      - { codigo: WHERE, significado: "Solo la categoría Bebidas." }
+      - { codigo: ORDER BY, significado: "Por producto, de la A a la Z." }
+    nota: "Tres piezas que ya conoces, en su orden de siempre."
+
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Pregunta 1: ¿qué bebidas distintas vendemos? En orden alfabético, para Toño." }
+    titulo: "Ordena la lista de bebidas por `producto`, de la A a la Z"
+    antes: |-
+      SELECT DISTINCT producto
+      FROM ventas
+      WHERE categoria = 'Bebidas'
+      ORDER BY
+    despues: ";"
+    piezas: [DESC, producto, categoria, LIMIT]
+    ejercicio: proyecto-1
+
+  - tipo: chat
+    mensajes:
+      - { quien: yo, texto: "Son 4 bebidas: agua, café soluble, jugo de naranja y refresco." }
+      - { quien: rafa, texto: "El café no me lo trae Toño, pero apúntalo. ¿Y las botanas?" }
+
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Pregunta 2: ¿y qué botanas distintas vendemos? También en orden alfabético." }
+    titulo: "Muestra los `producto` distintos con `categoria` igual a `'Botanas'`, ordenados de la A a la Z"
+    ejercicio: proyecto-2
+
+  - tipo: tip
+    quien: hashy
+    texto: "¡Guau! Es la misma consulta de la pregunta 1: solo cambia el valor de la categoría. Reusar consultas es de buenos analistas."
+
+  - tipo: quiz
+    etiqueta: "explicar el resultado"
+    pregunta: "Salieron Cacahuates 150 g, Galletas y Papas fritas. ¿Qué le mandas a Toño?"
+    opciones:
+      - { texto: "«En botanas te compramos cacahuates, galletas y papas fritas.»", correcta: true }
+      - { texto: "«DISTINCT devolvió 3 filas.»", porque: "Es cierto, pero Toño no habla SQL. Dile qué productos son." }
+      - { texto: "«Vendimos 3 botanas.»", porque: "Son 3 productos distintos, no 3 ventas: hubo muchas más ventas de botanas." }
+
+  - tipo: resumen
+    titulo: "¡Parte 1 lista!"
+    ideas:
+      - "Una lista para otra persona va **sin repetidos** (DISTINCT) y **en orden** (ORDER BY)."
+      - "Antes de filtrar, revisa cómo están escritos los valores."
+      - "Si una consulta ya funciona, cámbiale solo lo necesario para la siguiente pregunta."
+    cierre: { quien: rafa, texto: "Ya tengo la lista, {nombre}. En la parte 2 vamos por los números que le voy a presumir a Toño." }

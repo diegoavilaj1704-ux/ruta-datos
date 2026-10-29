@@ -1,0 +1,160 @@
+# Lección 2 de la Unidad 2 contada como historia, tarjeta por tarjeta.
+# Cubre las 11 secciones de leccion-2.md (skill docente-datos) en formato de juego.
+# Personajes: yo ({nombre}), rafa (Don Rafa), hashy, chela (Doña Chela, para la analogía de DISTINCT).
+# Los retos usan la solución de ejercicios.json; `npm run verificar` los comprueba.
+id: m02-s02-leccion-2-historia
+version: "1.0"
+pasos:
+  # 1. Objetivo
+  - tipo: portada
+
+  # 2. Por qué importa
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "La lista ordenada está muy bonita, {nombre}, pero son 280 ventas." }
+      - { quien: rafa, texto: "Nada más dime las **5 más grandes**. Y aparte, ¿qué productos vendemos? **Sin repetir**, que el refresco me sale como 50 veces." }
+      - { quien: yo, texto: "Son dos piezas nuevas: **LIMIT** para quedarnos con los primeros y **DISTINCT** para quitar repetidos." }
+
+  # 3. Lo que ya sabes
+  - tipo: idea
+    quien: yo
+    texto: "Ya sabes ordenar con ORDER BY. Un **top** es lo mismo, pero quedándote solo con los primeros lugares."
+
+  # 4. La idea en una frase
+  - tipo: idea
+    texto: "**LIMIT** deja solo las primeras filas del resultado y **DISTINCT** quita las filas repetidas."
+
+  # 5. Analogía (LIMIT)
+  - tipo: analogia
+    quien: yo
+    titulo: "LIMIT es el podio"
+    texto: "En una carrera corren 280, pero al podio solo suben los 3 primeros. Para saber quiénes son, primero hay que ordenar por quién llegó antes: eso es ORDER BY."
+    limite: "Ojo: si dos filas empatan en el último lugar del podio, LIMIT toma cualquiera de las dos."
+
+  # 6. Explicación por capas (capas 1 y 2: LIMIT y el top)
+  - tipo: conceptos
+    titulo: "Un top tiene dos pasos"
+    items:
+      - { codigo: ORDER BY … DESC, significado: "Primero ordenas: lo más grande arriba." }
+      - { codigo: LIMIT 5, significado: "Después cortas: «límite», solo las primeras 5." }
+    nota: "LIMIT siempre va al final. Sin ORDER BY no es un top: son filas cualquiera."
+
+  # 7. Ejemplo resuelto (top 5)
+  - tipo: terminal
+    quien: yo
+    texto: "El top 5 de ventas del trimestre. Toca **EJECUTAR**."
+    codigo: |
+      -- Top 5 de ventas más grandes del trimestre
+      SELECT producto, cantidad, sucursal, fecha
+      FROM ventas
+      ORDER BY cantidad DESC
+      LIMIT 5;
+    despues: "40 bolillos en Nochebuena, 36 refrescos en Año Nuevo, 30 aguas y 24 panes dulces en Día de Muertos… y 21 refrescos para una posada."
+
+  - tipo: chat
+    mensajes:
+      - { quien: rafa, texto: "¡Todas son fiestas! Ahí está mi negocio, {nombre}." }
+
+  # 9. Práctica guiada (ejercicio 1, con piezas)
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Para la plática con Toño me basta el podio: las 3 más grandes." }
+    titulo: "Quédate solo con las 3 primeras filas"
+    antes: |-
+      SELECT producto, cantidad, sucursal
+      FROM ventas
+      ORDER BY cantidad DESC
+    despues: ";"
+    piezas: [DISTINCT, LIMIT, "5", "3"]
+    ejercicio: leccion-2-1
+
+  # 8. Errores comunes (LIMIT)
+  - tipo: tip
+    quien: hashy
+    texto: "¡Guau! `LIMIT 5` sin ORDER BY no es un top: son las primeras 5 ventas que se capturaron. Primero ordena, después corta."
+
+  - tipo: error
+    titulo: "Caza el error: toca la pieza que está fuera de lugar"
+    piezas: [SELECT, producto, FROM, ventas, LIMIT 5, ORDER BY, cantidad, DESC, ";"]
+    error: 4
+    explicacion: "LIMIT siempre va **hasta el final**, después de ORDER BY. Así primero se ordena y luego se corta."
+    pista: "¿Cuál de las piezas va siempre al último?"
+
+  # Analogía y capas de DISTINCT
+  - tipo: analogia
+    quien: yo
+    titulo: "DISTINCT es la lista de invitados"
+    texto: "Doña Chela vino 20 veces a la tienda, pero en la lista de clientes aparece una sola vez."
+    limite: "Ojo: DISTINCT compara la fila completa. Con dos columnas, quita las combinaciones repetidas."
+
+  - tipo: terminal
+    quien: yo
+    texto: "¿Qué categorías vendemos? DISTINCT va **justo después de SELECT**."
+    codigo: |
+      -- Cada categoría una sola vez
+      SELECT DISTINCT categoria
+      FROM ventas;
+    despues: "5 categorías. Sin DISTINCT saldrían las 280 filas, con la categoría repetida en cada venta."
+
+  # 9. Práctica guiada (ejercicio 2, con piezas)
+  - tipo: armar
+    encargo: { quien: rafa, texto: "Ahora sí: ¿qué productos vendemos, sin repetir?" }
+    titulo: "Muestra la columna `producto` sin repetidos"
+    antes: SELECT
+    despues: "FROM ventas;"
+    piezas: [producto, LIMIT, DISTINCT, "*"]
+    ejercicio: leccion-2-2
+
+  - tipo: tip
+    quien: hashy
+    texto: "DISTINCT con dos columnas: `SELECT DISTINCT sucursal, categoria` da **15** filas. Cada una de las 3 sucursales vendió de las 5 categorías."
+
+  # 9. Práctica guiada (ejercicio 3, escrito a mano)
+  - tipo: escribir
+    encargo: { quien: rafa, texto: "Cada venta nueva recibe un número más grande. ¿Cuáles fueron las últimas 5 que registramos?" }
+    titulo: "Muestra `id_venta`, `fecha` y `producto` de las 5 ventas con el `id_venta` más grande"
+    ejercicio: leccion-2-3
+
+  # 10. Revisa tu comprensión
+  - tipo: quiz
+    pregunta: "¿Qué hace `LIMIT 3`?"
+    opciones:
+      - { texto: "Deja solo las 3 filas más grandes.", porque: "Solo si antes ordenaste con ORDER BY … DESC. LIMIT por sí solo no sabe qué es «más grande»." }
+      - { texto: "Deja solo las primeras 3 filas del resultado.", correcta: true }
+      - { texto: "Quita 3 filas repetidas.", porque: "Quitar repetidos es trabajo de DISTINCT." }
+
+  - tipo: quiz
+    pregunta: "¿Cuál es el orden correcto?"
+    opciones:
+      - { texto: "`… FROM ventas LIMIT 5 ORDER BY cantidad DESC;`", porque: "LIMIT siempre va al final." }
+      - { texto: "`… FROM ventas ORDER BY cantidad DESC LIMIT 5;`", correcta: true }
+      - { texto: "`SELECT LIMIT 5 … FROM ventas ORDER BY cantidad DESC;`", porque: "LIMIT no va junto a SELECT: va hasta el final." }
+
+  - tipo: quiz
+    pregunta: "`SELECT DISTINCT sucursal FROM ventas;`, ¿cuántas filas devuelve?"
+    opciones:
+      - { texto: "280", porque: "Eso sería sin DISTINCT." }
+      - { texto: "3", correcta: true }
+      - { texto: "1", porque: "Hay 3 sucursales distintas: Norte, Centro y Sur." }
+
+  - tipo: quiz
+    pregunta: "`SELECT DISTINCT sucursal, categoria FROM ventas;`, ¿cuántas filas devuelve?"
+    opciones:
+      - { texto: "8: 3 sucursales más 5 categorías.", porque: "DISTINCT con dos columnas da combinaciones: 3 × 5." }
+      - { texto: "15", correcta: true }
+      - { texto: "5", porque: "Esas son solo las categorías." }
+
+  - tipo: quiz
+    etiqueta: "repaso de la lección 1"
+    pregunta: "Sin escribir nada después de la columna, ¿cómo ordena ORDER BY?"
+    opciones:
+      - { texto: "De menor a mayor.", correcta: true }
+      - { texto: "De mayor a menor.", porque: "Para eso necesitas DESC." }
+      - { texto: "Como se capturaron.", porque: "Eso pasa cuando no hay ORDER BY." }
+
+  # 11. Resumen
+  - tipo: resumen
+    ideas:
+      - "**LIMIT N** deja las primeras N filas y va siempre al final."
+      - "Un **top** es ORDER BY … DESC + LIMIT: primero ordenas, después cortas."
+      - "**DISTINCT** quita repetidos; va justo después de SELECT."
+    cierre: { quien: rafa, texto: "Perfecto, {nombre}. Mañana llega Toño: te mando lo que necesito para la plática." }
