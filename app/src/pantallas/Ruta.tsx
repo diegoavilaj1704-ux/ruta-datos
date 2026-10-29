@@ -5,7 +5,7 @@ import { acciones, calcularRacha, hoyLocal, useProgreso, type Progreso } from '.
 import { ejecutar, type Resultado } from '../lib/sql';
 import { sonidos } from '../lib/sonidos';
 import { Avatar } from '../componentes/Avatar';
-import { colorModulo } from '../lib/colores';
+import { colorUnidad, type ColorModulo } from '../lib/colores';
 import { elegirRegalo, regalosDeUnidad, type Regalo } from '../lib/regalos';
 import { HashyPaseo } from '../componentes/HashyPaseo';
 import { TextoEnLinea } from '../componentes/Markdown';
@@ -44,11 +44,13 @@ export function Ruta() {
   const progreso = useProgreso();
   const racha = calcularRacha(progreso.diasActivos);
   const [ficha, setFicha] = useState<Ficha | null>(null);
-  // Tramo del degradado de cada unidad: el módulo se oscurece poco a poco de la primera a la última
-  const tramoDe = (u: Unidad) => {
-    const delModulo = unidades.filter((x) => x.modulo.id === u.modulo.id);
-    const i = delModulo.indexOf(u);
-    return { desde: (i / delModulo.length) * 100, hasta: ((i + 1) / delModulo.length) * 100 };
+  // Cada unidad con su degradado: una va de claro a profundo y la siguiente de profundo a claro,
+  // así se unen por tonos parecidos; arriba se mezcla con el color en que terminó la anterior
+  const tramoDe = (u: Unidad): Tramo => {
+    const i = unidades.indexOf(u);
+    const color = colorUnidad(i);
+    const anterior = i > 0 ? colorUnidad(i - 1) : undefined;
+    return { color, invertido: i % 2 === 1, previo: anterior && (i % 2 === 1 ? anterior.profundo : anterior.principal) };
   };
 
   return (
@@ -76,12 +78,13 @@ export function Ruta() {
 
 // ---------- El camino de una unidad ----------
 
-interface Tramo { desde: number; hasta: number }
+interface Tramo { color: ColorModulo; invertido: boolean; previo?: string }
 
-// Variables de color del tramo: el degradado del módulo, de `desde` a `hasta` (0 = principal, 100 = profundo)
-function estiloTramo(unidad: Unidad, tramo: Tramo) {
-  const color = colorModulo(unidad.modulo.id);
-  return { '--mod': color.principal, '--mod-hondo': color.profundo, '--ini': `${tramo.desde}%`, '--fin': `${tramo.hasta}%` } as React.CSSProperties;
+// Variables de color del tramo de una unidad (ruta.css las usa para el fondo, la tarjeta y los botones)
+function estiloTramo(tramo: Tramo) {
+  const { principal, profundo } = tramo.color;
+  const [arriba, abajo] = tramo.invertido ? [profundo, principal] : [principal, profundo];
+  return { '--mod': principal, '--mod-hondo': profundo, '--arriba': arriba, '--abajo': abajo, '--previo': tramo.previo ?? arriba } as React.CSSProperties;
 }
 
 function Camino({ unidad, progreso, abrirFicha, tramo }: { unidad: Unidad; progreso: Progreso; abrirFicha: (f: Ficha) => void; tramo: Tramo }) {
@@ -149,7 +152,7 @@ function Camino({ unidad, progreso, abrirFicha, tramo }: { unidad: Unidad; progr
   ];
 
   return (
-    <section className="tramo" style={estiloTramo(unidad, tramo)}>
+    <section className="tramo" style={estiloTramo(tramo)}>
       <div className="tarjeta-unidad">
         <button className="tu-info" onClick={() => abrirFicha({ tipo: 'unidad', unidad })}>
           <small>{unidad.modulo.nombre.split(' ')[0]} · Unidad {unidad.numero}</small>
@@ -273,7 +276,7 @@ function CaminoProximo({ unidad, abrirFicha, tramo }: { unidad: Unidad; abrirFic
   const ladoRegalo = VAIVEN[2] <= 0 ? 1 : -1;
 
   return (
-    <section className="tramo proximo" style={estiloTramo(unidad, tramo)}>
+    <section className="tramo proximo" style={estiloTramo(tramo)}>
       <div className="tarjeta-unidad">
         <button className="tu-info" onClick={verUnidad}>
           <small>{unidad.modulo.nombre.split(' ')[0]} · Unidad {unidad.numero} · 🔒 Próximamente</small>

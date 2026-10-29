@@ -1,4 +1,4 @@
-// Color de cada módulo en el mapa: el fondo va en degradado del color principal al profundo
+// Colores del mapa: cada unidad va en degradado de su color principal al profundo
 // (maqueta aprobada: docs/maquetas/mapa-degradados.html, propuesta A). Por etapa:
 // Fundamentos en violetas y azules, Data Analyst en verdes, Data Scientist en corales y
 // naranjas, Data Engineer en azules oscuros.
@@ -31,5 +31,13 @@ const PALETA: [string, string][] = [
 export function colorModulo(idModulo: string): ColorModulo {
   const n = Number(/^m(\d+)/.exec(idModulo)?.[1] ?? 2);
   const [principal, profundo] = PALETA[(n - 1) % PALETA.length] ?? PALETA[1];
+  return { principal, profundo };
+}
+
+// Cada unidad del mapa lleva su propio degradado (propuesta A): estos colores, en este orden,
+// para que dos unidades seguidas nunca se parezcan
+const POR_UNIDAD = [2, 3, 1, 5, 10, 13, 6, 9, 15, 8, 11, 16, 7, 12, 4, 19, 18, 14, 17];
+export function colorUnidad(indice: number): ColorModulo {
+  const [principal, profundo] = PALETA[POR_UNIDAD[indice % POR_UNIDAD.length] - 1];
   return { principal, profundo };
 }

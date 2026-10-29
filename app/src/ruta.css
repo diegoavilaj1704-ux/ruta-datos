@@ -232,8 +232,8 @@
 /* El camino va sobre el color de su módulo, del principal al profundo; los botones se aclaran
    para resaltar y lo bloqueado es blanco translúcido. Igual en modo claro y oscuro. */
 .tramo {
-  /* Cada unidad pinta su pedazo del degradado del módulo: sin cortes entre una unidad y la siguiente */
-  background: linear-gradient(180deg, color-mix(in srgb, var(--mod-hondo) var(--ini, 0%), var(--mod)), color-mix(in srgb, var(--mod-hondo) var(--fin, 100%), var(--mod)));
+  /* Degradado A de la unidad; los primeros 240 px vienen del color en que terminó la anterior */
+  background: linear-gradient(180deg, var(--previo) 0, var(--arriba) 240px, var(--abajo) 100%);
   padding-top: 12px;
 }
 .tramo.proximo .tarjeta-unidad { background: rgba(255, 255, 255, .14); border-bottom-color: rgba(0, 0, 0, .25); box-shadow: none; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
