@@ -33,6 +33,7 @@
 .ruta-barra {
   position: sticky; top: 0; z-index: 6;
   display: flex; align-items: center; gap: 8px;
+  height: calc(env(safe-area-inset-top) + 64px); box-sizing: border-box;
   padding: calc(env(safe-area-inset-top) + 8px) 16px 8px;
   background: var(--fondo);
 }
@@ -47,7 +48,7 @@
 
 /* Tarjeta de la unidad (se queda arriba al bajar) */
 .tarjeta-unidad {
-  position: sticky; top: calc(env(safe-area-inset-top) + 56px); z-index: 5;
+  position: sticky; top: calc(env(safe-area-inset-top) + 72px); z-index: 5;
   display: flex; max-width: 428px; margin: 4px auto 0; margin-inline: max(16px, calc((100% - 428px) / 2));
   background: var(--marca); color: #fff; border-radius: 18px; border-bottom: 5px solid var(--marca-relieve);
 }

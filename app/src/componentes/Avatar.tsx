@@ -1,6 +1,7 @@
 import { useId, useMemo } from 'react';
 import { EQUIPO_INICIAL, type Equipo } from '../lib/armario';
 import { ENCUADRE, svgFigura } from '../lib/figura';
+import { svgIcono } from '../lib/icono';
 import { dibujarHashy, ELENCO, figuraDePerfil, PERFIL_INICIAL, type Animo, type Perfil, type Quien } from '../lib/personajes';
 import { useProgreso } from '../lib/progreso';
 
@@ -11,16 +12,16 @@ interface Props {
   perfil?: Perfil;   // para vistas previas (creador, clóset)
 }
 
-// Cara en círculo: el recorte de la cabeza de su figura completa, con gorro y lentes.
+// Ícono en círculo: plano y sin contorno (lib/icono.ts), con su pelo, lentes y gorro.
 export function Avatar({ quien, tam = 40, animo = 'feliz', perfil }: Props) {
   const id = useId().replace(/:/g, '');
   const progreso = useProgreso();
   const p = perfil ?? progreso.perfil ?? PERFIL_INICIAL;
   const svg = useMemo(() => {
     if (quien === 'hashy') return dibujarHashy(animo, id);
-    if (quien === 'yo') return svgFigura(figuraDePerfil(p), equipoDe(p), id, ENCUADRE.cara, true);
+    if (quien === 'yo') return svgIcono(figuraDePerfil(p), equipoDe(p), id);
     const { figura, equipo } = ELENCO[quien];
-    return svgFigura(figura, equipo, id, ENCUADRE.cara, true);
+    return svgIcono(figura, equipo, id);
   }, [quien, animo, id, p]);
   return <span className="avatar" style={{ width: tam, height: tam }} dangerouslySetInnerHTML={{ __html: svg }} />;
 }
