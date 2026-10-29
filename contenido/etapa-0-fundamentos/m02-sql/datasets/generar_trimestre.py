@@ -64,5 +64,5 @@ lineas = [
 ]
 valores = [f"({i},'{f}','{p}','{c}',{q},{pr},'{s}')" for i, (f, p, c, q, pr, s) in enumerate(filas, start=1)]
 lineas.append(',\n'.join(valores) + ';')
-Path(__file__).with_name('abarrotes_trimestre.sql').write_text('\n'.join(lineas) + '\n', encoding='utf-8')
+Path(__file__).with_name('abarrotes_trimestre.sql').write_text('\n'.join(lineas) + '\n', encoding='utf-8', newline='\n')
 print(f'{len(filas)} ventas escritas')
