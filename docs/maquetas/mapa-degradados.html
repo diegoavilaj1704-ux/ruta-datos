@@ -100,12 +100,13 @@
 <script>
 // Colores por etapa y módulo: [principal, profundo, claro]
 const ETAPAS = [
-  { nombre: 'Etapa 0 · Fundamentos', modulos: [['M1', '#4B6BFB', '#1B2A7A', '#DCE4FF'], ['M2 SQL', '#6C4CF1', '#2A1670', '#E7E0FF'], ['M3 SQL+', '#9B4DE0', '#3D1468', '#F1E0FF'], ['M4 Git', '#3A86C8', '#123A5E', '#DCEEFF']] },
+  { nombre: 'Etapa 0 · Fundamentos', modulos: [['M1', '#4B6BFB', '#1B2A7A', '#DCE4FF'], ['M2 SQL', '#6C4CF1', '#2A1670', '#E7E0FF'], ['M3 SQL+', '#E0569B', '#5C1440', '#FFE0F0'], ['M4 Git', '#3A86C8', '#123A5E', '#DCEEFF']] },
   { nombre: 'Etapa 1 · Data Analyst', modulos: [['M5', '#0E9F9A', '#06433F', '#D7F7EA'], ['M6', '#1FA463', '#0B4A2A', '#DDF6E6'], ['M7', '#5BAA2E', '#284B12', '#EAF6D8'], ['M8', '#0A8FB5', '#04394A', '#D8F1F9']] },
-  { nombre: 'Etapa 2 · Data Scientist', modulos: [['M9', '#FF6B5B', '#7A1F16', '#FFE0DC'], ['M10', '#F08A24', '#6E3504', '#FFE9D1'], ['M11', '#E8A317', '#5E3F00', '#FFF1C9'], ['M12', '#E0457B', '#651230', '#FFE0EC']] },
+  { nombre: 'Etapa 2 · Data Scientist', modulos: [['M9', '#FF6B5B', '#7A1F16', '#FFE0DC'], ['M10', '#F08A24', '#6E3504', '#FFE9D1'], ['M11', '#E8A317', '#5E3F00', '#FFF1C9'], ['M12', '#C2410C', '#4A1704', '#FFE4D6']] },
   { nombre: 'Etapa 3 · Data Engineer', modulos: [['M13', '#2B4BEE', '#0E1B66', '#DDE3FF'], ['M14', '#3A3658', '#121022', '#E5E3EF'], ['M15', '#6E56CF', '#251A55', '#E9E3FF'], ['M16+', '#14B8A6', '#06463F', '#D5F5F0']] },
 ];
-const M2 = ETAPAS[0].modulos[1], M3 = ETAPAS[0].modulos[2];
+// [principal, profundo, claro] de cada módulo
+const M2 = ETAPAS[0].modulos[1].slice(1), M3 = ETAPAS[0].modulos[2].slice(1);
 
 const ESTILOS = {
   p1: {
@@ -163,7 +164,8 @@ function armar(id) {
   const corte = bancoY + 150;                  // donde empieza el siguiente módulo
   const sig = [{ x: centro, y: corte + 170 }, { x: centro - 56, y: corte + 300 }, { x: centro - 70, y: corte + 430 }];
   const alto = corte + 520;
-  const regalo = { x: (pts[2].x + pts[3].x) / 2 + 92, y: (pts[2].y + pts[3].y) / 2 };
+  // El regalo va junto a la 3.ª parada, en el lugar de su gráfica
+  const regalo = { x: pts[2].x + 100, y: pts[2].y - 6 };
   const todos = [...pts, { x: centro, y: bancoY }, ...sig];
   const curva = todos.reduce((d, p, i) => i ? `${d} C${todos[i - 1].x} ${(todos[i - 1].y + p.y) / 2} ${p.x} ${(todos[i - 1].y + p.y) / 2} ${p.x} ${p.y}` : `M${p.x} ${p.y}`, '');
   const hechoHasta = pts[3];
@@ -178,7 +180,7 @@ function armar(id) {
   } else {
     fondo = id === 'p1'
       ? `linear-gradient(180deg, ${M2[0]} 0px, ${M2[1]} ${corte - 120}px, ${M3[1]} ${corte + 60}px, ${M3[0]} ${alto}px)`
-      : `linear-gradient(180deg, ${M2[3]} 0px, #FFD9EC ${corte * 0.45}px, ${M2[3]} ${corte - 80}px, ${M3[3]} ${corte + 80}px, #FFE6F4 ${alto}px)`;
+      : `linear-gradient(180deg, ${M2[2]} 0px, #D9D0FF ${corte * 0.45}px, ${M2[2]} ${corte - 80}px, ${M3[2]} ${corte + 80}px, #FFF0F7 ${alto}px)`;
   }
   const claro = id === 'p2';
 
@@ -207,7 +209,7 @@ function armar(id) {
   h += `<div class="banco" style="left:${centro}px;top:${bancoY}px">${iconoBanco()}<span class="chip" style="background:#fff;color:#2A2838;border-color:#2A2838">${iconoMoneda(13)} +50 XP</span></div>`;
   h += `<div class="cartel" style="top:${corte + 40}px;background:${E.cartel};${claro ? 'color:#2A2838;border-color:rgba(42,40,56,.3)' : ''}"><small>🔒 MÓDULO 3 · CAMBIA EL COLOR</small><b>SQL para análisis</b></div>`;
   sig.forEach((p, i) => {
-    h += `<button class="parada bloq" style="left:${p.x}px;top:${p.y}px;background:${claro ? M3[3] : M3[0] + '88'};border-bottom-color:${claro ? '#C9A8E8' : M3[1]};color:${claro ? M3[0] : 'rgba(255,255,255,.7)'}">${i === 1 ? '<svg width="28" height="24" viewBox="0 0 30 26"><rect x="2" y="13" width="7" height="12" rx="2" fill="currentColor"/><rect x="11.5" y="6" width="7" height="19" rx="2" fill="currentColor"/><rect x="21" y="1" width="7" height="24" rx="2" fill="currentColor"/></svg>' : '>_'}</button>`;
+    h += `<button class="parada bloq" style="left:${p.x}px;top:${p.y}px;background:${claro ? M3[2] : M3[0] + '88'};border-bottom-color:${claro ? '#C9A8E8' : M3[1]};color:${claro ? M3[0] : 'rgba(255,255,255,.7)'}">${i === 1 ? '<svg width="28" height="24" viewBox="0 0 30 26"><rect x="2" y="13" width="7" height="12" rx="2" fill="currentColor"/><rect x="11.5" y="6" width="7" height="19" rx="2" fill="currentColor"/><rect x="21" y="1" width="7" height="24" rx="2" fill="currentColor"/></svg>' : '>_'}</button>`;
   });
   if (id === 'p3') {
     // En la aurora, la moneda de la siguiente unidad se ve cerrada
@@ -218,7 +220,7 @@ function armar(id) {
   h += '</div>';
   const el = document.getElementById(id);
   el.innerHTML = h;
-  el.style.background = id === 'p2' ? M2[3] : id === 'p3' ? '#100E18' : M2[0];
+  el.style.background = id === 'p2' ? M2[2] : id === 'p3' ? '#100E18' : M2[0];
   // La tarjeta de la unidad toma el color del módulo que se ve
   el.addEventListener('scroll', () => {
     const t = el.querySelector('.unidad');
@@ -247,5 +249,5 @@ function aviso(t) {
 }
 
 ['p1', 'p2', 'p3'].forEach(armar);
-document.getElementById('etapas').innerHTML = ETAPAS.map((e) => `<div class="etapa"><b>${e.nombre}</b><div class="muestras">${e.modulos.map((m) => `<i style="background:linear-gradient(90deg, ${m[0]}, ${m[1]})">${m[0] === M2[0] ? 'M2' : m[0] === M3[0] ? 'M3' : ''}</i>`).join('')}</div></div>`).join('');
+document.getElementById('etapas').innerHTML = ETAPAS.map((e) => `<div class="etapa"><b>${e.nombre}</b><div class="muestras">${e.modulos.map((m) => `<i style="background:linear-gradient(90deg, ${m[1]}, ${m[2]})" title="${m[0]}">${m[0].split(' ')[0]}</i>`).join('')}</div></div>`).join('');
 </script>
