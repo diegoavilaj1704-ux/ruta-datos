@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Moneda } from '../componentes/Moneda';
 import type { Sesion } from '../lib/contenido';
 import { INTERACTIVOS, type Paso } from '../lib/historia';
 import { escucharReacciones, FRASES_HASHY } from '../lib/reacciones';
@@ -78,7 +79,7 @@ export function Historia({ sesion, volver, verTexto }: Props) {
         <button className="sonido" onClick={acciones.alternarSonido} aria-label={progreso.sonido ? 'Silenciar sonidos' : 'Activar sonidos'}>
           {progreso.sonido ? '🔊' : '🔇'}
         </button>
-        <span className="xp-contador">◆ {xpVisible}</span>
+        <span className="xp-contador"><Moneda tam={18} /> {xpVisible}</span>
       </header>
 
       <section className="tarjeta-historia" key={i}>

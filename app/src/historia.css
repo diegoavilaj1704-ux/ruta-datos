@@ -249,3 +249,7 @@
 .prenda small { font-size: 13px; font-weight: 900; }
 .e-puesto { color: var(--marca); } .e-tuyo { color: var(--bien); } .e-precio { color: #b07a00; } .e-bloq { color: var(--suave); }
 .boton-closet { font: inherit; color: inherit; border-bottom-width: 4px !important; }
+
+/* Moneda junto a los XP */
+.moneda { display: inline-block; vertical-align: -0.18em; flex: none; }
+.xp-contador, .saldo { display: inline-flex; align-items: center; gap: 4px; justify-content: flex-end; }

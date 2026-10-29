@@ -42,7 +42,7 @@ contenido/
       modulo.json              # metadatos del módulo y lista de sus unidades (las que no tienen carpeta salen "próximamente")
       datasets/*.sql           # se cargan automáticamente en el editor de la app
       s01-primera-consulta/    # una unidad
-        unidad.json            # las paradas del camino, en orden
+        unidad.json            # las paradas del camino, en orden (cada una con su negocio del barrio)
         ejercicios.json        # ejercicios auto-evaluables (solución + filas esperadas)
         conceptos.yaml         # fichas de temas que se tocan en el mapa + tips de Hashy (con `desde: <parada>`)
         <parada>.historia.yaml # cada parada contada en tarjetas (lo que la app muestra primero)
@@ -64,6 +64,7 @@ Frontmatter de cada lección: `id, modulo, unidad, parada, objetivo, duracion_mi
 - Hecho (27 oct): lección 1 como historia en tarjetas (`leccion-1.historia.yaml`) con el estilo nuevo, avatares, XP y avance guardado.
 - Hecho (27 oct): avatar propio con nombre (protagonista), Hashy el schnauzer (tips y errores) y sonidos.
 - Hecho (27 oct): avatar de cuerpo completo y clóset donde se gastan los XP (catálogo en `app/src/lib/armario.ts`).
+- Hecho (29 oct): **mapa como calle de barrio** (`app/src/lib/barrio.ts`): cada parada es un negocio (`negocio`, `letrero`, `pide` en `unidad.json`), regalos de monedas cada 3 paradas y Banco de Datos al final; XP con ícono de moneda.
 - Hecho (29 oct): **avatar rediseñado** en estilo caricatura con contorno (`app/src/lib/figura.ts`), con elenco y clóset en el mismo estilo; racha visible por día.
 - Definido (27 oct): ruta por unidades con paradas en un mapa (maqueta `docs/maquetas/ruta-mapa.html`) y temario ampliado: SQL en dos módulos, etapa Data Analyst, Git al inicio, IA aplicada a datos.
 - Hecho (27 oct): **mapa de la Ruta** como pantalla principal (`app/src/pantallas/Ruta.tsx`): camino de botones con íconos de datos, gráficas que se tocan para repasar (fichas con ejemplo ejecutable), chuleta { } FICHAS, base de datos de premio (+50 XP) y Hashy (schnauzer redibujado) que camina y da tips con un foco (`app/src/componentes/HashyPaseo.tsx`). **Unidad 1 completa en historia**: lecciones 1 y 2, proyecto en dos partes y repaso con nota pública.

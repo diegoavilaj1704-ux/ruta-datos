@@ -2,28 +2,34 @@
   "id": "m02-s01",
   "numero": 1,
   "titulo": "Tu primera consulta",
+  "calle": "Calle de la Primera Consulta",
   "resumen": "Elegir columnas (SELECT/FROM) y filtrar filas (WHERE), aplicado en un reporte para una tienda.",
   "dataset": "../datasets/abarrotes_ventas.sql",
   "paradas": [
-    { "id": "leccion-1", "tipo": "leccion", "corto": "SELECT", "archivo": "leccion-1.md" },
-    { "id": "leccion-2", "tipo": "leccion", "corto": "WHERE", "archivo": "leccion-2.md" },
+    { "id": "leccion-1", "tipo": "leccion", "corto": "SELECT", "archivo": "leccion-1.md",
+      "negocio": "tienda", "letrero": "DON RAFA", "pide": "Don Rafa quiere ver qué vendió esta semana." },
+    { "id": "leccion-2", "tipo": "leccion", "corto": "WHERE", "archivo": "leccion-2.md",
+      "negocio": "cafe", "letrero": "CAFÉ BYTE", "pide": "En Café Byte solo quieren ver las ventas que cumplen una condición." },
     {
       "id": "proyecto-1", "tipo": "proyecto", "corto": "Proyecto 1", "archivo": "proyecto.md",
+      "negocio": "fonda", "letrero": "LA TABLA", "pide": "Explora la tabla completa antes de responder: así lo hacen en la fonda.",
       "titulo": "Proyecto, parte 1: explorar y responder",
       "objetivo": "Al terminar podrás explorar una tabla antes de filtrarla y responder las dos primeras preguntas de Don Rafa.",
       "duracion_min": 25
     },
     {
       "id": "proyecto-2", "tipo": "proyecto", "corto": "Proyecto 2", "archivo": "proyecto.md",
+      "negocio": "peluqueria", "letrero": "EL FILTRO", "pide": "Arma el reporte para Don Rafa, en palabras de negocio.",
       "titulo": "Proyecto, parte 2: el reporte para Don Rafa",
       "objetivo": "Al terminar podrás responder las últimas tres preguntas y explicarle a Don Rafa lo que encontraste, sin términos técnicos.",
       "duracion_min": 30
     },
     {
       "id": "repaso", "tipo": "repaso", "corto": "Repaso", "archivo": "repaso.md",
+      "negocio": "papeleria", "letrero": "LA NOTA", "pide": "Aquí escribes tu nota pública de la unidad.",
       "titulo": "Repaso y nota pública",
       "duracion_min": 25
     }
   ],
-  "version": "1.1"
+  "version": "1.2"
 }

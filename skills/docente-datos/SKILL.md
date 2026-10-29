@@ -101,6 +101,7 @@ Cada parada de la unidad (lecciones, las dos partes del proyecto y el repaso) se
 - Una idea por tarjeta. Textos de 1–3 frases. Nada de muros de texto.
 - Tipos de tarjeta: `portada`, `chat`, `tabla`, `idea`, `analogia`, `conceptos`, `terminal` (ejemplo que se ejecuta), `armar` (consulta con piezas), `error` (caza el error), `tip`, `escribir` (consulta a mano), `quiz`, `nota` (la nota pública del repaso), `resumen` (con `titulo` opcional). En `armar`, `antes` puede ocupar varias líneas (`SELECT … / FROM … / WHERE`). El formato exacto está en `app/src/lib/historia.ts`.
 - Los retos `armar` y `escribir` apuntan a un ejercicio de `ejercicios.json` por su `id`; las piezas de `armar` deben alcanzar para armar la solución.
+- En `unidad.json`, cada parada es un negocio del barrio: `negocio` (tienda, cafe, fonda, peluqueria, papeleria), `letrero` (nombre corto en mayúsculas) y `pide` (qué te pide ese negocio, en una frase ligada al tema). Cada unidad nueva es otra calle con otros negocios.
 - Cada tema nuevo lleva su ficha en `conceptos.yaml` (código, título, significado en 1–2 frases y un ejemplo que corra), ligada a la parada que lo enseña: es lo que se toca en el mapa. Agrega también 2–3 tips de Hashy sobre el tema en `tips_hashy` con `desde: <parada>` para que no adelanten temas; los datos que mencionen se comprueban contra el dataset.
 - Después de escribirla, corre `npm run verificar` en `app/`: revisa que los retos existan, que las piezas alcancen, que los ejemplos corran y que cada quiz tenga una sola respuesta correcta.
 

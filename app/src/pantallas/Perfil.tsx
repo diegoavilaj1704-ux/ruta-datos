@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Moneda } from '../componentes/Moneda';
 import { Avatar, Cuerpo, equipoDe } from '../componentes/Avatar';
 import { CATALOGO, clavePrenda, precioDe } from '../lib/armario';
 import {
@@ -85,7 +86,7 @@ export function Perfil({ bienvenida, listo }: Props) {
       </Grupo>
       {!bienvenida && (
         <button className="enlace-juego" onClick={() => guardar(() => (location.hash = '#/closet'))}>
-          Más peinados y ropa en tu clóset ◆
+          Más peinados y ropa en tu clóset <Moneda tam={15} />
         </button>
       )}
 

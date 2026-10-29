@@ -43,7 +43,7 @@
   background: var(--superficie); border: 2px solid var(--borde); border-radius: 14px; padding: 4px 10px;
 }
 .ruta-chip.racha { color: var(--acento); }
-.ruta-chip.xp { color: #e09400; }
+.ruta-chip.xp { color: #e09400; display: inline-flex; align-items: center; gap: 4px; }
 
 /* Tarjeta de la unidad (se queda arriba al bajar) */
 .tarjeta-unidad {
@@ -276,3 +276,39 @@
 .racha-dia.futuro { opacity: .3; }
 .racha-dia.hecho { background: var(--acento); border-color: var(--acento); color: #fff; }
 .racha-dia.hoy { border-color: var(--marca); }
+
+/* ---------- El barrio (lib/barrio.ts) ---------- */
+.camino.barrio { max-width: none; overflow: hidden; }
+.barrio-escena { position: absolute; inset: 0; display: block; }
+.toque-negocio { position: absolute; transform: translate(-50%, -50%); background: none; border: 0; padding: 0; border-radius: 24px; }
+.toque-regalo, .toque-banco { position: absolute; transform: translate(-50%, -50%); width: 86px; height: 86px; background: none; border: 0; padding: 0; display: flex; align-items: flex-end; justify-content: center; }
+.toque-banco { width: 150px; height: 170px; margin-top: -30px; }
+.toque-regalo span, .toque-banco span {
+  transform: translateY(26px); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
+  background: #fff; color: #1F1A22; border: 2px solid #1F1A22; border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 900;
+}
+.toque-banco span { transform: translateY(46px); font-size: 12px; }
+.toque-regalo.listo span, .toque-banco.listo span { background: #FFC531; }
+.toque-regalo.abierto span, .toque-banco.abierto span { color: #0d5a43; }
+.barrio .nombre-parada { background: #fff; color: #1F1A22; border: 2px solid #1F1A22; border-radius: 999px; padding: 1px 10px; }
+.barrio .nombre-parada.bloqueada { color: #6B6880; }
+.ficha-pide { margin: 0; background: var(--marca-suave); border-radius: 14px; padding: 8px 12px; font-weight: 700; }
+.ficha-regalo { display: block; filter: drop-shadow(0 6px 10px rgba(201, 138, 0, .35)); }
+.b-flota { animation: b-flota 3.2s ease-in-out infinite; }
+@keyframes b-flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.b-rebota { animation: b-rebota 1.2s ease-in-out infinite; }
+@keyframes b-rebota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+.b-vapor { animation: b-vapor 2.4s ease-in-out infinite; }
+@keyframes b-vapor { 0% { opacity: 0; transform: translateY(4px); } 40% { opacity: .9; } 100% { opacity: 0; transform: translateY(-10px); } }
+.b-destello { animation: b-destello 1.6s ease-in-out infinite; }
+@keyframes b-destello { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .b-flota, .b-rebota, .b-vapor, .b-destello { animation: none; } }
+/* En el barrio los botones siempre van sobre pasto: colores claros en ambos temas */
+.barrio .boton-parada.bloqueada { background: #C9C5D8; border-bottom-color: #9A96AE; color: #6B6880; border-color: #1F1A22; }
+.barrio .globo-parada { background: #fff; color: #6C4CF1; border-color: #1F1A22; }
+.barrio .globo-parada::after { background: #fff; border-color: #1F1A22; }
+.barrio .anillo-fondo { stroke: rgba(255, 255, 255, .7); }
+.barrio .palomita { border-color: #fff; }
+/* La etiqueta del regalo va arriba del montón: abajo queda el globo de la siguiente parada */
+.toque-regalo { align-items: flex-start; }
+.toque-regalo span { transform: translateY(-34px); }

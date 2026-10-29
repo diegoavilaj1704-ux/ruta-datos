@@ -58,9 +58,13 @@ Lo que el piloto rechazó, para no repetirlo:
 
 ## Mapa de la Ruta
 
-*Actualizado el 27 oct 2026. El piloto rechazó un mapa oscuro de piedras (poco estético), una gráfica y un pipeline (demasiado fríos); quiere la sensación de un camino de juego sin copiar a Duolingo y con cara de datos.*
+*Actualizado el 29 oct 2026. Antes el piloto rechazó un mapa oscuro de piedras, una gráfica, un pipeline y un camino de botones; aprobó la calle de barrio con negocios en 3D (maqueta `docs/maquetas/mapa-barrio.html`).*
 
-Pantalla principal. Camino de **arriba hacia abajo** sobre el fondo de la app con una cuadrícula de puntos. Paradas como **botones redondos con relieve** en violeta, con ícono de datos: `>_` lección, barras proyecto, ★ repaso; palomita menta al terminar; la que toca lleva **anillo ámbar** de avance y globo EMPEZAR/CONTINUAR; las bloqueadas, grises. Arriba, la tarjeta de la unidad (fija al bajar) con su avance y el botón **{ } FICHAS** (la chuleta de la unidad). Junto a cada parada alcanzada aparece una **gráfica** (barras, dispersión, pastel, línea) que se toca para repasar sus temas: tus datos crecen con el camino. Al final, una **base de datos** de premio con 50 XP que se abre una vez. **Hashy** empieza sentado junto a la parada que toca y recorre todo el mapa: se sienta, se duerme, juega con su pelota y camina a otro lugar cuando tiene un tip (ladra y prende un **foco**; al tocarlo lo ves). Abajo, las unidades que vienen. Maqueta en `docs/maquetas/hashy-y-camino.html`.
+Pantalla principal. **Cada unidad es una calle del barrio**, de arriba hacia abajo, y **cada parada es un negocio** que te pide ayuda con sus datos (Abarrotes Don Rafa, Café Byte, Fonda La Tabla, Peluquería El Filtro, Papelería La Nota…). Los negocios están en 3D isométrico con luz y sombra, toldo, letrero en la fachada y un **objeto gigante en el techo** (bolsa del súper, taza, taco, tijeras, lápiz). Los que aún no alcanzas salen en gris con candado. Encima de la calle van los botones redondos de las paradas (`>_` lección, barras proyecto, ★ repaso), con palomita al terminar y anillo ámbar con globo EMPEZAR/CONTINUAR en la que toca. **Tu avatar** espera junto a esa parada y **Hashy** se pasea por el barrio dando tips.
+
+**Premios:** cada 3 paradas aparece un **montón de monedas** en la orilla de la calle; al abrirlo sale al azar +30 o +60 XP, una prenda del clóset gratis o doble XP en la siguiente parada (`app/src/lib/regalos.ts`). Al final de la calle, el **Banco de Datos** paga 50 XP por terminar la unidad. Los XP se muestran con una **moneda dorada** en toda la app.
+
+El negocio de cada parada se define en `unidad.json` (`negocio`, `letrero`, `pide`); el dibujo vive en `app/src/lib/barrio.ts`. El barrio tiene sus propios colores (pasto verde menta) en modo claro y oscuro.
 
 ## Clóset y XP
 

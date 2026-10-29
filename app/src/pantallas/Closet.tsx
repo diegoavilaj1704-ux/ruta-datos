@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Moneda } from '../componentes/Moneda';
 import { Avatar, Cuerpo, equipoDe } from '../componentes/Avatar';
 import { CATALOGO, CATEGORIAS, clavePrenda, type Categoria, type Prenda } from '../lib/armario';
 import { ENCUADRE } from '../lib/figura';
@@ -49,7 +50,7 @@ export function Closet({ volver }: { volver: () => void }) {
       <header className="perfil-barra">
         <button className="cerrar" onClick={volver} aria-label="Volver">✕</button>
         <h1>Tu clóset</h1>
-        <span className="saldo">◆ {progreso.xp} XP</span>
+        <span className="saldo"><Moneda tam={16} /> {progreso.xp} XP</span>
       </header>
 
       <div className="closet-vista">
@@ -75,7 +76,7 @@ export function Closet({ volver }: { volver: () => void }) {
           const mia = tiene(p);
           const etiqueta = puesta(p) ? <small className="e-puesto">Puesto</small>
             : mia ? <small className="e-tuyo">{p.precio === 0 ? 'Gratis' : 'Tuyo'}</small>
-            : <small className={progreso.xp >= p.precio ? 'e-precio' : 'e-bloq'}>{progreso.xp >= p.precio ? '' : '🔒 '}◆ {p.precio} XP</small>;
+            : <small className={progreso.xp >= p.precio ? 'e-precio' : 'e-bloq'}>{progreso.xp >= p.precio ? '' : '🔒 '}<Moneda tam={13} /> {p.precio} XP</small>;
           return (
             <button
               key={p.id}
@@ -93,7 +94,7 @@ export function Closet({ volver }: { volver: () => void }) {
       <footer className="historia-pie">
         {probando ? (
           <button className="boton-juego" onClick={comprar} disabled={faltan > 0}>
-            {faltan > 0 ? `TE FALTAN ${faltan} XP` : `COMPRAR POR ◆ ${probando.precio}`}
+            {faltan > 0 ? `TE FALTAN ${faltan} XP` : <>COMPRAR POR <Moneda tam={18} /> {probando.precio}</>}
           </button>
         ) : (
           <button className="boton-juego" onClick={volver}>LISTO</button>

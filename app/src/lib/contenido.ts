@@ -33,6 +33,10 @@ export interface Parada {
   titulo?: string;        // si no se indica, sale del frontmatter del archivo
   objetivo?: string;
   duracion_min?: number;
+  // En el mapa cada parada es un negocio del barrio (dibujos en lib/barrio.ts)
+  negocio?: string;       // tienda, cafe, fonda, peluqueria, papeleria…
+  letrero?: string;       // nombre en la fachada
+  pide?: string;          // qué te pide ese negocio, en una frase
 }
 
 // Ficha de un tema en el mapa (conceptos.yaml de la unidad)

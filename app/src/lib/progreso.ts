@@ -2,6 +2,7 @@
 // En la Fase 2 esto se sincroniza con Supabase; por ahora vive solo en el teléfono.
 import { useCallback, useSyncExternalStore } from 'react';
 import type { Perfil } from './personajes';
+import type { Regalo } from './regalos';
 
 const LLAVE = 'ruta-datos:progreso:v1';
 
@@ -16,10 +17,12 @@ export interface Progreso {
   perfil?: Perfil;                                 // avatar y nombre del alumno (protagonista de las historias)
   sonido: boolean;
   comprados: string[];                             // prendas desbloqueadas ("ropa:jersey")
-  premios: string[];                               // unidades cuyo premio (base de datos con XP) ya se abrió
+  premios: string[];                               // unidades cuyo premio (Banco de Datos) ya se cobró
+  regalos: Record<string, string>;                 // regalos de monedas abiertos ("m02-s01#3") → lo que salió
+  dobleXP: boolean;                                // la siguiente parada que termines da el doble de XP
 }
 
-const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true, comprados: [], premios: [] };
+const vacio: Progreso = { completadas: {}, diasActivos: [], ejercicios: {}, quiz: {}, notas: {}, xp: 0, historias: {}, sonido: true, comprados: [], premios: [], regalos: {}, dobleXP: false };
 
 // Antes la ruta iba por días; las claves viejas se renombran a su parada
 const DIA_A_PARADA: Record<string, string> = {
@@ -111,11 +114,14 @@ export const acciones = {
   },
   // Suma el XP al total solo la primera vez que se termina la lección
   terminarHistoria(clave: string) {
-    const xpLeccion = estado.historias[clave]?.xp ?? 0;
     const primeraVez = !estado.completadas[clave];
+    // Un regalo de doble XP se usa en la siguiente parada que termines por primera vez
+    const doble = primeraVez && estado.dobleXP;
+    const xpLeccion = (estado.historias[clave]?.xp ?? 0) * (doble ? 2 : 1);
     const { [clave]: _, ...resto } = estado.historias;
     guardar({
       ...estado,
+      dobleXP: estado.dobleXP && !doble,
       xp: estado.xp + (primeraVez ? xpLeccion : 0),
       historias: resto,
       completadas: { ...estado.completadas, [clave]: estado.completadas[clave] ?? new Date().toISOString() },
@@ -136,6 +142,18 @@ export const acciones = {
   reclamarPremio(unidad: string, xp: number): boolean {
     if (estado.premios.includes(unidad)) return false;
     guardar({ ...estado, xp: estado.xp + xp, premios: [...estado.premios, unidad] });
+    return true;
+  },
+  // Regalo de monedas del camino: se abre una sola vez y entrega lo que salió
+  abrirRegalo(clave: string, regalo: Regalo): boolean {
+    if (estado.regalos[clave]) return false;
+    guardar({
+      ...estado,
+      regalos: { ...estado.regalos, [clave]: regalo.titulo },
+      xp: estado.xp + (regalo.tipo === 'xp' ? regalo.cantidad : 0),
+      comprados: regalo.tipo === 'prenda' ? [...estado.comprados, regalo.clave] : estado.comprados,
+      dobleXP: estado.dobleXP || regalo.tipo === 'doble',
+    });
     return true;
   },
   alternarSonido() {
