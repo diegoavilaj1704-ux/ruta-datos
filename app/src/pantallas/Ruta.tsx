@@ -44,8 +44,12 @@ export function Ruta() {
   const progreso = useProgreso();
   const racha = calcularRacha(progreso.diasActivos);
   const [ficha, setFicha] = useState<Ficha | null>(null);
-  const conContenido = unidades.filter((u) => u.sesiones.length);
-  const proximas = unidades.filter((u) => !u.sesiones.length);
+  // Tramo del degradado de cada unidad: el módulo se oscurece poco a poco de la primera a la última
+  const tramoDe = (u: Unidad) => {
+    const delModulo = unidades.filter((x) => x.modulo.id === u.modulo.id);
+    const i = delModulo.indexOf(u);
+    return { desde: (i / delModulo.length) * 100, hasta: ((i + 1) / delModulo.length) * 100 };
+  };
 
   return (
     <main className="ruta">
@@ -61,19 +65,9 @@ export function Ruta() {
         </button>
       </header>
 
-      {conContenido.map((u) => <Camino key={u.id} unidad={u} progreso={progreso} abrirFicha={setFicha} />)}
-
-      {proximas.length > 0 && (
-        <section className="proximas">
-          <p className="proximas-titulo">Lo que sigue en {proximas[0].modulo.nombre}</p>
-          {proximas.map((u) => (
-            <button key={u.id} className="isla-bloqueada" onClick={() => setFicha({ tipo: 'unidad', unidad: u })}>
-              <span className="candado" aria-hidden="true">🔒</span>
-              <span><small>Unidad {u.numero}</small><b>{u.titulo}</b></span>
-            </button>
-          ))}
-        </section>
-      )}
+      {unidades.map((u) => u.sesiones.length
+        ? <Camino key={u.id} unidad={u} progreso={progreso} abrirFicha={setFicha} tramo={tramoDe(u)} />
+        : <CaminoProximo key={u.id} unidad={u} abrirFicha={setFicha} tramo={tramoDe(u)} />)}
 
       {ficha && <HojaFicha ficha={ficha} progreso={progreso} cambiar={setFicha} cerrar={() => setFicha(null)} />}
     </main>
@@ -82,7 +76,15 @@ export function Ruta() {
 
 // ---------- El camino de una unidad ----------
 
-function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Progreso; abrirFicha: (f: Ficha) => void }) {
+interface Tramo { desde: number; hasta: number }
+
+// Variables de color del tramo: el degradado del módulo, de `desde` a `hasta` (0 = principal, 100 = profundo)
+function estiloTramo(unidad: Unidad, tramo: Tramo) {
+  const color = colorModulo(unidad.modulo.id);
+  return { '--mod': color.principal, '--mod-hondo': color.profundo, '--ini': `${tramo.desde}%`, '--fin': `${tramo.hasta}%` } as React.CSSProperties;
+}
+
+function Camino({ unidad, progreso, abrirFicha, tramo }: { unidad: Unidad; progreso: Progreso; abrirFicha: (f: Ficha) => void; tramo: Tramo }) {
   const caja = useRef<HTMLDivElement>(null);
   const actual = useRef<HTMLButtonElement>(null);
   const alBanco = useRef<HTMLButtonElement>(null);
@@ -91,7 +93,6 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
   const hechas = paradas.filter((s) => progreso.completadas[s.clave]).length;
   const completa = hechas === paradas.length;
   const cobrado = progreso.premios.includes(unidad.id);
-  const color = colorModulo(unidad.modulo.id);
 
   useLayoutEffect(() => {
     const el = caja.current;
@@ -148,7 +149,7 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
   ];
 
   return (
-    <section className="tramo" style={{ '--mod': color.principal, '--mod-hondo': color.profundo } as React.CSSProperties}>
+    <section className="tramo" style={estiloTramo(unidad, tramo)}>
       <div className="tarjeta-unidad">
         <button className="tu-info" onClick={() => abrirFicha({ tipo: 'unidad', unidad })}>
           <small>{unidad.modulo.nombre.split(' ')[0]} · Unidad {unidad.numero}</small>
@@ -223,6 +224,85 @@ function Camino({ unidad, progreso, abrirFicha }: { unidad: Unidad; progreso: Pr
         {unidad.tipsHashy.length > 0 && (
           <HashyPaseo lugares={lugaresHashy} tips={tips} />
         )}
+      </div>
+    </section>
+  );
+}
+
+// Unidad que aún no se escribe: su camino se ve completo pero bloqueado, con las paradas de
+// siempre (2 lecciones, 2 proyectos y repaso), su regalo de monedas y su banco
+const PARADAS_TIPO: { tipo: TipoParada; corto: (u: Unidad) => string }[] = [
+  { tipo: 'leccion', corto: (u) => temaCorto(u.temas[0]) ?? 'Lección 1' },
+  { tipo: 'leccion', corto: (u) => temaCorto(u.temas[1]) ?? 'Lección 2' },
+  { tipo: 'proyecto', corto: () => 'Proyecto 1' },
+  { tipo: 'proyecto', corto: () => 'Proyecto 2' },
+  { tipo: 'repaso', corto: () => 'Repaso' },
+];
+// "ORDER BY y LIMIT" → "ORDER BY"; si queda largo, mejor no ponerlo
+function temaCorto(tema?: string): string | undefined {
+  const t = tema?.split(' y ')[0].split(',')[0].trim();
+  return t && t.length <= 12 ? t : undefined;
+}
+
+function CaminoProximo({ unidad, abrirFicha, tramo }: { unidad: Unidad; abrirFicha: (f: Ficha) => void; tramo: Tramo }) {
+  const caja = useRef<HTMLDivElement>(null);
+  const [ancho, setAncho] = useState(() => Math.min(innerWidth, 460));
+  useLayoutEffect(() => {
+    const el = caja.current;
+    if (!el) return;
+    const medir = () => setAncho(el.clientWidth);
+    medir();
+    const obs = new ResizeObserver(medir);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const centro = ancho / 2;
+  const punto = (i: number) => ({ x: centro + VAIVEN[i % VAIVEN.length], y: ARRIBA + i * FILA });
+  const puntos = PARADAS_TIPO.map((_, i) => punto(i));
+  const banco = punto(PARADAS_TIPO.length);
+  const alto = banco.y + 110;
+  const curva = [...puntos, banco].reduce((d, p, i, arr) => {
+    if (i === 0) return `M ${p.x} ${p.y}`;
+    const a = arr[i - 1];
+    const m = (a.y + p.y) / 2;
+    return `${d} C ${a.x} ${m}, ${p.x} ${m}, ${p.x} ${p.y}`;
+  }, '');
+  const verUnidad = () => abrirFicha({ tipo: 'unidad', unidad });
+  const regalo = puntos[2];
+  const ladoRegalo = VAIVEN[2] <= 0 ? 1 : -1;
+
+  return (
+    <section className="tramo proximo" style={estiloTramo(unidad, tramo)}>
+      <div className="tarjeta-unidad">
+        <button className="tu-info" onClick={verUnidad}>
+          <small>{unidad.modulo.nombre.split(' ')[0]} · Unidad {unidad.numero} · 🔒 Próximamente</small>
+          <b>{unidad.titulo}</b>
+          <span className="tu-barra" aria-label="Aún no empieza"><i style={{ width: 0 }} /></span>
+        </button>
+      </div>
+      <div className="camino" ref={caja} style={{ height: alto }}>
+        <svg className="camino-linea" width={ancho} height={alto} aria-hidden="true">
+          <path d={curva} className="linea-falta" />
+        </svg>
+        {PARADAS_TIPO.map((t, i) => (
+          <div key={i}>
+            <button className="boton-parada bloqueada" style={{ left: puntos[i].x, top: puntos[i].y }} onClick={verUnidad}
+              aria-label={`${t.corto(unidad)}: próximamente`}>
+              <IconoParada tipo={t.tipo} />
+            </button>
+            <span className="nombre-parada bloqueada" style={{ left: puntos[i].x, top: puntos[i].y + 37 }}>{t.corto(unidad)}</span>
+          </div>
+        ))}
+        <button className="regalo-monedas cerrado" style={{ left: regalo.x + ladoRegalo * 100, top: regalo.y - 6 }} onClick={verUnidad}
+          aria-label="Regalo de monedas de esta unidad">
+          <MontonMonedas abierto={false} />
+          <span>3 PARADAS</span>
+        </button>
+        <button className="banco-monedas cerrado" style={{ left: banco.x, top: banco.y }} onClick={verUnidad} aria-label={`Banco de monedas: ${PREMIO_XP} XP`}>
+          <Banco />
+          <span><Moneda tam={13} /> +{PREMIO_XP} XP</span>
+        </button>
       </div>
     </section>
   );
