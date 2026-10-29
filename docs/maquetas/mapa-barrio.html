@@ -2,20 +2,19 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap">
 <style>
-  /* Maqueta: el camino de la unidad como una calle del barrio. Cada parada es un negocio que
-     te pide ayuda con sus datos; cada 3 paradas hay un regalo sorpresa. Mundo ilustrado de un solo tema. */
+  /* Maqueta v2: la calle de la unidad con negocios en 3D isométrico (luz, sombra y un objeto
+     gigante en cada techo). Cada 3 paradas hay un regalo sorpresa. Mundo ilustrado de un solo tema. */
   :root {
-    --pasto: #A8DC8E; --pasto2: #93D07C; --calle: #EFE3CB; --orilla: #CDB892; --linea: #1F1A22;
-    --marca: #6C4CF1; --marca2: #4B2FC9; --coral: #FF6B5B; --ambar: #FFB020; --menta: #2EC4A0;
+    --pasto: #3FC79A; --marca: #6C4CF1; --marca2: #4B2FC9; --coral: #FF6B5B;
     --tarjeta: #FFFFFF; --texto: #2A2838; --suave: #6B6880;
     --letra: 'Nunito', system-ui, sans-serif;
     color-scheme: light;
   }
   body { background: var(--pasto); color: var(--texto); font-family: var(--letra); font-weight: 800; }
-  .app { max-width: 430px; margin: 0 auto; position: relative; padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
+  .app { max-width: 430px; margin: 0 auto; position: relative; }
   body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--marca); }
-  .unidad { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; margin: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); padding-top: 10px; }
-  .unidad div { background: var(--marca); color: #fff; border-radius: 20px; padding: 12px 16px; box-shadow: 0 5px 0 var(--marca2); display: grid; gap: 6px; }
+  .unidad { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+  .unidad div { background: var(--marca); color: #fff; border-radius: 20px; padding: 12px 16px; box-shadow: 0 5px 0 var(--marca2), 0 10px 24px rgba(0,0,0,.18); display: grid; gap: 6px; }
   .unidad small { opacity: .75; letter-spacing: .08em; font-size: 12px; }
   .unidad b { font-size: 19px; font-weight: 900; }
   .barra { height: 10px; border-radius: 6px; background: rgba(255,255,255,.25); overflow: hidden; }
@@ -23,12 +22,15 @@
   svg.mapa { display: block; width: 100%; height: auto; margin-top: -70px; }
   .tocable { cursor: pointer; }
   .tocable:focus-visible { outline: 3px solid var(--coral); }
-  #yo { transition: transform 1.4s cubic-bezier(.5,0,.3,1); }
   .rebota { animation: rebota 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center bottom; }
   @keyframes rebota { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  .flota { animation: flota 3.2s ease-in-out infinite; transform-box: fill-box; }
+  @keyframes flota { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+  .vapor { animation: vapor 2.4s ease-in-out infinite; }
+  @keyframes vapor { 0% { opacity: 0; transform: translateY(4px) } 40% { opacity: .9 } 100% { opacity: 0; transform: translateY(-10px) } }
   .destello { animation: destello 1.6s ease-in-out infinite; }
-  @keyframes destello { 0%,100% { opacity: .2 } 50% { opacity: 1 } }
-  @media (prefers-reduced-motion: reduce) { .rebota, .destello { animation: none } #yo { transition: none } }
+  @keyframes destello { 0%,100% { opacity: .25 } 50% { opacity: 1 } }
+  @media (prefers-reduced-motion: reduce) { .rebota, .flota, .vapor, .destello { animation: none } }
   .demo { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 6; display: flex; gap: 8px; background: rgba(31,26,34,.88); padding: 8px; border-radius: 18px; width: min(398px, calc(100% - 32px)); box-sizing: border-box; }
   .demo button { flex: 1; font: inherit; font-weight: 900; font-size: 14px; border: 0; border-radius: 12px; padding: 10px 8px; background: #fff; color: var(--texto); cursor: pointer; }
   .demo button.principal { background: var(--coral); color: #fff; box-shadow: 0 3px 0 #C94B3E; }
@@ -38,7 +40,7 @@
   .hoja p { margin: 0; color: var(--suave); font-weight: 700; line-height: 1.45; }
   .hoja .premio { font-size: 30px; font-weight: 900; color: var(--marca); }
   .hoja button { font: inherit; font-weight: 900; font-size: 16px; border: 0; border-radius: 16px; padding: 14px; background: var(--marca); color: #fff; box-shadow: 0 4px 0 var(--marca2); cursor: pointer; }
-  .nota { margin: 0 16px 120px; background: rgba(255,255,255,.85); border-radius: 18px; padding: 14px 16px; font-weight: 700; line-height: 1.5; color: var(--texto); font-size: 14px; }
+  .nota { margin: 0 16px 120px; background: rgba(255,255,255,.9); border-radius: 18px; padding: 14px 16px; font-weight: 700; line-height: 1.5; color: var(--texto); font-size: 14px; }
   .nota b { font-weight: 900; }
 </style>
 
@@ -48,7 +50,7 @@
     <b>Tu primera consulta</b>
     <span class="barra"><i id="avance"></i></span>
   </div></header>
-  <svg class="mapa" id="mapa" viewBox="0 0 390 1640" role="img" aria-label="Mapa del barrio con las paradas de la unidad"></svg>
+  <svg class="mapa" id="mapa" viewBox="0 0 390 1660" role="img" aria-label="Mapa del barrio con las paradas de la unidad"></svg>
   <p class="nota"><b>Cómo funciona:</b> cada parada es un negocio del barrio que te pide ayuda con sus datos. Tu avatar camina por la calle hasta la parada que te toca. Cada 3 paradas hay un <b>regalo sorpresa</b> (XP, una prenda o doble XP), y al final de la calle el <b>Banco de Datos</b> te paga tu premio de la unidad. La siguiente unidad es otra calle con otros negocios. Usa los botones de abajo para simular que avanzas.</p>
 </div>
 
@@ -62,19 +64,246 @@
 const L = '#1F1A22';
 const ln = `stroke="${L}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"`;
 
-// Tu avatar (mismo dibujo que en la app)
+// ---------- Utilidades de color e isométrico ----------
+function tono(hex, f) {
+  const n = parseInt(hex.slice(1), 16);
+  const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.max(0, Math.min(255, Math.round(f >= 1 ? v + (255 - v) * (f - 1) : v * f))));
+  return '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
+}
+let defs = '';
+let nGrad = 0;
+// Degradado vertical (de arriba hacia abajo); devuelve url(#id)
+function grad(c1, c2, x2 = 0, y2 = 1) {
+  const id = 'g' + nGrad++;
+  defs += `<linearGradient id="${id}" x1="0" y1="0" x2="${x2}" y2="${y2}"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>`;
+  return `url(#${id})`;
+}
+function radial(c1, c2) {
+  const id = 'g' + nGrad++;
+  defs += `<radialGradient id="${id}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>`;
+  return `url(#${id})`;
+}
+// Punto isométrico: gx hacia abajo-derecha, gy hacia abajo-izquierda, gz hacia arriba
+const P = (gx, gy, gz) => [(gx - gy) * 0.866, (gx + gy) * 0.5 - gz];
+const pts = (...ps) => ps.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+const poli = (ps, fill, extra = '') => `<polygon points="${pts(...ps)}" fill="${fill}" ${extra}/>`;
+
+// Caja isométrica de w×d×h que empieza en (x,y,z); colorea arriba, izquierda y derecha
+function caja(x, y, z, w, d, h, color, borde = 'rgba(40,30,50,.35)') {
+  const e = `stroke="${borde}" stroke-width="1" stroke-linejoin="round"`;
+  const izq = [P(x, y + d, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x, y + d, z + h)];
+  const der = [P(x + w, y, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x + w, y, z + h)];
+  const arr = [P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)];
+  return poli(izq, grad(tono(color, 1.06), tono(color, 0.9)), e) + poli(der, grad(tono(color, 0.78), tono(color, 0.66)), e) + poli(arr, tono(color, 1.18), e);
+}
+// Rectángulo pegado a la cara izquierda (u a lo largo de x, v hacia arriba) o derecha (t a lo largo de y)
+const enIzq = (d, u0, v0, u1, v1, fill, extra = '') => poli([P(u0, d, v0), P(u1, d, v0), P(u1, d, v1), P(u0, d, v1)], fill, extra);
+const enDer = (w, t0, v0, t1, v1, fill, extra = '') => poli([P(w, t0, v0), P(w, t1, v0), P(w, t1, v1), P(w, t0, v1)], fill, extra);
+// Texto pintado sobre la cara izquierda
+const textoIzq = (d, u, v, txt, tam, color) => {
+  const [x, y] = P(u, d, v);
+  return `<text transform="matrix(0.866 0.5 0 1 ${x.toFixed(1)} ${y.toFixed(1)})" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="${tam}" fill="${color}">${txt}</text>`;
+};
+
+// ---------- Negocios ----------
+function ventanaIzq(d, u0, v0, u1, v1, marco = '#FFFFFF') {
+  return enIzq(d, u0 - 1.5, v0 - 1.5, u1 + 1.5, v1 + 1.5, marco) + enIzq(d, u0, v0, u1, v1, grad('#CFF1FF', '#7CC3E8')) +
+    poli([P(u0 + 2, d, v1 - 2), P(u0 + 6, d, v1 - 2), P(u0 + 2 + (v1 - v0) * 0.1, d, v0 + 3)], 'rgba(255,255,255,.65)');
+}
+function ventanaDer(w, t0, v0, t1, v1) {
+  return enDer(w, t0 - 1.5, v0 - 1.5, t1 + 1.5, v1 + 1.5, '#F4F0E8') + enDer(w, t0, v0, t1, v1, grad('#A9D8EE', '#5E9CC4'));
+}
+function toldoIzq(d, u0, u1, v, colores, fondo = 9, caida = 9) {
+  const franjas = 7, paso = (u1 - u0) / franjas;
+  let s = '';
+  for (let i = 0; i < franjas; i++) {
+    const a = u0 + i * paso, b = a + paso;
+    s += poli([P(a, d, v), P(b, d, v), P(b, d + fondo, v - caida), P(a, d + fondo, v - caida)], colores[i % 2], 'stroke="rgba(40,30,50,.3)" stroke-width=".8"');
+    // Ondas de la orilla
+    const [x1, y1] = P(a, d + fondo, v - caida), [x2, y2] = P(b, d + fondo, v - caida);
+    s += `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} Q${((x1 + x2) / 2).toFixed(1)} ${(y1 + y2) / 2 + 6} ${x2.toFixed(1)} ${y2.toFixed(1)}" fill="${colores[i % 2]}" stroke="rgba(40,30,50,.3)" stroke-width=".8"/>`;
+  }
+  return s;
+}
+function letreroIzq(d, u0, u1, v0, v1, texto, fondo, color, tam = 7.5) {
+  return enIzq(d, u0, v0, u1, v1, fondo, 'stroke="rgba(40,30,50,.45)" stroke-width="1"') + textoIzq(d, (u0 + u1) / 2, v0 + (v1 - v0) * 0.28, texto, tam, color);
+}
+function puertaIzq(d, u0, u1, alto, color) {
+  return enIzq(d, u0 - 1.5, 0, u1 + 1.5, alto + 1.5, '#F4F0E8') + enIzq(d, u0, 0, u1, alto, grad(tono(color, 1.1), tono(color, 0.8))) +
+    enIzq(d, u0 + 2, alto * 0.45, u1 - 2, alto - 2, 'rgba(190,230,250,.75)');
+}
+
+// Objetos gigantes del techo (2D, centrados en 0,0 = punto de apoyo)
+const PROPS = {
+  tienda: () => `<g class="flota">
+      <path d="M-20 -6 L20 -6 L16 -44 L-16 -44 Z" fill="${grad('#E8C690', '#C69A5C')}" stroke="#8A6236" stroke-width="1.4"/>
+      <path d="M-16 -44 L16 -44 L13 -50 L-13 -50 Z" fill="#D9B27A" stroke="#8A6236" stroke-width="1.2"/>
+      <path d="M-8 -50 Q-14 -72 -4 -70 Q2 -66 -2 -50 Z" fill="${grad('#7ED08A', '#3E9E52')}"/>
+      <rect x="2" y="-74" width="7" height="30" rx="3.5" transform="rotate(18 5 -60)" fill="${grad('#F0C27A', '#C98E3E')}"/>
+      <circle cx="-10" cy="-48" r="8" fill="${radial('#FF8A80', '#D32F2F')}"/><path d="M-10 -56 q2 -4 5 -4" stroke="#3E7A2E" stroke-width="2" fill="none"/>
+      <circle cx="11" cy="-47" r="6.5" fill="${radial('#FFE082', '#F9A825')}"/>
+      <text x="0" y="-20" text-anchor="middle" font-family="Nunito" font-weight="900" font-size="10" fill="#8A4A1E">ABARROTES</text></g>`,
+  cafe: () => `<g class="flota">
+      <ellipse cx="0" cy="-4" rx="30" ry="9" fill="${grad('#FFFFFF', '#D8D2C8')}" stroke="#A89F92" stroke-width="1.2"/>
+      <path d="M-20 -46 L20 -46 L16 -10 Q0 -2 -16 -10 Z" fill="${grad('#FFFFFF', '#E3DDD2', 1, 0)}" stroke="#A89F92" stroke-width="1.4"/>
+      <path d="M19 -38 Q34 -36 30 -24 Q27 -16 17 -18" fill="none" stroke="#E3DDD2" stroke-width="5"/>
+      <ellipse cx="0" cy="-46" rx="20" ry="6" fill="${radial('#A0673A', '#5A3418')}" stroke="#A89F92" stroke-width="1.2"/>
+      <path d="M-6 -46 q4 -3 8 0 q-4 2 -8 0" fill="#E9CBA7" opacity=".8"/>
+      <rect x="-12" y="-34" width="24" height="12" rx="3" fill="#6C4CF1"/><text x="0" y="-25" text-anchor="middle" font-family="monospace" font-weight="700" font-size="8" fill="#fff">byte</text>
+      <g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path class="vapor" d="M-8 -56 q-5 -8 0 -14 q5 -6 0 -12"/><path class="vapor" style="animation-delay:.8s" d="M6 -56 q-5 -8 0 -14 q5 -6 0 -12"/></g></g>`,
+  fonda: () => `<g class="flota">
+      <ellipse cx="0" cy="-6" rx="30" ry="9" fill="${grad('#FFFFFF', '#D8D2C8')}" stroke="#B5ADA0" stroke-width="1.2"/>
+      <path d="M-26 -12 A26 26 0 0 1 26 -12 Z" fill="${grad('#FFE08A', '#E9A93A')}" stroke="#B9782A" stroke-width="1.4"/>
+      <path d="M-22 -14 Q-16 -30 -6 -34 Q2 -40 10 -34 Q20 -30 22 -14" fill="none" stroke="#5DBB4E" stroke-width="7" stroke-linecap="round"/>
+      ${[[-12, -26], [0, -32], [12, -26], [-4, -22], [8, -20]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.4" fill="#E53935"/>`).join('')}
+      <path d="M-26 -12 A26 26 0 0 1 26 -12" fill="none" stroke="#FFF3C4" stroke-width="2" opacity=".7"/>
+      <g transform="translate(26 -40) rotate(20)"><rect x="-1.5" y="0" width="3" height="26" rx="1.5" fill="#B0B6BE"/><path d="M-5 0 v-10 M0 0 v-10 M5 0 v-10 M-5 0 h10" stroke="#B0B6BE" stroke-width="2"/></g></g>`,
+  pelu: () => `<g class="flota">
+      <g transform="rotate(-20)">
+        <path d="M-3 -10 L30 -58 L34 -54 L4 -8 Z" fill="${grad('#F5F7FA', '#9AA3AE', 1, 0)}" stroke="#6E7781" stroke-width="1.2"/>
+        <path d="M3 -10 L-30 -58 L-34 -54 L-4 -8 Z" fill="${grad('#E3E7EC', '#8A939E', 1, 0)}" stroke="#6E7781" stroke-width="1.2"/>
+        <circle cx="0" cy="-12" r="3.4" fill="#5B6470"/>
+        <circle cx="-9" cy="4" r="9" fill="none" stroke="#E2453C" stroke-width="5"/><circle cx="9" cy="4" r="9" fill="none" stroke="#E2453C" stroke-width="5"/>
+      </g></g>`,
+  papeleria: () => `<g class="flota">
+      <path d="M-26 -8 L8 -2 L26 -14 L-8 -20 Z" fill="${grad('#FFFFFF', '#E6E1F7')}" stroke="#9A93B8" stroke-width="1.2"/>
+      <path d="M-26 -8 L8 -2 L8 2 L-26 -4 Z" fill="#6C4CF1"/>
+      ${[0, 1, 2].map((i) => `<path d="M${-18 + i * 3} ${-12 + i * -2} L${12 + i * 3} ${-6 + i * -2}" stroke="#B9B3D6" stroke-width="1"/>`).join('')}
+      <g transform="rotate(38 0 -40)">
+        <rect x="-6" y="-70" width="12" height="44" fill="${grad('#FFD54F', '#F2A61A', 1, 0)}" stroke="#B9781A" stroke-width="1.2"/>
+        <rect x="-6" y="-80" width="12" height="10" rx="3" fill="#FF8FB1" stroke="#C0577A" stroke-width="1.2"/><rect x="-6" y="-72" width="12" height="3" fill="#C9CDD2"/>
+        <path d="M-6 -26 L0 -12 L6 -26 Z" fill="#F4D6B0" stroke="#B9781A" stroke-width="1.2"/><path d="M-2 -17 L0 -12 L2 -17 Z" fill="#3A3658"/>
+      </g></g>`,
+  banco: () => `<g class="flota">
+      ${[0, 1, 2].map((i) => `<g transform="translate(0 ${-i * 13})"><ellipse cx="0" cy="-6" rx="24" ry="8" fill="${grad('#FFE07A', '#E8A417')}" stroke="#A86F00" stroke-width="1.2"/><path d="M-24 -6 V-14 A24 8 0 0 0 24 -14 V-6" fill="${grad('#FFD23F', '#C98A00', 1, 0)}" stroke="#A86F00" stroke-width="1.2"/></g>`).join('')}
+      <ellipse cx="0" cy="-40" rx="24" ry="8" fill="${radial('#FFF2B3', '#F2B624')}" stroke="#A86F00" stroke-width="1.2"/>
+      <text x="0" y="-36.5" text-anchor="middle" font-family="monospace" font-weight="700" font-size="9" fill="#8A5A00">DB</text>
+      <g class="destello" fill="#fff"><path d="M30 -52 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2 Z"/><path d="M-32 -30 l1.5 3.5 l3.5 1.5 l-3.5 1.5 l-1.5 3.5 l-1.5 -3.5 l-3.5 -1.5 l3.5 -1.5 Z"/></g></g>`,
+};
+
+const NEGOCIOS = {
+  tienda: { pared: '#F6E2BC', techo: '#E7D6B5', toldo: ['#E2453C', '#FFFFFF'], letrero: ['#FFFFFF', '#C0392B'], puerta: '#4A9E5C',
+    extra: (w, d) => cajones(d) },
+  cafe: { pared: '#B98558', techo: '#8E5E3A', toldo: ['#5A3418', '#F4E2C8'], letrero: ['#3A2416', '#FFE2B8'], puerta: '#5A3418',
+    extra: (w, d) => mesita(d, 50) },
+  fonda: { pared: '#F2B48E', techo: '#D98C62', toldo: ['#2E9E5B', '#FFFFFF'], letrero: ['#FFFFFF', '#2E7D4E'], puerta: '#B23A2B',
+    extra: (w, d) => macetas(d) },
+  pelu: { pared: '#BFE0F7', techo: '#93C1E3', toldo: ['#3D6FD1', '#FFFFFF'], letrero: ['#FFFFFF', '#2F55A8'], puerta: '#2F55A8',
+    extra: (w, d) => poste(w, d) },
+  papeleria: { pared: '#FFE08A', techo: '#E8C25E', toldo: ['#6C4CF1', '#FFFFFF'], letrero: ['#6C4CF1', '#FFFFFF'], puerta: '#6C4CF1',
+    extra: (w, d) => macetas(d) },
+};
+
+function cajones(d) {
+  return [[4, '#E53935'], [14, '#FFB300'], [24, '#7CB342']].map(([u, c]) => caja(u, d + 2, 0, 9, 7, 6, '#B07A45') +
+    `<g>${[0, 1, 2].map((k) => { const [x, y] = P(u + 2 + k * 2.6, d + 5, 7.5); return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="${c}"/>`; }).join('')}</g>`).join('');
+}
+function mesita(d, u) {
+  const [x, y] = P(u, d + 10, 0);
+  return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><ellipse cx="0" cy="2" rx="9" ry="3" fill="rgba(0,0,0,.18)"/><rect x="-1" y="-12" width="2" height="12" fill="#5A3418"/><ellipse cx="0" cy="-12" rx="9" ry="3.5" fill="#fff" stroke="rgba(40,30,50,.4)"/><path d="M0 -40 L-14 -26 H14 Z" fill="#FF6B5B" stroke="rgba(40,30,50,.4)"/><rect x="-.8" y="-40" width="1.6" height="28" fill="#5A3418"/></g>`;
+}
+function macetas(d) {
+  return [6, 50].map((u) => { const [x, y] = P(u, d + 3, 0); return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><path d="M-5 0 L5 0 L6 -8 L-6 -8 Z" fill="#C46A3A"/><circle cx="0" cy="-13" r="7" fill="${radial('#8BD69A', '#3E9E52')}"/></g>`; }).join('');
+}
+function poste(w, d) {
+  const [x, y] = P(w + 2, d + 2, 0);
+  return `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><rect x="-4" y="-42" width="8" height="40" rx="4" fill="#fff" stroke="rgba(40,30,50,.4)"/><g clip-path="url(#postec)">${[0, 1, 2, 3, 4, 5].map((i) => `<path d="M-4 ${-38 + i * 8} L4 ${-44 + i * 8}" stroke="#E2453C" stroke-width="3"/>`).join('')}</g><circle cx="0" cy="-44" r="4.5" fill="#3D6FD1"/></g>`;
+}
+
+// Un negocio completo: lote con banqueta, edificio, toldo, letrero y su objeto gigante en el techo
+function edificio(cx, base, n, estado, nombre) {
+  const c = NEGOCIOS[n];
+  const w = 66, d = 44, h = 50;
+  let s = '';
+  // Sombra y lote
+  s += poli([P(-6, -6, 0), P(w + 14, -6, 0), P(w + 14, d + 16, 0), P(-6, d + 16, 0)].map(([x, y]) => [x + 10, y + 6]), 'rgba(0,40,30,.18)');
+  s += caja(-6, -6, -5, w + 18, d + 20, 5, '#E9E4D8');
+  // Edificio
+  s += caja(0, 0, 0, w, d, h, c.pared);
+  s += enIzq(d, 0, 0, w, 6, 'rgba(0,0,0,.12)');
+  // Pretil del techo
+  s += caja(-2, -2, h, w + 4, 4, 5, c.techo) + caja(-2, d - 2, h, w + 4, 4, 5, c.techo) + caja(-2, -2, h, 4, d + 4, 5, c.techo) + caja(w - 2, -2, h, 4, d + 4, 5, c.techo);
+  // Fachada
+  s += puertaIzq(d, 8, 20, 26, c.puerta);
+  s += ventanaIzq(d, 28, 8, 58, 26);
+  s += ventanaDer(w, 8, 14, 20, 30) + ventanaDer(w, 26, 14, 38, 30);
+  s += toldoIzq(d, 2, w - 2, 34, c.toldo);
+  s += letreroIzq(d, 6, w - 6, 38, 47, nombre, c.letrero[0], c.letrero[1]);
+  s += c.extra(w, d);
+  // Objeto gigante sobre el techo
+  const [px, py] = P(w / 2, d / 2, h + 2);
+  s += `<g transform="translate(${px.toFixed(1)} ${py.toFixed(1)})">${PROPS[n]()}</g>`;
+  // Se centra el negocio en (cx, base): la esquina del frente del lote queda abajo
+  const [fx, fy] = P(w + 12, d + 14, -5);
+  const dentro = `<g transform="translate(${cx} ${base}) scale(1.32) translate(${(-fx).toFixed(1)} ${(-fy).toFixed(1)})">${s}</g>`;
+  if (estado === 'bloqueada') return `<g filter="url(#gris)" opacity=".6">${dentro}</g>${candado(cx, base - 70)}`;
+  return dentro;
+}
+
+function candado(x, y) {
+  return `<g transform="translate(${x} ${y})"><path d="M-8 -6 V-12 Q0 -24 8 -12 V-6" fill="none" stroke="#4A4660" stroke-width="5"/><rect x="-13" y="-7" width="26" height="20" rx="5" fill="${grad('#7C7896', '#4A4660')}" ${ln}/><circle cx="0" cy="2" r="3" fill="#2A2838"/></g>`;
+}
+
+function banco(cx, base, estado) {
+  const w = 86, d = 52, h = 58;
+  let s = '';
+  s += poli([P(-8, -8, 0), P(w + 16, -8, 0), P(w + 16, d + 18, 0), P(-8, d + 18, 0)].map(([x, y]) => [x + 10, y + 6]), 'rgba(0,40,30,.18)');
+  s += caja(-8, -8, -6, w + 22, d + 24, 6, '#E9E4D8');
+  s += caja(-4, -4, 0, w + 8, d + 8, 6, '#F4F0FF');
+  s += caja(0, 0, 6, w, d, h, '#EEF0FA');
+  for (let i = 0; i < 5; i++) s += caja(6 + i * 17, d + 2, 6, 6, 6, 40, '#FFFFFF');
+  s += caja(-3, -3, h + 6, w + 6, d + 6, 6, '#6C4CF1');
+  s += letreroIzq(d + 9, 10, w - 10, h - 4, h + 5, 'BANCO DE DATOS', '#FFFFFF', '#4B2FC9', 8);
+  s += ventanaDer(w, 8, 24, 22, 44) + ventanaDer(w, 30, 24, 44, 44);
+  const [px, py] = P(w / 2, d / 2, h + 12);
+  s += `<g transform="translate(${px.toFixed(1)} ${py.toFixed(1)}) ${estado === 'listo' ? '' : ''}">${PROPS.banco()}</g>`;
+  const [fx, fy] = P(w + 14, d + 16, -6);
+  const dentro = `<g transform="translate(${cx} ${base}) scale(1.25) translate(${(-fx).toFixed(1)} ${(-fy).toFixed(1)})">${s}</g>`;
+  const etiqueta = `<g transform="translate(${cx} ${base + 18})"><rect x="-44" y="0" width="88" height="22" rx="11" fill="#fff" ${ln}/><text x="0" y="15" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="12" fill="${L}">${estado === 'cobrado' ? '✓ COBRADO' : '+50 XP'}</text></g>`;
+  return `<g class="tocable" tabindex="0" role="button" id="banco" aria-label="Banco de Datos, premio de la unidad">${estado === 'cerrado' ? `<g filter="url(#gris)" opacity=".65">${dentro}</g>` : dentro}${etiqueta}</g>`;
+}
+
+// ---------- Escenografía ----------
+function arbol(x, y, k = 1) {
+  const hoja = radial('#7FE3A0', '#239A63');
+  return `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="6" cy="2" rx="20" ry="6" fill="rgba(0,40,30,.2)"/><path d="M-3 0 L3 0 L2 -20 L-2 -20 Z" fill="#7A4A2B"/>
+    <circle cx="-9" cy="-24" r="13" fill="${hoja}"/><circle cx="9" cy="-26" r="12" fill="${hoja}"/><circle cx="0" cy="-38" r="14" fill="${hoja}"/><circle cx="-4" cy="-42" r="5" fill="#B4F2C6" opacity=".7"/></g>`;
+}
+function pino(x, y, k = 1) {
+  return `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="5" cy="2" rx="14" ry="5" fill="rgba(0,40,30,.2)"/><rect x="-2.5" y="-10" width="5" height="12" fill="#7A4A2B"/>
+    <path d="M0 -56 L16 -24 L-16 -24 Z M0 -42 L19 -8 L-19 -8 Z" fill="${grad('#3FBF7F', '#1E7F55')}"/></g>`;
+}
+function arbusto(x, y) {
+  const g = radial('#8FE8AE', '#2FA36B');
+  return `<g transform="translate(${x} ${y})"><ellipse cx="4" cy="2" rx="22" ry="5" fill="rgba(0,40,30,.18)"/><circle cx="-10" cy="-8" r="10" fill="${g}"/><circle cx="8" cy="-9" r="11" fill="${g}"/><circle cx="-1" cy="-16" r="10" fill="${g}"/></g>`;
+}
+function farol(x, y) {
+  return `<g transform="translate(${x} ${y})"><ellipse cx="3" cy="1" rx="7" ry="2.5" fill="rgba(0,40,30,.2)"/><rect x="-1.5" y="-44" width="3" height="44" fill="#3A3658"/><path d="M-6 -44 H6 L4 -54 H-4 Z" fill="#FFE27A" stroke="#3A3658" stroke-width="1.5"/><circle cx="0" cy="-49" r="10" fill="#FFF3B0" opacity=".35" class="destello"/></g>`;
+}
+function fuente(x, y) {
+  return `<g transform="translate(${x} ${y})"><ellipse cx="0" cy="0" rx="34" ry="14" fill="#D9D4E8"/><ellipse cx="0" cy="-4" rx="30" ry="11" fill="${grad('#8FD8F5', '#3FA4D8')}"/>
+    <rect x="-4" y="-26" width="8" height="22" fill="#E9E4F5"/><ellipse cx="0" cy="-26" rx="12" ry="4" fill="#E9E4F5"/>
+    <path d="M0 -26 q-8 -14 -16 0 M0 -26 q8 -14 16 0" fill="none" stroke="#BFEFFF" stroke-width="2.5" class="destello"/></g>`;
+}
+function cartelera(x, y) {
+  return `<g transform="translate(${x} ${y})"><ellipse cx="4" cy="2" rx="24" ry="5" fill="rgba(0,40,30,.2)"/><rect x="-14" y="-28" width="3" height="28" fill="#7A4A2B"/><rect x="11" y="-28" width="3" height="28" fill="#7A4A2B"/>
+    <rect x="-28" y="-72" width="56" height="44" rx="5" fill="#fff" stroke="#3A3658" stroke-width="2"/>` +
+    [[-20, 14, '#6C4CF1'], [-8, 24, '#FF6B5B'], [4, 18, '#2EC4A0'], [16, 32, '#FFB020']].map(([bx, bh, c]) => `<rect x="${bx - 4}" y="${-34 - bh}" width="8" height="${bh}" rx="1.5" fill="${c}"/>`).join('') + `</g>`;
+}
+function flores(x, y) { return [0, 8, 16, 5, 12].map((d, i) => `<circle cx="${x + d}" cy="${y + (i > 2 ? -6 : 0)}" r="3" fill="${['#FF8FB1', '#FFE27A', '#fff', '#FFB74D', '#CE93D8'][i]}"/>`).join(''); }
+
+// ---------- Avatar, paradas y regalo ----------
 const YO = `<ellipse cx="100" cy="418" rx="64" ry="6" fill="#000" opacity=".15"/><path d="M38 192 C39 220 48 244 58 266 L74 260 C66 240 59 218 53 198 Z" fill="#EFC3A0" ${ln}/><path d="M38 192 C39 220 48 244 58 266 L74 260 C66 240 59 218 53 198 Z" transform="translate(200 0) scale(-1 1)" fill="#EFC3A0" ${ln}/><path d="M86 131 Q100 139 114 131 L140 137 Q152 141 156 155 L165 191 L146 198 L142 178 L141 250 Q100 256 59 250 L58 178 L54 198 L35 191 L44 155 Q48 141 60 137 Z" fill="#C2302B" ${ln}/><path d="M118 134 L142 140 L141 250 Q130 252 120 252 Q128 200 118 134 Z" fill="#000" opacity=".12"/><path d="M86 131 Q100 147 114 131" fill="none" ${ln}/><path d="M59 246 L141 246 L143 300 L138 398 L106 398 L102 292 L98 292 L94 398 L62 398 L57 300 Z" fill="#3F6C93" ${ln}/><path d="M59 255 L141 255 M100 255 L100 286" fill="none" stroke="${L}" stroke-width="1.8"/><g id="pie"><path d="M60 391 L97 391 L99 411 Q99 418 93 418 L46 418 Q39 418 41 410 Q45 398 60 391 Z" fill="#26252B" ${ln}/><path d="M41.5 411 L99 411 L99 413 Q99 418 93 418 L46 418 Q39 418 41.5 411 Z" fill="#F4F1EA" ${ln}/><path d="M66 397 L74 407 M73 395 L81 405" fill="none" stroke="#E8B53A" stroke-width="3" stroke-linecap="round"/></g><use href="#pie" transform="translate(200 0) scale(-1 1)"/><path d="M90 108 L90 134 Q100 140 110 134 L110 108 Z" fill="#EFC3A0" ${ln}/><ellipse cx="71" cy="80" rx="7" ry="10" fill="#EFC3A0" ${ln}/><ellipse cx="129" cy="80" rx="7" ry="10" fill="#EFC3A0" ${ln}/><path d="M72 66 C70 90 75 108 100 121 C125 108 130 90 128 66 C128 44 116 34 100 34 C84 34 72 44 72 66 Z" fill="#EFC3A0" ${ln}/><ellipse cx="88" cy="83" rx="3.4" ry="4.2" fill="${L}"/><ellipse cx="112" cy="83" rx="3.4" ry="4.2" fill="${L}"/><path d="M80 73 Q87 68 95 72 M105 72 Q113 68 120 73" fill="none" stroke="#211A17" stroke-width="3.6" stroke-linecap="round"/><path d="M100 87 Q97 95 100 97 Q103 98 105 95" fill="none" stroke="${L}" stroke-width="1.7" stroke-linecap="round"/><path d="M91 105 Q101 111 110 103" fill="none" stroke="${L}" stroke-width="2.2" stroke-linecap="round"/><path d="M70 72 C64 44 80 26 101 26 C122 27 135 42 130 72 C128 60 124 52 117 47 C107 52 90 52 81 47 C76 53 72 62 70 72 Z" fill="#211A17" ${ln}/><g fill="#fff" fill-opacity=".18" stroke="${L}" stroke-width="3"><rect x="77" y="74" width="21" height="16" rx="4"/><rect x="102" y="74" width="21" height="16" rx="4"/></g><path d="M98 80 Q100 78 102 80" fill="none" stroke="${L}" stroke-width="2.6"/>`;
 
-// Las paradas de la unidad: cada una en un negocio del barrio
 const PARADAS = [
-  { x: 150, y: 210, tipo: 'leccion', corto: 'SELECT', negocio: 'tienda', nombre: 'Abarrotes Don Rafa', pide: 'Don Rafa quiere ver qué vendió esta semana.' },
-  { x: 240, y: 430, tipo: 'leccion', corto: 'WHERE', negocio: 'cafe', nombre: 'Café Byte', pide: 'La cafetería solo quiere las ventas de la mañana.' },
-  { x: 150, y: 650, tipo: 'proyecto', corto: 'Proyecto 1', negocio: 'fonda', nombre: 'Fonda La Tabla', pide: 'La fonda necesita saber qué platillos piden más.' },
-  { x: 240, y: 920, tipo: 'proyecto', corto: 'Proyecto 2', negocio: 'pelu', nombre: 'Peluquería El Filtro', pide: 'La peluquería quiere un reporte de sus clientes.' },
-  { x: 150, y: 1140, tipo: 'repaso', corto: 'Repaso', negocio: 'papeleria', nombre: 'Papelería La Nota', pide: 'Aquí escribes tu nota pública de la unidad.' },
+  { x: 150, y: 230, tipo: 'leccion', corto: 'SELECT', negocio: 'tienda', nombre: 'DON RAFA', pide: 'Don Rafa quiere ver qué vendió esta semana.' },
+  { x: 240, y: 460, tipo: 'leccion', corto: 'WHERE', negocio: 'cafe', nombre: 'CAFÉ BYTE', pide: 'La cafetería solo quiere las ventas de la mañana.' },
+  { x: 150, y: 690, tipo: 'proyecto', corto: 'Proyecto 1', negocio: 'fonda', nombre: 'LA TABLA', pide: 'La fonda necesita saber qué platillos piden más.' },
+  { x: 240, y: 960, tipo: 'proyecto', corto: 'Proyecto 2', negocio: 'pelu', nombre: 'EL FILTRO', pide: 'La peluquería quiere un reporte de sus clientes.' },
+  { x: 150, y: 1190, tipo: 'repaso', corto: 'Repaso', negocio: 'papeleria', nombre: 'LA NOTA', pide: 'Aquí escribes tu nota pública de la unidad.' },
 ];
-const REGALO = { x: 196, y: 790, despues: 3 };
-const BANCO = { x: 196, y: 1330 };
+const REGALO = { x: 196, y: 830, despues: 3 };
+const BANCO = { x: 196, y: 1420 };
 const PREMIOS = [
   { titulo: '+30 XP', texto: 'Para gastar en tu clóset.' },
   { titulo: '+60 XP', texto: '¡Te tocó el regalo grande!' },
@@ -82,51 +311,7 @@ const PREMIOS = [
   { titulo: 'Lentes de sol', texto: 'Ya están en tu clóset, gratis.' },
   { titulo: 'Doble XP', texto: 'Tu siguiente parada da el doble de XP.' },
 ];
-let hechas = 2;
-let regaloAbierto = false, bancoCobrado = false;
-
-const NEGOCIOS = {
-  tienda: { pared: '#F7E6C4', toldo: ['#E2453C', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y})"><path d="M-9 -2 L9 -2 L7 12 L-7 12 Z" fill="#FFB020" ${ln}/><path d="M-5 -2 Q0 -12 5 -2" fill="none" ${ln}/></g>` },
-  cafe: { pared: '#C99A6E', toldo: ['#6B3F22', '#F4E2C8'], icono: (x, y) => `<g transform="translate(${x} ${y})"><path d="M-9 -4 H7 V6 Q7 12 -1 12 Q-9 12 -9 6 Z" fill="#fff" ${ln}/><path d="M7 -1 Q13 -1 13 4 Q13 8 7 8" fill="none" ${ln}/><path d="M-5 -10 Q-3 -13 -5 -16 M0 -10 Q2 -13 0 -16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>` },
-  fonda: { pared: '#F2C6A0', toldo: ['#2E9E5B', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y})"><ellipse cx="0" cy="6" rx="12" ry="5" fill="#fff" ${ln}/><path d="M-8 4 Q0 -10 8 4" fill="#FF6B5B" ${ln}/></g>` },
-  pelu: { pared: '#CFE3F7', toldo: ['#3D6FD1', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y})"><rect x="-4" y="-12" width="8" height="26" rx="4" fill="#fff" ${ln}/><path d="M-4 -6 L4 -10 M-4 2 L4 -2 M-4 10 L4 6" stroke="#E2453C" stroke-width="2.6"/></g>` },
-  papeleria: { pared: '#FFE7A3', toldo: ['#6C4CF1', '#FFFFFF'], icono: (x, y) => `<g transform="translate(${x} ${y}) rotate(35)"><rect x="-3.5" y="-14" width="7" height="22" fill="#FFB020" ${ln}/><path d="M-3.5 8 L0 15 L3.5 8 Z" fill="#F4D6B0" ${ln}/></g>` },
-};
-
-function edificio(cx, base, n, estado, nombre) {
-  const c = NEGOCIOS[n];
-  const w = 124, h = 80, d = 16;
-  const x0 = cx - w / 2, x1 = cx + w / 2, top = base - h;
-  let s = `<ellipse cx="${cx + 8}" cy="${base + 4}" rx="${w / 2 + 16}" ry="9" fill="#000" opacity=".12"/>`;
-  s += `<path d="M${x1} ${top} L${x1 + d} ${top - 10} L${x1 + d} ${base - 10} L${x1} ${base} Z" fill="${c.pared}" ${ln}/><path d="M${x1} ${top} L${x1 + d} ${top - 10} L${x1 + d} ${base - 10} L${x1} ${base} Z" fill="#000" opacity=".16"/>`;
-  s += `<path d="M${x0} ${top} L${x0 + d} ${top - 10} L${x1 + d} ${top - 10} L${x1} ${top} Z" fill="#E9E1D3" ${ln}/>`;
-  s += `<rect x="${x0}" y="${top}" width="${w}" height="${h}" fill="${c.pared}" ${ln}/>`;
-  // Toldo a rayas con orilla de ondas
-  const franjas = 8, fw = w / franjas, ty = top + 18;
-  for (let i = 0; i < franjas; i++) {
-    s += `<path d="M${x0 + i * fw} ${ty} H${x0 + (i + 1) * fw} V${ty + 14} A${fw / 2} ${fw / 2.6} 0 0 1 ${x0 + i * fw} ${ty + 14} Z" fill="${c.toldo[i % 2]}"/>`;
-  }
-  s += `<path d="M${x0} ${ty} H${x1} V${ty + 14} ${Array.from({ length: franjas }, (_, i) => `A${fw / 2} ${fw / 2.6} 0 0 1 ${x1 - (i + 1) * fw} ${ty + 14}`).join(' ')} Z" fill="none" ${ln}/>`;
-  // Puerta y ventana
-  s += `<rect x="${x0 + 16}" y="${base - 38}" width="26" height="38" rx="3" fill="#8A5634" ${ln}/><circle cx="${x0 + 36}" cy="${base - 19}" r="1.8" fill="#FFD25A"/>`;
-  s += `<rect x="${x0 + 56}" y="${base - 40}" width="54" height="28" rx="3" fill="#BFE7F5" ${ln}/><path d="M${x0 + 83} ${base - 40} V${base - 12}" stroke="${L}" stroke-width="2"/><path d="M${x0 + 62} ${base - 34} L${x0 + 70} ${base - 26}" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>`;
-  // Letrero y su ícono en el techo
-  s += `<rect x="${x0 + 6}" y="${top - 30}" width="${w - 12}" height="22" rx="6" fill="#fff" ${ln}/><text x="${cx}" y="${top - 15}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">${nombre}</text>`;
-  s += c.icono(x1 + 4, top - 30);
-  if (estado === 'bloqueada') return `<g filter="url(#gris)" opacity=".55">${s}</g><g transform="translate(${cx} ${top + 30})"><rect x="-12" y="-6" width="24" height="18" rx="4" fill="#5B5770" ${ln}/><path d="M-7 -6 V-11 Q0 -20 7 -11 V-6" fill="none" stroke="#5B5770" stroke-width="4"/></g>`;
-  return s;
-}
-
-function arbol(x, y, k = 1) {
-  return `<g transform="translate(${x} ${y}) scale(${k})"><ellipse cx="4" cy="2" rx="18" ry="5" fill="#000" opacity=".12"/><rect x="-4" y="-18" width="8" height="20" rx="2" fill="#8A5634" ${ln}/><circle cx="0" cy="-32" r="20" fill="#5DB86A" ${ln}/><circle cx="-8" cy="-38" r="6" fill="#7ED08A"/></g>`;
-}
-function arbusto(x, y) { return `<g transform="translate(${x} ${y})"><path d="M-18 0 Q-20 -14 -8 -14 Q-4 -24 6 -18 Q18 -20 18 -6 Q22 0 16 0 Z" fill="#6CC277" ${ln}/></g>`; }
-function farol(x, y) { return `<g transform="translate(${x} ${y})"><rect x="-2" y="-46" width="4" height="46" fill="#3A3658" ${ln}/><rect x="-7" y="-58" width="14" height="14" rx="3" fill="#FFE27A" ${ln}/></g>`; }
-function flores(x, y) { return [0, 10, 20].map((d, i) => `<circle cx="${x + d}" cy="${y + (i % 2) * 4}" r="3.4" fill="${['#FF8FB1', '#FFE27A', '#fff'][i]}" ${ln}/>`).join(''); }
-function cartelera(x, y) {
-  return `<g transform="translate(${x} ${y})"><rect x="-2" y="-30" width="4" height="30" fill="#8A5634" ${ln}/><rect x="-30" y="-74" width="60" height="44" rx="5" fill="#fff" ${ln}/>` +
-    [[-20, 14], [-8, 24], [4, 18], [16, 32]].map(([bx, bh]) => `<rect x="${bx}" y="${-36 - bh}" width="8" height="${bh}" fill="#6C4CF1"/>`).join('') + `</g>`;
-}
+let hechas = 2, regaloAbierto = false, bancoCobrado = false;
 
 function paradaBoton(p, i, estado) {
   const icono = p.tipo === 'leccion' ? `<text x="0" y="6" text-anchor="middle" font-family="monospace" font-weight="700" font-size="17" fill="#fff">&gt;_</text>`
@@ -134,8 +319,9 @@ function paradaBoton(p, i, estado) {
     : `<text x="0" y="7" text-anchor="middle" font-size="20" fill="#fff">★</text>`;
   const color = estado === 'bloqueada' ? '#B8B4C8' : '#6C4CF1', sombra = estado === 'bloqueada' ? '#8E8AA3' : '#4B2FC9';
   let s = `<g class="tocable" tabindex="0" role="button" data-parada="${i}" aria-label="${p.corto}" transform="translate(${p.x} ${p.y})">`;
-  if (estado === 'actual') s += `<circle r="36" fill="none" stroke="#fff" stroke-width="7" opacity=".7"/><circle r="36" fill="none" stroke="${'#FFB020'}" stroke-width="7" stroke-dasharray="70 300" transform="rotate(-90)"/>`;
-  s += `<ellipse cx="0" cy="6" rx="27" ry="24" fill="${sombra}"/><circle r="26" fill="${color}" stroke="${L}" stroke-width="2.4"/>${icono}`;
+  s += `<ellipse cx="2" cy="12" rx="28" ry="9" fill="rgba(0,40,30,.25)"/>`;
+  if (estado === 'actual') s += `<circle r="36" fill="none" stroke="#fff" stroke-width="7" opacity=".7"/><circle r="36" fill="none" stroke="#FFB020" stroke-width="7" stroke-dasharray="70 300" transform="rotate(-90)"/>`;
+  s += `<ellipse cx="0" cy="6" rx="27" ry="24" fill="${sombra}"/><circle r="26" fill="${estado === 'bloqueada' ? color : grad('#8C70FF', '#5A3BE0')}" stroke="${L}" stroke-width="2.4"/><ellipse cx="-8" cy="-12" rx="9" ry="5" fill="#fff" opacity=".25"/>${icono}`;
   if (estado === 'hecha') s += `<circle cx="20" cy="-20" r="10" fill="#2EC4A0" ${ln}/><path d="M15 -20 L19 -16 L25 -24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
   s += `<rect x="-38" y="32" width="76" height="20" rx="10" fill="#fff" ${ln}/><text x="0" y="46" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="11" fill="${L}">${p.corto}</text>`;
   if (estado === 'actual') s += `<g class="rebota"><rect x="-44" y="-78" width="88" height="28" rx="12" fill="#fff" ${ln}/><path d="M-6 -50 L0 -43 L6 -50" fill="#fff" ${ln}/><text x="0" y="-59" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="13" fill="#6C4CF1">${hechas === 0 ? 'EMPEZAR' : 'CONTINUAR'}</text></g>`;
@@ -144,74 +330,67 @@ function paradaBoton(p, i, estado) {
 
 function regalo(estado) {
   const { x, y } = REGALO;
-  const caja = estado === 'abierto'
-    ? `<path d="M-16 -4 H16 V18 H-16 Z" fill="#FF6B5B" ${ln}/><path d="M-3 -4 H3 V18 H-3 Z" fill="#FFD25A"/><path d="M-20 -20 L18 -30 L20 -24 L-18 -14 Z" fill="#FF8577" ${ln}/><text x="0" y="-36" text-anchor="middle" font-size="14">✨</text>`
-    : `<path d="M-16 -4 H16 V18 H-16 Z" fill="#FF6B5B" ${ln}/><path d="M-19 -14 H19 V-4 H-19 Z" fill="#FF8577" ${ln}/><path d="M-3 -14 H3 V18 H-3 Z" fill="#FFD25A" ${ln}/><path d="M0 -14 Q-14 -28 -10 -16 M0 -14 Q14 -28 10 -16" fill="#FFD25A" ${ln}/>`;
+  const rojo = grad('#FF8A7E', '#E0463A'), cinta = grad('#FFE27A', '#F2B300');
+  const caja3d = `<ellipse cx="3" cy="20" rx="24" ry="6" fill="rgba(0,40,30,.25)"/>
+    <path d="M-18 -2 L0 6 L0 26 L-18 18 Z" fill="${rojo}"/><path d="M18 -2 L0 6 L0 26 L18 18 Z" fill="#C93A30"/>
+    <path d="M-5 0.5 L-1 2.3 L-1 22.5 L-5 20.5 Z" fill="${cinta}"/><path d="M5 0.5 L1 2.3 L1 22.5 L5 20.5 Z" fill="#E0A800"/>`;
+  const tapa = estado === 'abierto'
+    ? `<g transform="translate(-6 -22) rotate(-24)"><path d="M-20 -4 L0 4 L20 -4 L0 -12 Z" fill="#FF9A8F"/><path d="M-20 -4 L0 4 L0 9 L-20 1 Z" fill="${rojo}"/><path d="M20 -4 L0 4 L0 9 L20 1 Z" fill="#C93A30"/></g><text x="0" y="-26" text-anchor="middle" font-size="16">✨</text>`
+    : `<path d="M-20 -6 L0 2 L20 -6 L0 -14 Z" fill="#FF9A8F"/><path d="M-20 -6 L0 2 L0 7 L-20 -1 Z" fill="${rojo}"/><path d="M20 -6 L0 2 L0 7 L20 -1 Z" fill="#C93A30"/>
+       <path d="M-12 -9 L12 -3 M12 -9 L-12 -3" stroke="#FFE27A" stroke-width="4"/>
+       <path d="M0 -6 Q-16 -24 -12 -8 Z M0 -6 Q16 -24 12 -8 Z" fill="${cinta}" stroke="#C99400" stroke-width="1"/>`;
   const listo = estado === 'listo';
   return `<g class="tocable" tabindex="0" role="button" id="regalo" aria-label="Regalo sorpresa" transform="translate(${x} ${y})">
-    ${listo ? `<circle r="30" fill="#FFE27A" class="destello"/>` : ''}
-    <g class="${listo ? 'rebota' : ''}" ${estado === 'cerrado' ? 'filter="url(#gris)" opacity=".75"' : ''}>${caja}</g>
-    <rect x="-34" y="24" width="68" height="18" rx="9" fill="#fff" ${ln}/><text x="0" y="37" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">${estado === 'abierto' ? 'ABIERTO' : estado === 'listo' ? '¡ÁBRELO!' : `${REGALO.despues - hechas} PARADA${REGALO.despues - hechas === 1 ? '' : 'S'}`}</text></g>`;
-}
-
-function banco(estado) {
-  const { x, y } = BANCO;
-  const top = y - 96;
-  let s = `<ellipse cx="${x + 6}" cy="${y + 4}" rx="96" ry="10" fill="#000" opacity=".12"/>`;
-  s += `<path d="M${x - 84} ${y} H${x + 84} V${y - 10} H${x - 84} Z" fill="#E9E1D3" ${ln}/>`;
-  s += `<rect x="${x - 76}" y="${top + 28}" width="152" height="58" fill="#F4F0FF" ${ln}/>`;
-  for (let i = 0; i < 5; i++) s += `<rect x="${x - 66 + i * 30}" y="${top + 32}" width="12" height="50" fill="#fff" ${ln}/>`;
-  s += `<path d="M${x - 90} ${top + 28} L${x} ${top - 6} L${x + 90} ${top + 28} Z" fill="#6C4CF1" ${ln}/>`;
-  s += `<rect x="${x - 54}" y="${top + 6}" width="108" height="18" rx="6" fill="#fff" ${ln}/><text x="${x}" y="${top + 19}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">BANCO DE DATOS</text>`;
-  s += `<g transform="translate(${x} ${top - 20})" class="${estado === 'listo' ? 'rebota' : ''}"><ellipse cx="0" cy="0" rx="16" ry="6" fill="#FFC531" ${ln}/><path d="M-16 0 V10 A16 6 0 0 0 16 10 V0" fill="#FFC531" ${ln}/><text x="0" y="12" text-anchor="middle" font-family="monospace" font-weight="700" font-size="8" fill="#7A4A00">DB</text></g>`;
-  s += `<rect x="${x - 40}" y="${y + 16}" width="80" height="20" rx="10" fill="#fff" ${ln}/><text x="${x}" y="${y + 30}" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="11" fill="${L}">${estado === 'cobrado' ? '✓ COBRADO' : '+50 XP'}</text>`;
-  return `<g class="tocable" tabindex="0" role="button" id="banco" aria-label="Banco de Datos, premio de la unidad" ${estado === 'cerrado' ? 'filter="url(#gris)" opacity=".6"' : ''}>${s}</g>`;
+    ${listo ? `<circle cy="4" r="34" fill="#FFF3B0" class="destello"/>` : ''}
+    <g class="${listo ? 'rebota' : ''}" ${estado === 'cerrado' ? 'filter="url(#gris)" opacity=".8"' : ''}>${caja3d}${tapa}</g>
+    <rect x="-36" y="32" width="72" height="18" rx="9" fill="#fff" ${ln}/><text x="0" y="45" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="10" fill="${L}">${estado === 'abierto' ? 'ABIERTO' : listo ? '¡ÁBRELO!' : `${REGALO.despues - hechas} PARADA${REGALO.despues - hechas === 1 ? '' : 'S'}`}</text></g>`;
 }
 
 function calle() {
-  const pts = [{ x: 196, y: 40 }, ...PARADAS, { x: BANCO.x, y: BANCO.y + 40 }, { x: 196, y: 1460 }];
-  const d = pts.reduce((acc, p, i) => {
+  const ps = [{ x: 196, y: 40 }, ...PARADAS, { x: BANCO.x, y: BANCO.y + 40 }, { x: 196, y: 1600 }];
+  const d = ps.reduce((acc, p, i) => {
     if (!i) return `M${p.x} ${p.y}`;
-    const a = pts[i - 1], m = (a.y + p.y) / 2;
+    const a = ps[i - 1], m = (a.y + p.y) / 2;
     return `${acc} C${a.x} ${m} ${p.x} ${m} ${p.x} ${p.y}`;
   }, '');
-  return `<path d="${d}" fill="none" stroke="#B9A27B" stroke-width="62" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#EFE3CB" stroke-width="54" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="12 14" stroke-linecap="round" opacity=".9"/>`;
+  return `<path d="${d}" fill="none" stroke="rgba(0,60,40,.18)" stroke-width="66" stroke-linecap="round" transform="translate(4 6)"/>
+    <path d="${d}" fill="none" stroke="#D8CCB2" stroke-width="60" stroke-linecap="round"/>
+    <path d="${d}" fill="none" stroke="${grad('#F1E8D6', '#E2D5BB', 1, 0)}" stroke-width="50" stroke-linecap="round"/>
+    <path d="${d}" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-dasharray="12 14" stroke-linecap="round" opacity=".85"/>`;
 }
 
 function pintar() {
+  defs = ''; nGrad = 0;
   const estadoDe = (i) => i < hechas ? 'hecha' : i === hechas ? 'actual' : 'bloqueada';
-  let s = `<defs><filter id="gris"><feColorMatrix type="saturate" values="0.1"/></filter></defs>`;
-  // Pasto con manchas
-  s += `<rect width="390" height="1640" fill="#A8DC8E"/>` + [[60, 120], [330, 330], [40, 560], [340, 760], [50, 1010], [340, 1210], [80, 1470]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="70" ry="36" fill="#93D07C"/>`).join('');
+  let s = '';
+  // Pasto con zonas más claras y más oscuras
+  s += `<rect width="390" height="1660" fill="${grad('#4CD3A3', '#2FB98A')}"/>`;
+  s += [[50, 120, '#5ADDB0'], [330, 340, '#36BE8F'], [40, 580, '#5ADDB0'], [345, 800, '#36BE8F'], [45, 1040, '#5ADDB0'], [340, 1250, '#36BE8F'], [80, 1500, '#5ADDB0']]
+    .map(([x, y, c]) => `<ellipse cx="${x}" cy="${y}" rx="90" ry="44" fill="${c}" opacity=".7"/>`).join('');
   s += calle();
-  // Decoración del barrio
-  s += arbol(40, 150) + arbol(352, 560, .9) + arbol(36, 790) + arbol(354, 1060, .85) + arbol(40, 1240) + arbol(350, 1420, 1.1) + arbol(42, 1440, .8);
-  s += arbusto(360, 250) + arbusto(30, 360) + arbusto(360, 980) + arbusto(28, 1080) + farol(110, 520) + farol(288, 760) + farol(110, 1000);
-  s += flores(320, 470) + flores(30, 690) + flores(310, 1180) + cartelera(330, 860);
-  // Negocios, del lado contrario a la parada
-  PARADAS.forEach((p, i) => {
-    const izq = p.x > 196;
-    s += edificio(izq ? 88 : 290, p.y + 30, p.negocio, estadoDe(i), p.nombre);
-  });
-  s += banco(bancoCobrado ? 'cobrado' : hechas >= PARADAS.length ? 'listo' : 'cerrado');
+  // Escenografía
+  s += pino(30, 140, .9) + pino(56, 120, .7) + arbol(352, 600, .95) + arbol(30, 820) + pino(360, 1080, .9) + arbol(38, 1290, .9) + pino(355, 1470) + arbol(40, 1490, .8);
+  s += arbusto(364, 270) + arbusto(26, 380) + arbusto(362, 1020) + arbusto(24, 1110) + farol(112, 545) + farol(284, 795) + farol(112, 1045);
+  s += flores(316, 520) + flores(24, 720) + flores(306, 1250) + cartelera(338, 905) + fuente(72, 1560);
+  // Negocios del lado contrario a su parada (los de arriba se dibujan primero)
+  PARADAS.forEach((p, i) => { const izq = p.x > 196; s += edificio(izq ? 102 : 292, p.y + 40, p.negocio, estadoDe(i), p.nombre); });
+  s += banco(BANCO.x, BANCO.y, bancoCobrado ? 'cobrado' : hechas >= PARADAS.length ? 'listo' : 'cerrado');
   s += regalo(regaloAbierto ? 'abierto' : hechas >= REGALO.despues ? 'listo' : 'cerrado');
   PARADAS.forEach((p, i) => { s += paradaBoton(p, i, estadoDe(i)); });
-  // Siguiente calle
-  s += `<g transform="translate(196 1530)"><rect x="-4" y="-10" width="8" height="70" fill="#8A5634" ${ln}/><rect x="-128" y="-46" width="256" height="44" rx="10" fill="#3A3658" ${ln}/><text x="0" y="-27" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="12" fill="#B9A8FF">🔒 UNIDAD 2 · CALLE DEL ORDEN</text><text x="0" y="-11" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="10" fill="#fff">Farmacia, gimnasio, florería y más negocios</text></g>`;
-  // Tú, junto a la parada que toca (o en el banco al terminar)
-  const donde = hechas < PARADAS.length ? PARADAS[hechas] : { x: BANCO.x, y: BANCO.y + 20 };
+  s += `<g transform="translate(196 1612)"><rect x="-4" y="-10" width="8" height="40" fill="#7A4A2B"/><rect x="-128" y="-46" width="256" height="44" rx="10" fill="#3A3658" ${ln}/><text x="0" y="-27" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="12" fill="#B9A8FF">🔒 UNIDAD 2 · CALLE DEL ORDEN</text><text x="0" y="-11" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="800" font-size="10" fill="#fff">Farmacia, gimnasio, florería y más negocios</text></g>`;
+  const donde = hechas < PARADAS.length ? PARADAS[hechas] : { x: BANCO.x + 70, y: BANCO.y + 30 };
   const lado = donde.x > 196 ? 46 : -46;
-  s += `<g id="yo" style="transform: translate(${donde.x + lado - 22}px, ${donde.y - 64}px)"><g transform="scale(.22)">${YO}</g></g>`;
-  document.getElementById('mapa').innerHTML = s;
+  s += `<g transform="translate(${donde.x + lado - 22} ${donde.y - 64}) scale(.22)">${YO}</g>`;
+  document.getElementById('mapa').innerHTML = `<defs><filter id="gris"><feColorMatrix type="saturate" values="0.12"/></filter><clipPath id="postec"><rect x="-4" y="-42" width="8" height="40" rx="4"/></clipPath>${defs}</defs>${s}`;
   document.getElementById('avance').style.width = `${(hechas / PARADAS.length) * 100}%`;
 
   document.querySelectorAll('[data-parada]').forEach((el) => el.onclick = () => {
     const i = +el.dataset.parada, p = PARADAS[i], e = estadoDe(i);
-    hoja(p.nombre, p.pide, e === 'bloqueada' ? 'Se abre al terminar la parada anterior.' : e === 'hecha' ? '✓ Ya ayudaste a este negocio. Puedes repasar.' : '¡Te toca! Toca EMPEZAR en la app.', 'Cerrar');
+    hoja(p.nombre, p.pide, e === 'bloqueada' ? 'Se abre al terminar la parada anterior.' : e === 'hecha' ? '✓ Ya ayudaste a este negocio. Puedes repasar.' : '¡Te toca! Toca CONTINUAR en la app.', 'Cerrar', true);
   });
   document.getElementById('regalo').onclick = () => {
     if (regaloAbierto) return hoja('Regalo abierto', 'El siguiente regalo aparece 3 paradas más adelante.', '', 'Cerrar');
-    if (hechas < REGALO.despues) return hoja('Regalo sorpresa', `Se abre al terminar ${REGALO.despues} paradas de la unidad. Te faltan ${REGALO.despues - hechas}.`, 'Puede traer XP, una prenda del clóset o doble XP.', 'Entendido');
+    if (hechas < REGALO.despues) return hoja('Regalo sorpresa', `Se abre al terminar ${REGALO.despues} paradas de la unidad. Te faltan ${REGALO.despues - hechas}.`, 'Puede traer XP, una prenda del clóset o doble XP.', 'Entendido', true);
     const pr = PREMIOS[Math.floor(Math.random() * PREMIOS.length)];
     regaloAbierto = true;
     pintar();
@@ -224,9 +403,10 @@ function pintar() {
   };
 }
 
-function hoja(titulo, texto, premio, boton) {
+function hoja(titulo, texto, premio, boton, premioEsTexto = false) {
   const h = document.getElementById('hoja');
-  h.innerHTML = `<div class="hoja-fondo"><div class="hoja" role="dialog" aria-modal="true"><h2>${titulo}</h2>${premio ? `<span class="premio">${premio}</span>` : ''}<p>${texto}</p><button type="button" id="cerrar-hoja">${boton}</button></div></div>`;
+  const extra = premio ? (premioEsTexto ? `<p>${premio}</p>` : `<span class="premio">${premio}</span>`) : '';
+  h.innerHTML = `<div class="hoja-fondo"><div class="hoja" role="dialog" aria-modal="true"><h2>${titulo}</h2>${premioEsTexto ? `<p>${texto}</p>${extra}` : `${extra}<p>${texto}</p>`}<button type="button" id="cerrar-hoja">${boton}</button></div></div>`;
   h.querySelector('.hoja-fondo').onclick = (e) => { if (e.target === e.currentTarget) h.innerHTML = ''; };
   document.getElementById('cerrar-hoja').onclick = () => (h.innerHTML = '');
 }
@@ -236,8 +416,8 @@ function moverA(n) {
   if (hechas < REGALO.despues) regaloAbierto = false;
   if (hechas < PARADAS.length) bancoCobrado = false;
   pintar();
-  const yo = document.getElementById('yo').getBoundingClientRect();
-  window.scrollTo({ top: window.scrollY + yo.top - innerHeight / 2, behavior: 'smooth' });
+  const y = (hechas < PARADAS.length ? PARADAS[hechas].y : BANCO.y) / 1660 * document.getElementById('mapa').getBoundingClientRect().height;
+  window.scrollTo({ top: y - innerHeight / 2 + 40, behavior: 'smooth' });
 }
 document.getElementById('avanzar').onclick = () => moverA(hechas + 1);
 document.getElementById('atras').onclick = () => moverA(hechas - 1);
