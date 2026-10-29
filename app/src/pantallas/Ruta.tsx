@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { tipsGenerales, unidades, type Concepto, type Sesion, type TipoParada, type Unidad } from '../lib/contenido';
-import { acciones, calcularRacha, useProgreso, type Progreso } from '../lib/progreso';
+import { acciones, calcularRacha, hoyLocal, useProgreso, type Progreso } from '../lib/progreso';
 import { ejecutar, type Resultado } from '../lib/sql';
 import { sonidos } from '../lib/sonidos';
 import { Avatar } from '../componentes/Avatar';
@@ -23,7 +23,8 @@ type Ficha =
   | { tipo: 'concepto'; concepto: Concepto; unidad: Unidad }
   | { tipo: 'unidad'; unidad: Unidad }
   | { tipo: 'fichas'; unidad: Unidad }
-  | { tipo: 'premio'; unidad: Unidad };
+  | { tipo: 'premio'; unidad: Unidad }
+  | { tipo: 'racha' };
 
 const catalogo = unidades.flatMap((u) => u.sesiones);
 const NOMBRE_TIPO: Record<TipoParada, string> = { leccion: 'Lección', proyecto: 'Mini-proyecto', repaso: 'Repaso y nota pública' };
@@ -49,7 +50,7 @@ export function Ruta() {
           <Avatar quien="yo" tam={40} />
         </button>
         <span className="ruta-modulo">{unidades[0]?.modulo.nombre}</span>
-        <span className="ruta-chip racha" aria-label={`Racha de ${racha} días`}>▲ {racha}</span>
+        <button className="ruta-chip racha" onClick={() => setFicha({ tipo: 'racha' })} aria-label={`Racha de ${racha} días. Ver tu semana`}>▲ {racha}</button>
         <button className="ruta-chip xp" onClick={() => (location.hash = '#/closet')} aria-label={`${progreso.xp} XP. Abrir tu clóset`}>◆ {progreso.xp}</button>
         <button className="ruta-chip sonido" onClick={acciones.alternarSonido} aria-label={progreso.sonido ? 'Silenciar sonidos' : 'Activar sonidos'}>
           {progreso.sonido ? '🔊' : '🔇'}
@@ -267,7 +268,40 @@ function HojaFicha({ ficha, progreso, cambiar, cerrar }: { ficha: Ficha; progres
         {ficha.tipo === 'unidad' && <FichaUnidad unidad={ficha.unidad} progreso={progreso} cambiar={cambiar} />}
         {ficha.tipo === 'fichas' && <FichaFichas unidad={ficha.unidad} progreso={progreso} cambiar={cambiar} />}
         {ficha.tipo === 'premio' && <FichaPremio unidad={ficha.unidad} progreso={progreso} />}
+        {ficha.tipo === 'racha' && <FichaRacha progreso={progreso} />}
       </div>
+    </div>
+  );
+}
+
+// Tu racha: las últimas dos semanas, con los días que contaron
+function FichaRacha({ progreso }: { progreso: Progreso }) {
+  const racha = calcularRacha(progreso.diasActivos);
+  const hoy = hoyLocal();
+  const estudiaste = progreso.diasActivos.includes(hoy);
+  const lunes = new Date();
+  lunes.setDate(lunes.getDate() - ((lunes.getDay() + 6) % 7) - 7);
+  const dias = Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(lunes);
+    d.setDate(lunes.getDate() + i);
+    return { fecha: hoyLocal(d), letra: 'LMMJVSD'[i % 7], numero: d.getDate(), finde: i % 7 > 4 };
+  });
+
+  return (
+    <div className="ficha">
+      <span className="ficha-tipo actual">Tu racha</span>
+      <h2>▲ {racha} {racha === 1 ? 'día' : 'días'} seguidos</h2>
+      <div className="racha-semanas">
+        {dias.map((d) => (
+          <span key={d.fecha} className={`racha-dia ${progreso.diasActivos.includes(d.fecha) ? 'hecho' : ''} ${d.finde ? 'finde' : ''} ${d.fecha === hoy ? 'hoy' : ''} ${d.fecha > hoy ? 'futuro' : ''}`}>
+            <small>{d.letra}</small>{d.numero}
+          </span>
+        ))}
+      </div>
+      <p className="ficha-texto">
+        {estudiaste ? '¡Hoy ya cuenta! ' : 'Hoy todavía no cuenta: avanza al menos una tarjeta para sumar el día. '}
+        La racha suma cada día de lunes a viernes en que avanzas una lección, un proyecto o un repaso. Sábado y domingo no la rompen.
+      </p>
     </div>
   );
 }

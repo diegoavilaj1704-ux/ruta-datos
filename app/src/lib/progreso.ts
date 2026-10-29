@@ -87,7 +87,7 @@ export const acciones = {
     guardar({
       ...estado,
       ejercicios: { ...estado.ejercicios, [id]: { codigo, resuelto: resuelto ?? previo?.resuelto ?? false } },
-      diasActivos: resuelto ? marcarActivo(estado) : estado.diasActivos,
+      diasActivos: resuelto !== undefined ? marcarActivo(estado) : estado.diasActivos,
     });
   },
   responderQuiz(llave: string, opcion: number) {
@@ -105,7 +105,8 @@ export const acciones = {
     guardar({
       ...estado,
       historias: { ...estado.historias, [clave]: { paso, xp: previo.xp + xpGanado } },
-      diasActivos: xpGanado ? marcarActivo(estado) : estado.diasActivos,
+      // Cualquier tarjeta que avanzas cuenta como día estudiado, aunque no dé XP (repasar también es estudiar)
+      diasActivos: marcarActivo(estado),
     });
   },
   // Suma el XP al total solo la primera vez que se termina la lección

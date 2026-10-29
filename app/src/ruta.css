@@ -267,3 +267,12 @@
 .nota-desplegable ul { margin: 6px 0 0; padding-left: 18px; line-height: 1.4; }
 .nota-ejemplo { white-space: pre-line; background: var(--marca-suave); border-radius: 12px; padding: 12px; margin: 6px 0; line-height: 1.45; font-size: 14px; }
 .boton-juego.secundario { background: var(--superficie); color: var(--marca); border: 2px solid var(--marca); border-bottom-width: 5px; }
+
+/* Hoja de la racha: dos semanas, lunes a domingo */
+.racha-semanas { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.racha-dia { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; border-radius: 12px; font-weight: 800; color: var(--suave); background: var(--tarjeta, transparent); border: 2px solid var(--borde); }
+.racha-dia small { font-size: 11px; font-weight: 900; }
+.racha-dia.finde { opacity: .55; }
+.racha-dia.futuro { opacity: .3; }
+.racha-dia.hecho { background: var(--acento); border-color: var(--acento); color: #fff; }
+.racha-dia.hoy { border-color: var(--marca); }
