@@ -28,6 +28,7 @@ type Ficha =
   | { tipo: 'fichas'; unidad: Unidad }
   | { tipo: 'premio'; unidad: Unidad }
   | { tipo: 'racha' }
+  | { tipo: 'repaso'; sesion: Sesion; unidad: Unidad }
   | { tipo: 'regalo'; unidad: Unidad; clave: string; faltan: number };
 
 const catalogo = unidades.flatMap((u) => u.sesiones);
@@ -140,6 +141,16 @@ function Camino({ unidad, progreso, abrirFicha, tramo }: { unidad: Unidad; progr
   const estadoRegalo = (r: { n: number; clave: string }) => (progreso.regalos[r.clave] ? 'abierto' : hechas >= r.n ? 'listo' : 'cerrado');
   const estadoBanco = cobrado ? 'cobrado' : completa ? 'listo' : 'cerrado';
 
+  // Mazos de repaso: del lado de los regalos; si la parada ya tiene regalo, van más afuera
+  const conRegalo = new Set(regalos.map((r) => r.n - 1));
+  const mazos = paradas.flatMap((s, i) => {
+    const fichas = unidad.conceptos.filter((c) => c.parada === s.parada.id);
+    const estado = estadoDe(s, progreso);
+    if (!fichas.length || estado === 'bloqueada') return [];
+    const x = puntos[i].x + ladoRegalo(i) * (conRegalo.has(i) ? 186 : 100);
+    return [{ s, fichas, estado, x: Math.min(ancho - 38, Math.max(38, x)), y: puntos[i].y - 4 }];
+  });
+
   // Lugares donde Hashy puede estar: del lado contrario a los regalos y junto al banco.
   // El primero es junto a la parada que toca, para que empiece ahí.
   const lugares = [...puntos, banco].map((p, i) => ({
@@ -209,6 +220,19 @@ function Camino({ unidad, progreso, abrirFicha, tramo }: { unidad: Unidad; progr
             </div>
           );
         })}
+
+        {mazos.map(({ s, fichas, estado, x, y }) => (
+          <button key={`mazo-${s.clave}`} className={`mazo-repaso ${estado === 'hecha' ? '' : 'cerrado'}`} style={{ left: x, top: y }}
+            onClick={() => abrirFicha(estado === 'hecha' ? { tipo: 'repaso', sesion: s, unidad } : { tipo: 'parada', sesion: s, unidad })}
+            aria-label={estado === 'hecha' ? `Repasar ${fichas.length} tema${fichas.length === 1 ? '' : 's'} de ${s.parada.corto}` : `Repaso de ${s.parada.corto}: se abre al terminarla`}>
+            <span className="mazo-cartas" aria-hidden="true">
+              <i /><i />
+              <code>{estado === 'hecha' ? fichas[0].codigo : '?'}</code>
+              <b className="mazo-cuenta">{estado === 'hecha' ? fichas.length : '🔒'}</b>
+            </span>
+            <span className="mazo-rotulo">↻ REPASO</span>
+          </button>
+        ))}
 
         {regalos.map((r) => {
           const e = estadoRegalo(r);
@@ -379,6 +403,7 @@ function HojaFicha({ ficha, progreso, cambiar, cerrar }: { ficha: Ficha; progres
         {ficha.tipo === 'premio' && <FichaPremio unidad={ficha.unidad} progreso={progreso} />}
         {ficha.tipo === 'racha' && <FichaRacha progreso={progreso} />}
         {ficha.tipo === 'regalo' && <FichaRegalo {...ficha} progreso={progreso} />}
+        {ficha.tipo === 'repaso' && <FichaRepaso {...ficha} cambiar={cambiar} />}
       </div>
     </div>
   );
@@ -508,6 +533,78 @@ function FichaConcepto({ concepto, unidad, progreso, cambiar }: { concepto: Conc
         </>
       )}
       <button className="enlace-juego" onClick={() => cambiar({ tipo: 'fichas', unidad })}>Ver todas las fichas</button>
+    </div>
+  );
+}
+
+// Repaso rápido de una parada: cada tema es una tarjeta que se voltea. Primero te pregunta
+// qué hace la pieza; al voltearla ves la respuesta y puedes correr su ejemplo
+function FichaRepaso({ sesion, unidad, cambiar }: { sesion: Sesion; unidad: Unidad; cambiar: (f: Ficha) => void }) {
+  const fichas = unidad.conceptos.filter((c) => c.parada === sesion.parada.id);
+  const [i, setI] = useState(0);
+  const [volteada, setVolteada] = useState(false);
+  const [salida, setSalida] = useState<{ resultado: Resultado | null; mensaje: string; ok: boolean } | null>(null);
+  const [acertadas, setAcertadas] = useState(0);
+  const c = fichas[i];
+
+  async function probar() {
+    const r = await ejecutar(sesion.dataset, c.ejemplo!);
+    setSalida(r.ok
+      ? { resultado: r.resultado, ok: true, mensaje: `${r.resultado?.filas.length ?? 0} filas · ${r.resultado?.columnas.length ?? 0} columnas` }
+      : { resultado: null, ok: false, mensaje: r.error });
+  }
+  function siguiente(meAcorde: boolean) {
+    if (meAcorde) setAcertadas((n) => n + 1);
+    setI((n) => n + 1);
+    setVolteada(false);
+    setSalida(null);
+    if (i + 1 === fichas.length) sonidos.fin();
+  }
+
+  if (!c) {
+    return (
+      <div className="ficha">
+        <span className="ficha-tipo hecha">Repaso · {sesion.parada.corto}</span>
+        <h2>{acertadas === fichas.length ? '¡Te acordaste de todo!' : `Te acordaste de ${acertadas} de ${fichas.length}`}</h2>
+        <p className="ficha-texto">
+          {acertadas === fichas.length
+            ? 'Esos temas ya son tuyos. Vuelve a repasarlos en unos días para que no se te olviden.'
+            : 'Olvidar algunos es normal: repasar es justo lo que los fija. Vuelve a intentarlo mañana.'}
+        </p>
+        <button className="boton-juego" onClick={() => { setI(0); setAcertadas(0); }}>REPASAR OTRA VEZ</button>
+        <button className="enlace-juego" onClick={() => cambiar({ tipo: 'fichas', unidad })}>Ver todas las fichas</button>
+      </div>
+    );
+  }
+  return (
+    <div className="ficha">
+      <span className="ficha-tipo hecha">Repaso · {sesion.parada.corto} · {i + 1} de {fichas.length}</span>
+      <div className="repaso-puntos" aria-hidden="true">
+        {fichas.map((f, j) => <i key={f.id} className={j < i ? 'hecho' : j === i ? 'ahora' : ''} />)}
+      </div>
+      <div key={`${c.id}-${volteada}`} className={`carta-repaso ${volteada ? 'volteada' : ''}`}>
+        <code>{c.codigo}</code>
+        {volteada
+          ? <><b>{c.titulo}</b><p><TextoEnLinea texto={c.significado} /></p></>
+          : <p className="carta-pregunta">¿Qué hace esta pieza? Piénsalo antes de voltear la tarjeta.</p>}
+      </div>
+      {!volteada ? (
+        <button className="boton-juego" onClick={() => { setVolteada(true); sonidos.pop(); }}>VOLTEAR LA TARJETA</button>
+      ) : (
+        <>
+          {c.ejemplo && (
+            <Terminal>
+              <Codigo codigo={c.ejemplo} />
+              {salida && <Salida resultado={salida.resultado} mensaje={salida.mensaje} tipo={salida.ok ? 'ok' : 'mal'} />}
+            </Terminal>
+          )}
+          {c.ejemplo && !salida && <button className="enlace-juego" onClick={probar}>Probar el ejemplo ▶</button>}
+          <div className="repaso-botones">
+            <button className="boton-juego secundario" onClick={() => siguiente(false)}>NO ME ACORDABA</button>
+            <button className="boton-juego" onClick={() => { siguiente(true); sonidos.acierto(); }}>ME ACORDÉ</button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

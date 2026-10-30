@@ -271,3 +271,46 @@
 .ficha-regalo { display: block; filter: drop-shadow(0 6px 10px rgba(201, 138, 0, .35)); }
 /* Las unidades se pegan sin raya entre una y otra */
 .tramo + .tramo { margin-top: -1px; }
+
+/* Mazo de repaso: las tarjetas de los temas de una parada terminada */
+.mazo-repaso {
+  position: absolute; z-index: 2; transform: translate(-50%, -50%);
+  display: grid; justify-items: center; gap: 7px; background: none; border: 0; padding: 0; font: inherit;
+}
+.mazo-cartas { position: relative; display: block; width: 62px; height: 46px; }
+.mazo-cartas > i, .mazo-cartas > code {
+  position: absolute; inset: 0; border-radius: 10px; background: #fff; border: 2px solid rgba(0, 0, 0, .12);
+}
+.mazo-cartas > i:nth-child(1) { transform: rotate(-12deg) translate(-4px, 2px); background: #CFFBEA; }
+.mazo-cartas > i:nth-child(2) { transform: rotate(7deg) translate(3px, -1px); background: #9FF0CF; }
+.mazo-cartas > code {
+  display: grid; place-items: center; padding: 0 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font: 800 10px/1 ui-monospace, Menlo, monospace; color: #2A2838;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, .22); border-bottom: 4px solid #3FCF9A;
+}
+.mazo-cuenta {
+  position: absolute; top: -10px; right: -12px; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 5px;
+  display: grid; place-items: center; font-size: 11px; font-weight: 900; background: #3FCF9A; color: #0d3b2c; border: 2px solid #fff;
+}
+.mazo-rotulo { white-space: nowrap; background: #fff; color: #0d5a43; border-radius: 999px; padding: 2px 9px; font-size: 11px; font-weight: 900; }
+.mazo-repaso:active .mazo-cartas { transform: translateY(2px); }
+.mazo-repaso.cerrado .mazo-cartas, .mazo-repaso.cerrado .mazo-rotulo { filter: grayscale(1); opacity: .6; }
+
+/* Hoja de repaso: tarjetas que se voltean */
+.repaso-puntos { display: flex; gap: 6px; margin: 4px 0 12px; }
+.repaso-puntos i { flex: 1; height: 6px; border-radius: 3px; background: var(--borde); }
+.repaso-puntos i.hecho { background: #3FCF9A; }
+.repaso-puntos i.ahora { background: var(--marca); }
+.carta-repaso {
+  display: grid; gap: 8px; justify-items: center; text-align: center; padding: 22px 16px; margin-bottom: 14px;
+  border-radius: 18px; background: var(--superficie); border: 2px solid var(--borde); border-bottom-width: 5px;
+  animation: voltea .35s ease;
+}
+.carta-repaso code { font-size: 22px; font-weight: 900; color: var(--marca); }
+.carta-repaso p { margin: 0; color: var(--texto); line-height: 1.45; }
+.carta-repaso .carta-pregunta { color: var(--suave); }
+.carta-repaso.volteada { border-color: #3FCF9A; }
+@keyframes voltea { from { transform: rotateY(90deg); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .carta-repaso { animation: none; } }
+.repaso-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.repaso-botones .boton-juego { font-size: 13px; padding-left: 6px; padding-right: 6px; }
